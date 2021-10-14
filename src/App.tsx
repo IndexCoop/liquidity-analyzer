@@ -5,7 +5,7 @@ import { getUniswapV3Quote } from './utils/poolData'
 import { YFI_ABI, YFI_ADDRESS } from './utils/constants/tokens'
 import { PricesProvider } from './contexts/Prices'
 
-function App() {
+const App: React.FC = () => {
   useEffect(() => {
     getUniswapV3Quote(YFI_ADDRESS, YFI_ABI)
     return
