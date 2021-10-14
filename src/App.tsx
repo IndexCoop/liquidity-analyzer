@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react'
+import logo from './logo.svg'
+import './App.css'
+import { getUniswapV3Quote } from './utils/poolData'
+import { YFI_ABI, YFI_ADDRESS } from './utils/constants/tokens'
+import { PricesProvider } from './contexts/Prices'
 
 function App() {
+  useEffect(() => {
+    getUniswapV3Quote(YFI_ADDRESS, YFI_ABI)
+    return
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <PricesProvider>
+      <div className='App'>
+        <header className='App-header'>
+          <h1>YFI</h1>
+          <h3>Uniswap V3 Liquidity</h3>
+        </header>
+      </div>
+    </PricesProvider>
+  )
 }
 
-export default App;
+export default App

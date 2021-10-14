@@ -1,91 +1,42 @@
-import {BigNumber} from "ethers";
-import {hexlify, hexZeroPad} from "ethers/lib/utils";
+import { FeeAmount } from '@uniswap/v3-sdk'
+import { Contract, BigNumber } from 'ethers'
+import { abi as V3_FACTORY_ABI } from '@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json'
 
-import {FeeAmount} from "@uniswap/v3-sdk";
-
+import { ADDRESS_ZERO, TEN_POW_18 } from '../constants/constants'
+import { getProvider } from '../provider'
 import {
-  ether,
-  preciseDiv,
-  preciseMul,
-  sqrt,
-} from "@setprotocol/index-coop-contracts/dist/utils/common";
+  USDC_ABI,
+  USDC_ADDRESS,
+  WETH_ABI,
+  WETH_ADDRESS,
+} from '../constants/tokens'
 
-import {ExchangeQuote, exchanges, Address} from "../types";
-import {ADDRESS_ZERO, ZERO, WETH_ADDRESS} from "../constants";
-
-import DeployHelper from "../deploys";
-
-const UNI_V3_QUOTER = "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6";
-const UNI_V3_FACTORY = "0x1F98431c8aD98523631AE4a59f267346ea31F984";
+const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 
 export async function getUniswapV3Quote(
-  deployHelper: DeployHelper,
-  token: Address,
-  targetPriceImpact: BigNumber
-): Promise<ExchangeQuote> {
-  const factoryInstance =
-    await deployHelper.external.getUniswapV3FactoryInstance(UNI_V3_FACTORY);
+  tokenAddress: string = USDC_ADDRESS,
+  tokenAbi: any = USDC_ABI
+) {
+  const provider = getProvider()
+  const factoryInstance = await new Contract(
+    UNI_V3_FACTORY,
+    V3_FACTORY_ABI,
+    provider
+  )
   const poolAddress = await factoryInstance.getPool(
-    token,
+    tokenAddress,
     WETH_ADDRESS,
     FeeAmount.MEDIUM
-  );
-  if (poolAddress == ADDRESS_ZERO) {
-    return {
-      exchange: exchanges.UNISWAP_V3,
-      size: ZERO.toString(),
-      data: "0x",
-    } as ExchangeQuote;
-  }
+  )
 
-  const poolInstance = await deployHelper.external.getUniswapV3PoolInstance(
-    poolAddress
-  );
-  const globalStorage = await poolInstance.slot0();
-  const currentSqrtPrice = globalStorage.sqrtPriceX96;
+  if (poolAddress === ADDRESS_ZERO) console.log('poolAddress === ADDRESS_ZERO')
+  console.log('poolAddress', poolAddress)
 
-  const currentPrice = preciseDiv(
-    BigNumber.from(2).pow(192),
-    currentSqrtPrice.pow(2)
-  );
+  const tokenContract = await new Contract(tokenAddress, tokenAbi, provider)
+  const wethContract = await new Contract(WETH_ADDRESS, WETH_ABI, provider)
 
-  if (currentPrice.eq(0)) {
-    return {
-      exchange: exchanges.UNISWAP_V3,
-      size: ZERO.toString(),
-      data: "0x",
-    } as ExchangeQuote;
-  }
-
-  // This is not actually target price where targetPrice = price*(1+targetPriceImpact). It instead sets a maximum price change after trade
-  // of 2 * targetPriceImpact. If you assume that the liquidity is flat accross the 2 * targetPriceImpact, then it will equal to targetPriceImpact
-  // slippage. The worst-case scenario outcome for this approximation is when you move across ticks and the liquidity falls off significantly,
-  // and you execute the trade a price impact of 2% instead of 1%.
-
-  // Divide by 50: convert basis point in percent to basis points in decimal (/100) multiply by two to meet target price impact
-  const targetPrice =
-    token > WETH_ADDRESS
-      ? preciseMul(currentPrice, ether(1).add(targetPriceImpact.div(50)))
-      : preciseMul(currentPrice, ether(1).sub(targetPriceImpact.div(50)));
-  const sqrtPriceLimit = sqrt(
-    preciseDiv(BigNumber.from(2).pow(192), targetPrice)
-  );
-
-  const quoterInstance = await deployHelper.external.getUniswapV3QuoterInstance(
-    UNI_V3_QUOTER
-  );
-
-  return {
-    exchange: exchanges.UNISWAP_V3,
-    size: (
-      await quoterInstance.callStatic.quoteExactInputSingle(
-        WETH_ADDRESS,
-        token,
-        FeeAmount.MEDIUM,
-        ether(10000),
-        sqrtPriceLimit
-      )
-    ).toString(),
-    data: hexZeroPad(hexlify(FeeAmount.MEDIUM), 3),
-  } as ExchangeQuote;
+  const tokenBalance: BigNumber = await tokenContract.balanceOf(poolAddress)
+  const wethBalance: BigNumber = await wethContract.balanceOf(poolAddress)
+  console.log('tokenBalance', tokenBalance.div(TEN_POW_18).toString())
+  console.log('wethBalance', wethBalance.div(TEN_POW_18).toString())
 }
