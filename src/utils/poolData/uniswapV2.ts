@@ -1,23 +1,39 @@
-import { BigNumber } from 'ethers'
-import { BaseProvider } from '@ethersproject/providers'
+import { BigNumber, Contract } from 'ethers'
 import {
-  ether,
-  preciseDiv,
-  preciseMul,
-} from '@setprotocol/index-coop-contracts/dist/utils/common'
+  TEN_POW_18,
+  UNI_V2_FACTORY,
+  UNI_V2_PAIR_ABI,
+  V2_FACTORY_ABI,
+} from 'utils/constants/constants'
 
-import { ChainId, TokenAmount, Pair, Trade, Token, Fetcher } from '@uniswap/sdk'
+import { USDC_ADDRESS, WETH_ADDRESS } from 'utils/constants/tokens'
+import { getProvider } from 'utils/provider'
 
-import { ExchangeQuote, exchanges, Address } from '../types'
-import { ZERO } from '../constants/constants'
+type V2Balances = {
+  tokenBalance: BigNumber
+  wethBalance: BigNumber
+}
 
-const TEN_BPS_IN_PERCENT = ether(0.1)
-const THIRTY_BPS_IN_PERCENT = ether(0.3)
+export async function getUniswapV2Liquidity(
+  tokenAddress: string = USDC_ADDRESS
+): Promise<V2Balances> {
+  const provider = getProvider()
+  const factoryInstance = await new Contract(
+    UNI_V2_FACTORY,
+    V2_FACTORY_ABI,
+    provider
+  )
+  const pairAddress = await factoryInstance.getPair(tokenAddress, WETH_ADDRESS)
+  const pairContract = await new Contract(
+    pairAddress,
+    UNI_V2_PAIR_ABI,
+    provider
+  )
+  const [tokenBalance, wethBalance] = await pairContract.getReserves()
 
-export async function getUniswapV2Quote(
-  provider: BaseProvider,
-  tokenAddress: Address,
-  targetPriceImpact: BigNumber
-) {
-  return
+  const response: V2Balances = {
+    tokenBalance: tokenBalance.div(TEN_POW_18),
+    wethBalance: wethBalance.div(TEN_POW_18),
+  }
+  return response
 }

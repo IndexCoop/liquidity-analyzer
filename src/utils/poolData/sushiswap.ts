@@ -1,23 +1,39 @@
-import { BigNumber } from 'ethers'
-
-import { ChainId, CurrencyAmount, Pair, Token, Trade } from '@sushiswap/sdk'
-
+import { BigNumber, Contract } from 'ethers'
 import {
-  ether,
-  preciseDiv,
-  preciseMul,
-} from '@setprotocol/index-coop-contracts/dist/utils/common'
+  TEN_POW_18,
+  SUSHI_FACTORY,
+  UNI_V2_PAIR_ABI,
+  V2_FACTORY_ABI,
+} from 'utils/constants/constants'
 
-import { ExchangeQuote, exchanges, Address } from '../types'
+import { USDC_ADDRESS, WETH_ADDRESS } from 'utils/constants/tokens'
+import { getProvider } from 'utils/provider'
 
-const TEN_BPS_IN_PERCENT = ether(0.1)
-const THIRTY_BPS_IN_PERCENT = ether(0.3)
+type V2Balances = {
+  tokenBalance: BigNumber
+  wethBalance: BigNumber
+}
 
-const SUSHI_FACTORY = '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac'
+export async function getSushiswapLiquidity(
+  tokenAddress: string = USDC_ADDRESS
+): Promise<V2Balances> {
+  const provider = getProvider()
+  const factoryInstance = await new Contract(
+    SUSHI_FACTORY,
+    V2_FACTORY_ABI,
+    provider
+  )
+  const pairAddress = await factoryInstance.getPair(tokenAddress, WETH_ADDRESS)
+  const pairContract = await new Contract(
+    pairAddress,
+    UNI_V2_PAIR_ABI,
+    provider
+  )
+  const [tokenBalance, wethBalance] = await pairContract.getReserves()
 
-export async function getSushiswapQuote(
-  tokenAddress: Address,
-  targetPriceImpact: BigNumber
-) {
-  return
+  const response: V2Balances = {
+    tokenBalance: tokenBalance.div(TEN_POW_18),
+    wethBalance: wethBalance.div(TEN_POW_18),
+  }
+  return response
 }

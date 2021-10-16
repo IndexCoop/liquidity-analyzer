@@ -13,7 +13,7 @@ import {
 
 const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 
-type V3Quote = {
+type V3Balances = {
   tokenBalance: BigNumber
   wethBalance: BigNumber
 }
@@ -21,7 +21,7 @@ type V3Quote = {
 export async function getUniswapV3Liquidity(
   tokenAddress: string = USDC_ADDRESS,
   tokenAbi: any = USDC_ABI
-): Promise<V3Quote> {
+): Promise<V3Balances> {
   const provider = getProvider()
   const factoryInstance = await new Contract(
     UNI_V3_FACTORY,
@@ -41,8 +41,7 @@ export async function getUniswapV3Liquidity(
 
   const tokenBalance: BigNumber = await tokenContract.balanceOf(poolAddress)
   const wethBalance: BigNumber = await wethContract.balanceOf(poolAddress)
-
-  const response: V3Quote = {
+  const response: V3Balances = {
     tokenBalance: tokenBalance.div(TEN_POW_18),
     wethBalance: wethBalance.div(TEN_POW_18),
   }

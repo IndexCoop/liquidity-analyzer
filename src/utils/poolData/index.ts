@@ -1,9 +1,9 @@
 export { getBalancerV1Quote } from './balancerV1'
 
-export { getKyberDMMQuote } from './kyberDMM'
+export { getKyberLiquidity } from './kyber'
 
-export { getSushiswapQuote } from './sushiswap'
+export { getSushiswapLiquidity } from './sushiswap'
 
-export { getUniswapV2Quote } from './uniswapV2'
+export { getUniswapV2Liquidity } from './uniswapV2'
 
 export { getUniswapV3Liquidity } from './uniswapV3'

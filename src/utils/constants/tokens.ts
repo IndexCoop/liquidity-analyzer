@@ -3,6 +3,7 @@ export const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
 export const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
 export const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 export const YFI_ADDRESS = '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e'
+export const KYBER_CRYSTAL = '0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202'
 
 /** ABIs for tokens */
 export const USDC_ABI = [

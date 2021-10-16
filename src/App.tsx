@@ -3,7 +3,10 @@ import React, { useEffect } from 'react'
 import 'App.css'
 import { YFI_ABI, YFI_ADDRESS } from 'utils/constants/tokens'
 import { PricesProvider } from 'contexts/Prices'
-import TotalLiquidity from 'components/TotalLiquidity'
+import V3Liquidity from 'components/V3Liquidity'
+import V2Liquidity from 'components/V2Liquidity'
+import SushiSwapLiquidity from 'components/SushiSwapLiquidity'
+import KyberLiquidity from 'components/KyberLiquidity'
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -14,12 +17,14 @@ const App: React.FC = () => {
     <PricesProvider>
       <div className='App'>
         <header className='App-header'>
-          <h1>YFI</h1>
-          <h3>Uniswap V3 Liquidity</h3>
-          <TotalLiquidity
+          <h2>YFI</h2>
+          <V3Liquidity
             tokenAddress={YFI_ADDRESS}
             tokenAbi={YFI_ABI}
-          ></TotalLiquidity>
+          ></V3Liquidity>
+          <V2Liquidity tokenAddress={YFI_ADDRESS}></V2Liquidity>
+          <SushiSwapLiquidity tokenAddress={YFI_ADDRESS}></SushiSwapLiquidity>
+          <KyberLiquidity tokenAddress={YFI_ADDRESS}></KyberLiquidity>
         </header>
       </div>
     </PricesProvider>
