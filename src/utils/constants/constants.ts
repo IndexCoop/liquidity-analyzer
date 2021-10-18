@@ -41,6 +41,7 @@ export const getCoinGeckoApi = (tokenAddress: string) => {
 export const UNI_V2_FACTORY = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
 export const SUSHI_FACTORY = '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac'
 export const KYBER_FACTORY = '0x833e4083B7ae46CeA85695c4f7ed25CDAd8886dE'
+export const BALANCER_OCR = '0x7226DaaF09B3972320Db05f5aB81FF38417Dd687'
 
 export const V2_FACTORY_ABI = [
   {
@@ -1250,6 +1251,191 @@ export const KYBER_POOL_ABI = [
     ],
     name: 'transferFrom',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+]
+
+export const BALANCER_OCR_ABI = [
+  {
+    inputs: [{ internalType: 'address', name: '_bfactory', type: 'address' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'token1',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'token2',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'oldIndices',
+        type: 'bytes32',
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'newIndices',
+        type: 'bytes32',
+      },
+    ],
+    name: 'IndicesUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: 'address', name: 'pool', type: 'address' },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'token1',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'token2',
+        type: 'address',
+      },
+    ],
+    name: 'PoolTokenPairAdded',
+    type: 'event',
+  },
+  {
+    constant: false,
+    inputs: [
+      { internalType: 'address', name: 'token1', type: 'address' },
+      { internalType: 'address', name: 'token2', type: 'address' },
+      { internalType: 'address[]', name: 'pools', type: 'address[]' },
+    ],
+    name: '_getEffectiveLiquidityForPoolsPurge',
+    outputs: [
+      {
+        internalType: 'uint256[]',
+        name: 'effectiveLiquidity',
+        type: 'uint256[]',
+      },
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { internalType: 'address', name: 'pool', type: 'address' },
+      { internalType: 'address', name: 'token1', type: 'address' },
+      { internalType: 'address', name: 'token2', type: 'address' },
+    ],
+    name: 'addPoolPair',
+    outputs: [{ internalType: 'uint256', name: 'listed', type: 'uint256' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { internalType: 'address[]', name: 'pools', type: 'address[]' },
+      { internalType: 'address', name: 'token1', type: 'address' },
+      { internalType: 'address', name: 'token2', type: 'address' },
+    ],
+    name: 'addPools',
+    outputs: [{ internalType: 'uint256[]', name: 'listed', type: 'uint256[]' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      { internalType: 'address', name: 'fromToken', type: 'address' },
+      { internalType: 'address', name: 'destToken', type: 'address' },
+    ],
+    name: 'getBestPools',
+    outputs: [{ internalType: 'address[]', name: 'pools', type: 'address[]' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      { internalType: 'address', name: 'fromToken', type: 'address' },
+      { internalType: 'address', name: 'destToken', type: 'address' },
+      { internalType: 'uint256', name: 'limit', type: 'uint256' },
+    ],
+    name: 'getBestPoolsWithLimit',
+    outputs: [{ internalType: 'address[]', name: 'pools', type: 'address[]' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      { internalType: 'address', name: 'pool', type: 'address' },
+      { internalType: 'address', name: 'fromToken', type: 'address' },
+      { internalType: 'address', name: 'destToken', type: 'address' },
+    ],
+    name: 'getPairInfo',
+    outputs: [
+      { internalType: 'uint256', name: 'weight1', type: 'uint256' },
+      { internalType: 'uint256', name: 'weight2', type: 'uint256' },
+      { internalType: 'uint256', name: 'swapFee', type: 'uint256' },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      { internalType: 'address', name: 'fromToken', type: 'address' },
+      { internalType: 'address', name: 'destToken', type: 'address' },
+      { internalType: 'uint256', name: 'offset', type: 'uint256' },
+      { internalType: 'uint256', name: 'limit', type: 'uint256' },
+    ],
+    name: 'getPoolsWithLimit',
+    outputs: [{ internalType: 'address[]', name: 'result', type: 'address[]' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { internalType: 'address[]', name: 'tokens', type: 'address[]' },
+      { internalType: 'uint256', name: 'lengthLimit', type: 'uint256' },
+    ],
+    name: 'sortPools',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { internalType: 'address[]', name: 'tokens', type: 'address[]' },
+      { internalType: 'uint256', name: 'lengthLimit', type: 'uint256' },
+    ],
+    name: 'sortPoolsWithPurge',
+    outputs: [],
+    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },

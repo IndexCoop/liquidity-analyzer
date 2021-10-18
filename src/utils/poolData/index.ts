@@ -1,4 +1,4 @@
-export { getBalancerV1Quote } from './balancerV1'
+export { getBalancerV1Liquidity } from './balancerV1'
 
 export { getKyberLiquidity } from './kyber'
 

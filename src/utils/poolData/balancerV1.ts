@@ -1,72 +1,52 @@
-import { BigNumber } from 'ethers'
-import { BaseProvider } from '@ethersproject/providers'
+import { BigNumber, Contract } from 'ethers'
 import { BigNumber as BigNumberJS } from 'bignumber.js'
 
-import { SOR } from '@balancer-labs/sor'
 import {
-  ether,
-  gWei,
-  preciseDiv,
-  preciseMul,
-} from '@setprotocol/index-coop-contracts/dist/utils/common'
+  BALANCER_OCR,
+  BALANCER_OCR_ABI,
+  TEN_POW_18,
+} from '../constants/constants'
+import { getProvider } from 'utils/provider'
+import { WETH_ABI, WETH_ADDRESS } from 'utils/constants/tokens'
 
-import { ETH_ADDRESS, ZERO } from '../constants/constants'
-import { ExchangeQuote, exchanges, Address } from '../types'
+type BalBalances = {
+  tokenBalance: BigNumber
+  wethBalance: BigNumber
+}
 
 // Usage note, targetPriceImpact should be the impact including fees! Balancer pool fees can change and it's not easy to extract from the data
 // we have so put in a number that is net of fees.
-export async function getBalancerV1Quote(
-  provider: BaseProvider,
-  tokenAddress: Address,
-  targetPriceImpact: BigNumber
-): Promise<ExchangeQuote> {
-  const sor = new SOR(
-    provider,
-    toBigNumberJS(gWei(100)),
-    3, // Max 3 pools used
-    1, // ChainId = mainnet (1)
-    'https://storageapi.fleek.co/balancer-bucket/balancer-exchange/pools'
+export async function getBalancerV1Liquidity(
+  tokenAddress: string,
+  tokenAbi: any
+): Promise<BalBalances> {
+  let response: BalBalances = {
+    tokenBalance: BigNumber.from(0),
+    wethBalance: BigNumber.from(0),
+  }
+  let tokenBalances: BigNumber[] = []
+  let wethBalances: BigNumber[] = []
+  const provider = getProvider()
+  const ocr = await new Contract(BALANCER_OCR, BALANCER_OCR_ABI, provider)
+  const tokenContract = await new Contract(tokenAddress, tokenAbi, provider)
+  const wethContract = await new Contract(WETH_ADDRESS, WETH_ABI, provider)
+  const pools: string[] = await ocr.getBestPools(WETH_ADDRESS, tokenAddress)
+
+  if (pools.length < 1) return response
+
+  await Promise.all(
+    pools.map(async (pool) => {
+      tokenBalances.push(await tokenContract.balanceOf(pool))
+      wethBalances.push(await wethContract.balanceOf(pool))
+    })
   )
-  await sor.fetchFilteredPairPools(ETH_ADDRESS, tokenAddress)
-  await sor.setCostOutputToken(tokenAddress) // Set cost to limit small trades
 
-  const inputAmount = toBigNumberJS(ether(2))
-  const [, returnAmountV1, marketSpV1Scaled] = await sor.getSwaps(
-    ETH_ADDRESS.toLowerCase(),
-    tokenAddress.toLowerCase(),
-    'swapExactIn',
-    inputAmount
-  )
-
-  if (!returnAmountV1.eq(0)) {
-    const effectivePrice = inputAmount.div(returnAmountV1)
-
-    const priceImpact = ether(
-      effectivePrice.div(marketSpV1Scaled.div(10 ** 18)).toNumber()
-    ).sub(ether(1))
-    const priceImpactRatio = preciseDiv(targetPriceImpact, priceImpact.mul(100))
-
-    return {
-      exchange: exchanges.BALANCER,
-      size: preciseMul(
-        fromBigNumberJS(returnAmountV1),
-        priceImpactRatio
-      ).toString(),
-      data: '0x',
-    } as ExchangeQuote
+  const reducer = (previousValue: BigNumber, currentValue: BigNumber) =>
+    previousValue.add(currentValue)
+  response = {
+    tokenBalance: tokenBalances.reduce(reducer).div(TEN_POW_18),
+    wethBalance: wethBalances.reduce(reducer).div(TEN_POW_18),
   }
 
-  return {
-    exchange: exchanges.BALANCER,
-    size: ZERO.toString(),
-    data: '0x',
-  } as ExchangeQuote
-}
-
-function toBigNumberJS(value: BigNumber): BigNumberJS {
-  return new BigNumberJS(value.toString())
-}
-
-function fromBigNumberJS(value: BigNumberJS): BigNumber {
-  return BigNumber.from(value.toString())
+  return response
 }

@@ -7,6 +7,7 @@ import V3Liquidity from 'components/V3Liquidity'
 import V2Liquidity from 'components/V2Liquidity'
 import SushiSwapLiquidity from 'components/SushiSwapLiquidity'
 import KyberLiquidity from 'components/KyberLiquidity'
+import BalancerLiquidity from 'components/BalancerLiquidity'
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -25,6 +26,10 @@ const App: React.FC = () => {
           <V2Liquidity tokenAddress={YFI_ADDRESS}></V2Liquidity>
           <SushiSwapLiquidity tokenAddress={YFI_ADDRESS}></SushiSwapLiquidity>
           <KyberLiquidity tokenAddress={YFI_ADDRESS}></KyberLiquidity>
+          <BalancerLiquidity
+            tokenAddress={YFI_ADDRESS}
+            tokenAbi={YFI_ABI}
+          ></BalancerLiquidity>
         </header>
       </div>
     </PricesProvider>
