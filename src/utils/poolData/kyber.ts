@@ -6,7 +6,7 @@ import {
   KYBER_POOL_ABI,
   TEN_POW_18,
 } from 'utils/constants/constants'
-import { WETH_ADDRESS } from 'utils/constants/tokens'
+import { WETH } from 'utils/constants/tokens'
 import { getProvider } from 'utils/provider'
 
 type KyberBalances = {
@@ -28,7 +28,7 @@ export async function getKyberLiquidity(
     provider
   )
 
-  const pools = await factoryInstance.getPools(tokenAddress, WETH_ADDRESS)
+  const pools = await factoryInstance.getPools(tokenAddress, WETH)
   if (!pools[0]) return response
 
   const pairContract = await new Contract(pools[0], KYBER_POOL_ABI, provider)

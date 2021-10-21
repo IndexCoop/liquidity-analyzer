@@ -3,11 +3,14 @@ import usePrices from 'hooks/usePrices'
 import { useEffect, useState } from 'react'
 import { getSushiswapLiquidity } from 'utils/poolData'
 
-const SushiSwapLiquidity = (props: { tokenAddress: string }) => {
+const SushiSwapLiquidity = (props: {
+  tokenAddress: string
+  tokenPrice: BigNumber
+}) => {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
 
-  const { yfiPrice, ethereumPrice } = usePrices()
+  const { ethereumPrice } = usePrices()
 
   useEffect(() => {
     getSushiswapLiquidity(props.tokenAddress).then((response) => {
@@ -16,7 +19,7 @@ const SushiSwapLiquidity = (props: { tokenAddress: string }) => {
     })
   }, [props.tokenAddress])
 
-  const tokenTotal = yfiPrice.mul(tokenBalance)
+  const tokenTotal = props.tokenPrice.mul(tokenBalance)
   const wethTotal = ethereumPrice.mul(wethBalance)
   const totalLiquidity = tokenTotal.add(wethTotal)
 

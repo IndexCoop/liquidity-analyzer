@@ -3,11 +3,14 @@ import usePrices from 'hooks/usePrices'
 import { useEffect, useState } from 'react'
 import { getKyberLiquidity } from 'utils/poolData'
 
-const KyberLiquidity = (props: { tokenAddress: string }) => {
+const KyberLiquidity = (props: {
+  tokenAddress: string
+  tokenPrice: BigNumber
+}) => {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
 
-  const { yfiPrice, ethereumPrice } = usePrices()
+  const { ethereumPrice } = usePrices()
 
   useEffect(() => {
     getKyberLiquidity(props.tokenAddress).then((response) => {
@@ -16,7 +19,7 @@ const KyberLiquidity = (props: { tokenAddress: string }) => {
     })
   }, [props.tokenAddress])
 
-  const tokenTotal = yfiPrice.mul(tokenBalance)
+  const tokenTotal = props.tokenPrice.mul(tokenBalance)
   const wethTotal = ethereumPrice.mul(wethBalance)
   const totalLiquidity = tokenTotal.add(wethTotal)
 
