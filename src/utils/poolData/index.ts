@@ -6,4 +6,4 @@ export { getSushiswapLiquidity } from './sushiswap'
 
 export { getUniswapV2Liquidity } from './uniswapV2'
 
-export { getUniswapV3Liquidity } from './uniswapV3'
+export { getUniswapV3Liquidity, getUniswapV3MaxTrade } from './uniswapV3'
