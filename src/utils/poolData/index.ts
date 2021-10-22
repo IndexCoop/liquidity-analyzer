@@ -5,6 +5,7 @@ import {
   getUniswapV2Quote,
   getSushiswapQuote,
   getKyberDMMQuote,
+  getBalancerV1Quote,
   // @ts-ignore
 } from '@setprotocol/index-rebalance-utils/dist/index-rebalances/utils/paramDetermination'
 import { ether } from '@setprotocol/index-coop-contracts/dist/utils/common'
@@ -13,6 +14,7 @@ import { BigNumber } from 'ethers'
 import { getUniswapV3Liquidity } from './uniswapV3'
 import { getUniswapV2Liquidity } from './uniswapV2'
 import { getSushiswapLiquidity } from './sushiswap'
+import { getBalancerV1Liquidity } from './balancerV1'
 import { getKyberLiquidity } from './kyber'
 
 export { getBalancerV1Liquidity } from './balancerV1'
@@ -25,7 +27,12 @@ interface MaxTradeResponse {
   size: BigNumber
 }
 
-export type ExchangeName = 'UniswapV3' | 'UniswapV2' | 'Sushiswap'| 'Kyber'
+export type ExchangeName =
+  | 'UniswapV3'
+  | 'UniswapV2'
+  | 'Sushiswap'
+  | 'Kyber'
+  | 'Balancer'
 
 const exchangeUtilsMapping = {
   UniswapV3: {
@@ -43,6 +50,10 @@ const exchangeUtilsMapping = {
   Kyber: {
     maxTradeGetter: getKyberDMMQuote,
     liquidityGetter: getKyberLiquidity,
+  },
+  Balancer: {
+    maxTradeGetter: getBalancerV1Quote,
+    liquidityGetter: getBalancerV1Liquidity,
   },
 }
 
