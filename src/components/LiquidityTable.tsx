@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { getCoinGeckoApi } from 'utils/constants/constants'
 import BalancerLiquidity from './BalancerLiquidity'
 import KyberLiquidity from './KyberLiquidity'
-import SushiSwapLiquidity from './SushiSwapLiquidity'
 import ExchangeSummary from './ExchangeSummary'
 
 const LiquidityTable = (props: { tokenAddress: string }) => {
@@ -31,10 +30,11 @@ const LiquidityTable = (props: { tokenAddress: string }) => {
         tokenPrice={tokenPrice}
         exchange="UniswapV2"
       ></ExchangeSummary>
-      <SushiSwapLiquidity
+      <ExchangeSummary
         tokenAddress={props.tokenAddress}
         tokenPrice={tokenPrice}
-      ></SushiSwapLiquidity>
+        exchange="Sushiswap"
+      ></ExchangeSummary>
       <KyberLiquidity
         tokenAddress={props.tokenAddress}
         tokenPrice={tokenPrice}

@@ -3,13 +3,15 @@ import DeployHelper from '@setprotocol/index-rebalance-utils/dist/utils/deploys/
 import {
   getUniswapV3Quote,
   getUniswapV2Quote,
-// @ts-ignore
+  getSushiswapQuote,
+  // @ts-ignore
 } from '@setprotocol/index-rebalance-utils/dist/index-rebalances/utils/paramDetermination'
 import { ether } from '@setprotocol/index-coop-contracts/dist/utils/common'
 import { getProvider } from '../provider'
 import { BigNumber } from 'ethers'
 import { getUniswapV3Liquidity } from './uniswapV3'
 import { getUniswapV2Liquidity } from './uniswapV2'
+import { getSushiswapLiquidity } from './sushiswap'
 
 export { getBalancerV1Liquidity } from './balancerV1'
 
@@ -21,7 +23,7 @@ interface MaxTradeResponse {
   size: BigNumber
 }
 
-export type ExchangeName = 'UniswapV3' | 'UniswapV2'
+export type ExchangeName = 'UniswapV3' | 'UniswapV2' | 'Sushiswap'
 
 const exchangeUtilsMapping = {
   UniswapV3: {
@@ -32,9 +34,13 @@ const exchangeUtilsMapping = {
     maxTradeGetter: getUniswapV2Quote,
     liquidityGetter: getUniswapV2Liquidity,
   },
+  Sushiswap: {
+    maxTradeGetter: getSushiswapQuote,
+    liquidityGetter: getSushiswapLiquidity,
+  },
 }
 
-const wrappedProviderExchanges = ['UniswapV3']
+const wrappedProviderExchanges = ['UniswapV3', 'Sushiswap']
 
 export async function getMaxTrade(
   tokenAddress: string,
