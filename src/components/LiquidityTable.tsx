@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers'
 import { useEffect, useState } from 'react'
 import { getCoinGeckoApi } from 'utils/constants/constants'
+import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
 
 const LiquidityTable = (props: { tokenAddress: string }) => {
@@ -16,33 +17,23 @@ const LiquidityTable = (props: { tokenAddress: string }) => {
       .catch((error) => console.log(error))
   }, [props.tokenAddress])
 
+  const exchanges: Array<ExchangeName> = [
+    'UniswapV3',
+    'UniswapV2',
+    'Sushiswap',
+    'Kyber',
+    'Balancer',
+  ]
+
   return (
     <div>
-      <ExchangeSummary
-        tokenAddress={props.tokenAddress}
-        tokenPrice={tokenPrice}
-        exchange="UniswapV3"
-      ></ExchangeSummary>
-      <ExchangeSummary
-        tokenAddress={props.tokenAddress}
-        tokenPrice={tokenPrice}
-        exchange="UniswapV2"
-      ></ExchangeSummary>
-      <ExchangeSummary
-        tokenAddress={props.tokenAddress}
-        tokenPrice={tokenPrice}
-        exchange="Sushiswap"
-      ></ExchangeSummary>
-      <ExchangeSummary
-        tokenAddress={props.tokenAddress}
-        tokenPrice={tokenPrice}
-        exchange="Kyber"
-      ></ExchangeSummary>
-      <ExchangeSummary
-        tokenAddress={props.tokenAddress}
-        tokenPrice={tokenPrice}
-        exchange="Balancer"
-      ></ExchangeSummary>
+      {exchanges.map((exchange, index) => (
+        <ExchangeSummary
+          tokenAddress={props.tokenAddress}
+          tokenPrice={tokenPrice}
+          exchange={exchange}
+        ></ExchangeSummary>
+      ))}
     </div>
   )
 }
