@@ -1,6 +1,8 @@
 import { BigNumber } from 'ethers'
 import usePrices from 'hooks/usePrices'
+import numeral from 'numeral'
 import { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
 import { TEN_POW_18 } from '../utils/constants/constants'
 
@@ -21,15 +23,17 @@ const ExchangeSummary = (props: {
       setTokenBalance(response.tokenBalance)
       setWethBalance(response.wethBalance)
     })
-  }, [props.tokenAddress])
+  }, [props.exchange, props.tokenAddress])
 
   useEffect(() => {
-    getMaxTrade(props.tokenAddress, MAXIMUM_SLIPPAGE_PERCENT, props.exchange).then(
-      (response) => {
-        setMaxTrade(response.size)
-      }
-    )
-  }, [props.tokenAddress])
+    getMaxTrade(
+      props.tokenAddress,
+      MAXIMUM_SLIPPAGE_PERCENT,
+      props.exchange
+    ).then((response) => {
+      setMaxTrade(response.size)
+    })
+  }, [props.exchange, props.tokenAddress])
 
   const tokenTotal = props.tokenPrice.mul(tokenBalance)
   const wethTotal = ethereumPrice.mul(wethBalance)
@@ -37,15 +41,22 @@ const ExchangeSummary = (props: {
   const maxTradeTotal = props.tokenPrice.mul(maxTrade).div(TEN_POW_18)
 
   return (
-    <div>
-      <div>
-        {props.exchange} Liquidity: ${totalLiquidity.toNumber().toLocaleString()}
-      </div>
-      <div>
-        {props.exchange} MaxTrade: ${maxTradeTotal.toNumber().toLocaleString()}
-      </div>
-    </div>
+    <>
+      <TableData>{props.exchange}</TableData>
+      <TableData>{numeral(totalLiquidity).format('$0,0.00')}</TableData>
+      <TableData>{numeral(maxTradeTotal).format('$0,0.00')}</TableData>
+    </>
   )
 }
 
 export default ExchangeSummary
+
+const TableHeader = styled.div`
+  margin: 0;
+  font-size: 12px;
+`
+
+const TableData = styled(TableHeader)`
+  font-size: 16px;
+  line-height: 24px;
+`
