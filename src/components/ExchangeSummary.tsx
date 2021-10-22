@@ -6,7 +6,8 @@ import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
 import { TEN_POW_18 } from '../utils/constants/constants'
 
-const MAXIMUM_SLIPPAGE_PERCENT = 0.5
+const HALF_PERCENT = 0.5
+const ONE_PERCENT = 1
 
 const ExchangeSummary = (props: {
   tokenAddress: string
@@ -16,6 +17,7 @@ const ExchangeSummary = (props: {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
   const [maxTrade, setMaxTrade] = useState<BigNumber>(BigNumber.from(0))
+  const [maxHalfTrade, setHalfMaxTrade] = useState<BigNumber>(BigNumber.from(0))
   const { ethereumPrice } = usePrices()
 
   useEffect(() => {
@@ -26,25 +28,36 @@ const ExchangeSummary = (props: {
   }, [props.exchange, props.tokenAddress])
 
   useEffect(() => {
-    getMaxTrade(
-      props.tokenAddress,
-      MAXIMUM_SLIPPAGE_PERCENT,
-      props.exchange
-    ).then((response) => {
-      setMaxTrade(response.size)
-    })
+    getMaxTrade(props.tokenAddress, HALF_PERCENT, props.exchange).then(
+      (response) => {
+        setHalfMaxTrade(response.size)
+      }
+    )
+    getMaxTrade(props.tokenAddress, ONE_PERCENT, props.exchange).then(
+      (response) => {
+        setMaxTrade(response.size)
+      }
+    )
   }, [props.exchange, props.tokenAddress])
 
   const tokenTotal = props.tokenPrice.mul(tokenBalance)
   const wethTotal = ethereumPrice.mul(wethBalance)
   const totalLiquidity = tokenTotal.add(wethTotal)
+  const maxHalfTradeTotal = props.tokenPrice.mul(maxHalfTrade).div(TEN_POW_18)
   const maxTradeTotal = props.tokenPrice.mul(maxTrade).div(TEN_POW_18)
 
   return (
     <>
       <TableData>{props.exchange}</TableData>
-      <TableData>{numeral(totalLiquidity).format('$0,0.00')}</TableData>
-      <TableData>{numeral(maxTradeTotal).format('$0,0.00')}</TableData>
+      <TableDataRightAlign>
+        {numeral(totalLiquidity).format('$0,0.00')}
+      </TableDataRightAlign>
+      <TableDataRightAlign>
+        {numeral(maxHalfTradeTotal).format('$0,0.00')}
+      </TableDataRightAlign>
+      <TableDataRightAlign>
+        {numeral(maxTradeTotal).format('$0,0.00')}
+      </TableDataRightAlign>
     </>
   )
 }
@@ -59,5 +72,12 @@ const TableHeader = styled.div`
 const TableData = styled(TableHeader)`
   font-size: 16px;
   line-height: 24px;
+  border-bottom: 1px solid gray;
+`
+
+const TableDataRightAlign = styled(TableHeader)`
+  font-size: 16px;
+  line-height: 24px;
+  text-align: right;
   border-bottom: 1px solid gray;
 `
