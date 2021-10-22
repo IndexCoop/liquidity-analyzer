@@ -59,4 +59,5 @@ const TableHeader = styled.div`
 const TableData = styled(TableHeader)`
   font-size: 16px;
   line-height: 24px;
+  border-bottom: 1px solid gray;
 `

@@ -49,7 +49,6 @@ export default LiquidityTable
 const DataTable = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 165px);
-  grid-column-gap: 3px;
   grid-row-gap: 4px;
 `
 
@@ -57,4 +56,5 @@ const TableHeader = styled.div`
   margin: 0;
   font-size: 18px;
   font-weight: 600;
+  border-bottom: 2px solid black;
 `
