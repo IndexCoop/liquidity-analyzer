@@ -1,7 +1,6 @@
 import { FeeAmount } from '@uniswap/v3-sdk'
 import { Contract, BigNumber } from 'ethers'
 import { abi as V3_FACTORY_ABI } from '@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json'
-import { ether } from '@setprotocol/index-coop-contracts/dist/utils/common'
 
 import { ADDRESS_ZERO, TEN_POW_18 } from '../constants/constants'
 import { getProvider } from '../provider'

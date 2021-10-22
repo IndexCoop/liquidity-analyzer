@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers'
 import { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { getCoinGeckoApi } from 'utils/constants/constants'
 import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
@@ -27,15 +28,33 @@ const LiquidityTable = (props: { tokenAddress: string }) => {
 
   return (
     <div>
-      {exchanges.map((exchange, index) => (
-        <ExchangeSummary
-          tokenAddress={props.tokenAddress}
-          tokenPrice={tokenPrice}
-          exchange={exchange}
-        ></ExchangeSummary>
-      ))}
+      <DataTable>
+        <TableHeader>Exchange</TableHeader>
+        <TableHeader>Total Liquidity</TableHeader>
+        <TableHeader>Max Trade Size</TableHeader>
+        {exchanges.map((exchange, index) => (
+          <ExchangeSummary
+            tokenAddress={props.tokenAddress}
+            tokenPrice={tokenPrice}
+            exchange={exchange}
+          ></ExchangeSummary>
+        ))}
+      </DataTable>
     </div>
   )
 }
 
 export default LiquidityTable
+
+const DataTable = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 165px);
+  grid-column-gap: 3px;
+  grid-row-gap: 4px;
+`
+
+const TableHeader = styled.div`
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+`
