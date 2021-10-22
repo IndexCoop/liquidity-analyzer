@@ -1,10 +1,6 @@
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { Contract, BigNumber, utils } from 'ethers'
+import { Contract, BigNumber } from 'ethers'
 import { abi as V3_FACTORY_ABI } from '@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json'
-// @ts-ignore
-import { getUniswapV3Quote } from '@setprotocol/index-rebalance-utils/dist/index-rebalances/utils/paramDetermination'
-// @ts-ignore
-import DeployHelper from '@setprotocol/index-rebalance-utils/dist/utils/deploys/index'
 import { ether } from '@setprotocol/index-coop-contracts/dist/utils/common'
 
 import { ADDRESS_ZERO, TEN_POW_18 } from '../constants/constants'
@@ -12,27 +8,10 @@ import { getProvider } from '../provider'
 import { WETH, ERC20_ABI } from 'utils/constants/tokens'
 
 const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
-const MAX_SLIPPAGE_PERCENT = ether(0.5)
 
 type V3Balances = {
   tokenBalance: BigNumber
   wethBalance: BigNumber
-}
-
-export async function getUniswapV3MaxTrade(
-  tokenAddress: string
-) {
-  const provider = getProvider()
-  const deployHelper = new DeployHelper(provider)
-  const quote = await getUniswapV3Quote(
-    deployHelper,
-    tokenAddress,
-    MAX_SLIPPAGE_PERCENT
-  )
-  console.log('Uniswap Max Trade', quote)
-    return {
-        size: BigNumber.from(quote.size)
-    }
 }
 
 export async function getUniswapV3Liquidity(

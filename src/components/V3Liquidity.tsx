@@ -1,7 +1,8 @@
 import { BigNumber } from 'ethers'
 import usePrices from 'hooks/usePrices'
 import { useEffect, useState } from 'react'
-import { getUniswapV3Liquidity, getUniswapV3MaxTrade } from 'utils/poolData'
+import { getUniswapV3Liquidity } from 'utils/poolData'
+import { getMaxTrade } from 'utils/poolData/maxTrades'
 import { TEN_POW_18 } from '../utils/constants/constants'
 
 const V3Liquidity = (props: {
@@ -21,7 +22,7 @@ const V3Liquidity = (props: {
   }, [props.tokenAddress])
 
   useEffect(() => {
-    getUniswapV3MaxTrade(props.tokenAddress).then((response) => {
+    getMaxTrade(props.tokenAddress, 0.5, "UniswapV3").then((response) => {
       setMaxTrade(response.size)
     })
   }, [props.tokenAddress])
