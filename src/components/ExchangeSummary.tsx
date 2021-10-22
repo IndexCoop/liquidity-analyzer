@@ -1,13 +1,15 @@
 import { BigNumber } from 'ethers'
 import usePrices from 'hooks/usePrices'
 import { useEffect, useState } from 'react'
-import { getUniswapV3Liquidity } from 'utils/poolData'
-import { getMaxTrade } from 'utils/poolData/maxTrades'
+import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
 import { TEN_POW_18 } from '../utils/constants/constants'
 
-const V3Liquidity = (props: {
+const MAXIMUM_SLIPPAGE_PERCENT = 0.5
+
+const ExchangeSummary = (props: {
   tokenAddress: string
   tokenPrice: BigNumber
+  exchange: ExchangeName
 }) => {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
@@ -15,16 +17,18 @@ const V3Liquidity = (props: {
   const { ethereumPrice } = usePrices()
 
   useEffect(() => {
-    getUniswapV3Liquidity(props.tokenAddress).then((response) => {
+    getLiquidity(props.tokenAddress, props.exchange).then((response) => {
       setTokenBalance(response.tokenBalance)
       setWethBalance(response.wethBalance)
     })
   }, [props.tokenAddress])
 
   useEffect(() => {
-    getMaxTrade(props.tokenAddress, 0.5, "UniswapV3").then((response) => {
-      setMaxTrade(response.size)
-    })
+    getMaxTrade(props.tokenAddress, MAXIMUM_SLIPPAGE_PERCENT, props.exchange).then(
+      (response) => {
+        setMaxTrade(response.size)
+      }
+    )
   }, [props.tokenAddress])
 
   const tokenTotal = props.tokenPrice.mul(tokenBalance)
@@ -35,13 +39,13 @@ const V3Liquidity = (props: {
   return (
     <div>
       <div>
-        Uniswap V3 Liquidity: ${totalLiquidity.toNumber().toLocaleString()}
+        {props.exchange} Liquidity: ${totalLiquidity.toNumber().toLocaleString()}
       </div>
       <div>
-        Uniswap V3 MaxTrade: ${maxTradeTotal.toNumber().toLocaleString()}
+        {props.exchange} MaxTrade: ${maxTradeTotal.toNumber().toLocaleString()}
       </div>
     </div>
   )
 }
 
-export default V3Liquidity
+export default ExchangeSummary

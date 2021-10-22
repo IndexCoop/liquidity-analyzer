@@ -4,8 +4,7 @@ import { getCoinGeckoApi } from 'utils/constants/constants'
 import BalancerLiquidity from './BalancerLiquidity'
 import KyberLiquidity from './KyberLiquidity'
 import SushiSwapLiquidity from './SushiSwapLiquidity'
-import V2Liquidity from './V2Liquidity'
-import V3Liquidity from './V3Liquidity'
+import ExchangeSummary from './ExchangeSummary'
 
 const LiquidityTable = (props: { tokenAddress: string }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
@@ -22,14 +21,16 @@ const LiquidityTable = (props: { tokenAddress: string }) => {
 
   return (
     <div>
-      <V3Liquidity
+      <ExchangeSummary
         tokenAddress={props.tokenAddress}
         tokenPrice={tokenPrice}
-      ></V3Liquidity>
-      <V2Liquidity
+        exchange="UniswapV3"
+      ></ExchangeSummary>
+      <ExchangeSummary
         tokenAddress={props.tokenAddress}
         tokenPrice={tokenPrice}
-      ></V2Liquidity>
+        exchange="UniswapV2"
+      ></ExchangeSummary>
       <SushiSwapLiquidity
         tokenAddress={props.tokenAddress}
         tokenPrice={tokenPrice}
