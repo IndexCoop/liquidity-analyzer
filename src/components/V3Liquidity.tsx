@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers'
 import usePrices from 'hooks/usePrices'
 import { useEffect, useState } from 'react'
 import { getUniswapV3Liquidity, getUniswapV3MaxTrade } from 'utils/poolData'
+import { TEN_POW_18 } from '../utils/constants/constants'
 
 const V3Liquidity = (props: { tokenAddress: string; tokenAbi: any }) => {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
@@ -28,13 +29,16 @@ const V3Liquidity = (props: { tokenAddress: string; tokenAbi: any }) => {
   const tokenTotal = yfiPrice.mul(tokenBalance)
   const wethTotal = ethereumPrice.mul(wethBalance)
   const totalLiquidity = tokenTotal.add(wethTotal)
+  const maxTradeTotal = yfiPrice.mul(maxTrade).div(TEN_POW_18)
 
   return (
     <div>
       <div>
         Uniswap V3 Liquidity: ${totalLiquidity.toNumber().toLocaleString()}
       </div>
-      <div>Uniswap V3 MaxTrade: ${maxTrade.toString()}</div>
+      <div>
+        Uniswap V3 MaxTrade: ${maxTradeTotal.toNumber().toLocaleString()}
+      </div>
     </div>
   )
 }

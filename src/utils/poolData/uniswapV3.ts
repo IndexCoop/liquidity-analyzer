@@ -1,5 +1,5 @@
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { Contract, BigNumber } from 'ethers'
+import { Contract, BigNumber, utils } from 'ethers'
 import { abi as V3_FACTORY_ABI } from '@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json'
 // @ts-ignore
 import { getUniswapV3Quote } from '@setprotocol/index-rebalance-utils/dist/index-rebalances/utils/paramDetermination'
@@ -17,7 +17,7 @@ import {
 } from '../constants/tokens'
 
 const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
-const FIFTY_BPS_IN_PERCENT = ether(0.5)
+const MAX_SLIPPAGE_PERCENT = ether(0.5)
 
 type V3Balances = {
   tokenBalance: BigNumber
@@ -32,10 +32,12 @@ export async function getUniswapV3MaxTrade(
   const quote = await getUniswapV3Quote(
     deployHelper,
     tokenAddress,
-    FIFTY_BPS_IN_PERCENT
+    MAX_SLIPPAGE_PERCENT
   )
   console.log('Uniswap Max Trade', quote)
-  return quote
+    return {
+        size: BigNumber.from(quote.size)
+    }
 }
 
 export async function getUniswapV3Liquidity(
