@@ -2,7 +2,6 @@ import { BigNumber } from 'ethers'
 import { useEffect, useState } from 'react'
 import { getCoinGeckoApi } from 'utils/constants/constants'
 import BalancerLiquidity from './BalancerLiquidity'
-import KyberLiquidity from './KyberLiquidity'
 import ExchangeSummary from './ExchangeSummary'
 
 const LiquidityTable = (props: { tokenAddress: string }) => {
@@ -35,10 +34,11 @@ const LiquidityTable = (props: { tokenAddress: string }) => {
         tokenPrice={tokenPrice}
         exchange="Sushiswap"
       ></ExchangeSummary>
-      <KyberLiquidity
+      <ExchangeSummary
         tokenAddress={props.tokenAddress}
         tokenPrice={tokenPrice}
-      ></KyberLiquidity>
+        exchange="Kyber"
+      ></ExchangeSummary>
       <BalancerLiquidity
         tokenAddress={props.tokenAddress}
         tokenPrice={tokenPrice}
