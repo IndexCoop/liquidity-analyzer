@@ -6,7 +6,7 @@ import {
   V2_FACTORY_ABI,
 } from 'utils/constants/constants'
 
-import { USDC_ADDRESS, WETH_ADDRESS } from 'utils/constants/tokens'
+import { WETH } from 'utils/constants/tokens'
 import { getProvider } from 'utils/provider'
 
 type V2Balances = {
@@ -15,7 +15,7 @@ type V2Balances = {
 }
 
 export async function getUniswapV2Liquidity(
-  tokenAddress: string = USDC_ADDRESS
+  tokenAddress: string
 ): Promise<V2Balances> {
   const provider = getProvider()
   const factoryInstance = await new Contract(
@@ -23,7 +23,7 @@ export async function getUniswapV2Liquidity(
     V2_FACTORY_ABI,
     provider
   )
-  const pairAddress = await factoryInstance.getPair(tokenAddress, WETH_ADDRESS)
+  const pairAddress = await factoryInstance.getPair(tokenAddress, WETH)
   const pairContract = await new Contract(
     pairAddress,
     UNI_V2_PAIR_ABI,

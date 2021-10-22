@@ -9,12 +9,7 @@ import { ether } from '@setprotocol/index-coop-contracts/dist/utils/common'
 
 import { ADDRESS_ZERO, TEN_POW_18 } from '../constants/constants'
 import { getProvider } from '../provider'
-import {
-  USDC_ABI,
-  USDC_ADDRESS,
-  WETH_ABI,
-  WETH_ADDRESS,
-} from '../constants/tokens'
+import { WETH, ERC20_ABI } from 'utils/constants/tokens'
 
 const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 const MAX_SLIPPAGE_PERCENT = ether(0.5)
@@ -25,7 +20,7 @@ type V3Balances = {
 }
 
 export async function getUniswapV3MaxTrade(
-  tokenAddress: string = USDC_ADDRESS
+  tokenAddress: string
 ) {
   const provider = getProvider()
   const deployHelper = new DeployHelper(provider)
@@ -41,8 +36,7 @@ export async function getUniswapV3MaxTrade(
 }
 
 export async function getUniswapV3Liquidity(
-  tokenAddress: string = USDC_ADDRESS,
-  tokenAbi: any = USDC_ABI
+  tokenAddress: string
 ): Promise<V3Balances> {
   const provider = getProvider()
   const factoryInstance = await new Contract(
@@ -52,14 +46,14 @@ export async function getUniswapV3Liquidity(
   )
   const poolAddress = await factoryInstance.getPool(
     tokenAddress,
-    WETH_ADDRESS,
+    WETH,
     FeeAmount.MEDIUM
   )
 
   if (poolAddress === ADDRESS_ZERO) console.log('poolAddress === ADDRESS_ZERO')
 
-  const tokenContract = await new Contract(tokenAddress, tokenAbi, provider)
-  const wethContract = await new Contract(WETH_ADDRESS, WETH_ABI, provider)
+  const tokenContract = await new Contract(tokenAddress, ERC20_ABI, provider)
+  const wethContract = await new Contract(WETH, ERC20_ABI, provider)
 
   const tokenBalance: BigNumber = await tokenContract.balanceOf(poolAddress)
   const wethBalance: BigNumber = await wethContract.balanceOf(poolAddress)

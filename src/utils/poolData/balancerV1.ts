@@ -1,13 +1,12 @@
 import { BigNumber, Contract } from 'ethers'
-import { BigNumber as BigNumberJS } from 'bignumber.js'
 
 import {
   BALANCER_OCR,
   BALANCER_OCR_ABI,
   TEN_POW_18,
-} from '../constants/constants'
+} from 'utils/constants/constants'
 import { getProvider } from 'utils/provider'
-import { WETH_ABI, WETH_ADDRESS } from 'utils/constants/tokens'
+import { ERC20_ABI, WETH } from 'utils/constants/tokens'
 
 type BalBalances = {
   tokenBalance: BigNumber
@@ -17,8 +16,7 @@ type BalBalances = {
 // Usage note, targetPriceImpact should be the impact including fees! Balancer pool fees can change and it's not easy to extract from the data
 // we have so put in a number that is net of fees.
 export async function getBalancerV1Liquidity(
-  tokenAddress: string,
-  tokenAbi: any
+  tokenAddress: string
 ): Promise<BalBalances> {
   let response: BalBalances = {
     tokenBalance: BigNumber.from(0),
@@ -28,9 +26,9 @@ export async function getBalancerV1Liquidity(
   let wethBalances: BigNumber[] = []
   const provider = getProvider()
   const ocr = await new Contract(BALANCER_OCR, BALANCER_OCR_ABI, provider)
-  const tokenContract = await new Contract(tokenAddress, tokenAbi, provider)
-  const wethContract = await new Contract(WETH_ADDRESS, WETH_ABI, provider)
-  const pools: string[] = await ocr.getBestPools(WETH_ADDRESS, tokenAddress)
+  const tokenContract = await new Contract(tokenAddress, ERC20_ABI, provider)
+  const wethContract = await new Contract(WETH, ERC20_ABI, provider)
+  const pools: string[] = await ocr.getBestPools(WETH, tokenAddress)
 
   if (pools.length < 1) return response
 
