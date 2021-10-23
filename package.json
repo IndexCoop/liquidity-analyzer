@@ -32,9 +32,12 @@
   "dependencies": {
     "@balancer-labs/sor": "^1.0.0",
     "@dynamic-amm/sdk": "^3.0.9",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
     "@ethersproject/abstract-signer": "5.0.9",
     "@ethersproject/bignumber": "5.0.12",
     "@ethersproject/providers": "5.0.17",
+    "@mui/material": "^5.0.4",
     "@setprotocol/index-coop-contracts": "0.0.25",
     "@setprotocol/index-rebalance-utils": "^0.0.5",
     "@setprotocol/set-protocol-v2": "0.0.46",

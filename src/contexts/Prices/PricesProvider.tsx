@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers'
 import React, { useState, useEffect } from 'react'
 
-import { CG_ETH_PRICE_URL } from 'utils/constants/constants'
+import { CG_ETH_PRICE_URL, PRICE_DECIMALS } from 'utils/constants/constants'
 import PricesContext from './PricesContext'
 
 const PricesProvider: React.FC = ({ children }) => {
@@ -14,10 +14,10 @@ const PricesProvider: React.FC = ({ children }) => {
     fetch(CG_ETH_PRICE_URL)
       .then((response) => response.json())
       .then((response) => {
-        setEthereumPrice(BigNumber.from(response?.ethereum?.usd))
+        setEthereumPrice(BigNumber.from(response?.ethereum?.usd * PRICE_DECIMALS))
       })
       .catch((error) => console.log(error))
-  }, [ethereumPrice])
+  }, [])
 
   return (
     <PricesContext.Provider

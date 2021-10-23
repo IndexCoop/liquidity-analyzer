@@ -28,6 +28,7 @@ export const DPI_SINGLE_INDEX_MODULE =
   '0x25100726b25a6ddb8f8e68988272e1883733966e'
 
 export const TEN_POW_18 = BigNumber.from(10).pow(18)
+export const TEN_POW_16 = BigNumber.from(10).pow(16)
 
 export const ALCHEMY_API =
   'https://eth-mainnet.alchemyapi.io/v2/5j2PCDrDSbB5C6n8pnka21H3NSoUje4j' // + process.env.ALCHEMY_TOKEN;
@@ -1439,3 +1440,7 @@ export const BALANCER_OCR_ABI = [
     type: 'function',
   },
 ]
+
+// Choose how many decimals to keep when converting float price to BigNumber
+export const PRICE_DECIMALS = 100
+

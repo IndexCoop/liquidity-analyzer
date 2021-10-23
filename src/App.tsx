@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react'
 
 import 'App.css'
-import { YFI } from 'utils/constants/tokens'
 import { PricesProvider } from 'contexts/Prices'
+import { TokenProvider } from 'contexts/Token'
 import LiquidityTable from 'components/LiquidityTable'
+import TokenSelect from 'components/TokenSelect'
+import TokenTitle from 'components/TokenTitle'
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -11,14 +13,17 @@ const App: React.FC = () => {
   }, [])
 
   return (
-    <PricesProvider>
-      <div className='App'>
-        <header className='App-header'>
-          <h2>YFI</h2>
-          <LiquidityTable tokenAddress={YFI}></LiquidityTable>
-        </header>
-      </div>
-    </PricesProvider>
+    <TokenProvider>
+      <PricesProvider>
+        <div className='App'>
+          <header className='App-header'>
+            <TokenTitle />
+            <TokenSelect />
+            <LiquidityTable />
+          </header>
+        </div>
+      </PricesProvider>
+    </TokenProvider>
   )
 }
 
