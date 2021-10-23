@@ -7,7 +7,6 @@ import ExchangeSummary from './ExchangeSummary'
 import { TokenContext } from 'contexts/Token'
 import { PRICE_DECIMALS } from 'utils/constants/constants'
 
-
 const LiquidityTable = () => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const { selectedToken } = useContext(TokenContext)
@@ -17,8 +16,11 @@ const LiquidityTable = () => {
     fetch(getCoinGeckoApi(selectedToken.address))
       .then((response) => response.json())
       .then((response) => {
-        console.log("Setting token price to ", response[selectedToken.address]?.usd)
-        setTokenPrice(BigNumber.from(Math.round(response[selectedToken.address]?.usd*PRICE_DECIMALS)))
+        setTokenPrice(
+          BigNumber.from(
+            Math.round(response[selectedToken.address]?.usd * PRICE_DECIMALS)
+          )
+        )
       })
       .catch((error) => console.log(error))
   }, [selectedToken.address])
@@ -37,15 +39,18 @@ const LiquidityTable = () => {
         <TableHeader>Exchange</TableHeader>
         <TableHeaderRightAlign>Pool Size</TableHeaderRightAlign>
         <TableHeaderRightAlign>
-          Max Trade Size {' '}
-          <TableHeaderSubText>{selectedToken.symbol} - (0.5% Slippage)</TableHeaderSubText>
+          Max Trade Size{' '}
+          <TableHeaderSubText>
+            {selectedToken.symbol} - (0.5% Slippage)
+          </TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>
-          Max Trade Size {' '}
+          Max Trade Size{' '}
           <TableHeaderSubText>USD - (0.5% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>
-          Max Trade Size <TableHeaderSubText>(1% Slippage)</TableHeaderSubText>
+          Max Trade Size{' '}
+          <TableHeaderSubText>USD - (1% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
         {exchanges.map((exchange, index) => (
           <ExchangeSummary

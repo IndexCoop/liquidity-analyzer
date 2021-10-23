@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
 import { TEN_POW_18, PRICE_DECIMALS } from '../utils/constants/constants'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const HALF_PERCENT = 0.5
 const ONE_PERCENT = 1
@@ -19,25 +20,38 @@ const ExchangeSummary = (props: {
   const [maxTrade, setMaxTrade] = useState<BigNumber>(BigNumber.from(0))
   const [maxHalfTrade, setHalfMaxTrade] = useState<BigNumber>(BigNumber.from(0))
   const { ethereumPrice } = usePrices()
+  const [liquidityLoading, setLiquidityLoading] = useState(false)
+  const [halfTradeLoading, setHalfTradeLoading] = useState(false)
+  const [tradeLoading, setTradeLoading] = useState(false)
 
   useEffect(() => {
-    getLiquidity(props.tokenAddress, props.exchange).then((response) => {
-      setTokenBalance(response.tokenBalance)
-      setWethBalance(response.wethBalance)
-    })
+    setLiquidityLoading(true)
+    getLiquidity(props.tokenAddress, props.exchange)
+      .then((response) => {
+        setTokenBalance(response.tokenBalance)
+        setWethBalance(response.wethBalance)
+      })
+      .finally(() => {
+        setLiquidityLoading(false)
+      })
   }, [props.exchange, props.tokenAddress])
 
   useEffect(() => {
-    getMaxTrade(props.tokenAddress, HALF_PERCENT, props.exchange).then(
-      (response) => {
+    setHalfTradeLoading(true)
+    getMaxTrade(props.tokenAddress, HALF_PERCENT, props.exchange)
+      .then((response) => {
         setHalfMaxTrade(response.size)
-      }
-    )
-    getMaxTrade(props.tokenAddress, ONE_PERCENT, props.exchange).then(
-      (response) => {
+      })
+      .finally(() => setHalfTradeLoading(false))
+  }, [props.exchange, props.tokenAddress])
+
+  useEffect(() => {
+    setTradeLoading(true)
+    getMaxTrade(props.tokenAddress, ONE_PERCENT, props.exchange)
+      .then((response) => {
         setMaxTrade(response.size)
-      }
-    )
+      })
+      .finally(() => setTradeLoading(false))
   }, [props.exchange, props.tokenAddress])
 
   const tokenTotal =
@@ -56,16 +70,32 @@ const ExchangeSummary = (props: {
     <>
       <TableData>{props.exchange}</TableData>
       <TableDataRightAlign>
-        {numeral(totalLiquidity).format('$0,0.00')}
+        {liquidityLoading ? (
+          <CircularProgress />
+        ) : (
+          <div>{numeral(totalLiquidity).format('$0,0.00')}</div>
+        )}
       </TableDataRightAlign>
       <TableDataRightAlign>
-        {numeral(maxHalfTradeToken).format('0,0.00')}
+        {halfTradeLoading ? (
+          <CircularProgress />
+        ) : (
+          <div> {numeral(maxHalfTradeToken).format('0,0.00')}</div>
+        )}
       </TableDataRightAlign>
       <TableDataRightAlign>
-        {numeral(maxHalfTradeUSD).format('$0,0.00')}
+        {halfTradeLoading ? (
+          <CircularProgress />
+        ) : (
+          <div> {numeral(maxHalfTradeUSD).format('$0,0.00')}</div>
+        )}
       </TableDataRightAlign>
       <TableDataRightAlign>
-        {numeral(maxTradeUSD).format('$0,0.00')}
+        {tradeLoading ? (
+          <CircularProgress />
+        ) : (
+          <div> {numeral(maxTradeUSD).format('$0,0.00')}</div>
+        )}
       </TableDataRightAlign>
     </>
   )
