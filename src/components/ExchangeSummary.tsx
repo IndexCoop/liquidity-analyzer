@@ -4,7 +4,7 @@ import numeral from 'numeral'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { PRICE_DECIMALS } from '../utils/constants/constants'
+import { PRICE_DECIMALS, TEN_POW_18 } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
 import { TokenContext } from 'contexts/Token'
 
@@ -25,7 +25,6 @@ const ExchangeSummary = (props: {
   const [tradeLoading, setTradeLoading] = useState(false)
   const { selectedToken } = useContext(TokenContext)
   const tenPowDecimals = BigNumber.from(10).pow(selectedToken.decimals)
-
 
   useEffect(() => {
     setLiquidityLoading(true)
@@ -58,16 +57,23 @@ const ExchangeSummary = (props: {
   }, [props.exchange, selectedToken.address])
 
   const tokenTotal =
-    props.tokenPrice.mul(tokenBalance).toNumber() / PRICE_DECIMALS
+    props.tokenPrice
+      .mul(tokenBalance)
+      // Adjust balance if token decimals is not 18
+      .mul(TEN_POW_18)
+      .div(tenPowDecimals)
+      .toNumber() / PRICE_DECIMALS
   const wethTotal = ethereumPrice.mul(wethBalance).toNumber() / PRICE_DECIMALS
   const totalLiquidity = tokenTotal + wethTotal
   const maxHalfTradeToken =
-    maxHalfTrade.mul(PRICE_DECIMALS).div(tenPowDecimals).toNumber() / PRICE_DECIMALS
+    maxHalfTrade.mul(PRICE_DECIMALS).div(tenPowDecimals).toNumber() /
+    PRICE_DECIMALS
   const maxHalfTradeUSD =
     props.tokenPrice.mul(maxHalfTrade).div(tenPowDecimals).toNumber() /
     PRICE_DECIMALS
   const maxTradeUSD =
-    props.tokenPrice.mul(maxTrade).div(tenPowDecimals).toNumber() / PRICE_DECIMALS
+    props.tokenPrice.mul(maxTrade).div(tenPowDecimals).toNumber() /
+    PRICE_DECIMALS
 
   return (
     <>
