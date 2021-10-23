@@ -44,10 +44,12 @@ const ExchangeSummary = (props: {
     props.tokenPrice.mul(tokenBalance).toNumber() / PRICE_DECIMALS
   const wethTotal = ethereumPrice.mul(wethBalance).toNumber() / PRICE_DECIMALS
   const totalLiquidity = tokenTotal + wethTotal
-  const maxHalfTradeTotal =
+  const maxHalfTradeToken =
+    maxHalfTrade.mul(PRICE_DECIMALS).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
+  const maxHalfTradeUSD =
     props.tokenPrice.mul(maxHalfTrade).div(TEN_POW_18).toNumber() /
     PRICE_DECIMALS
-  const maxTradeTotal =
+  const maxTradeUSD =
     props.tokenPrice.mul(maxTrade).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
 
   return (
@@ -57,10 +59,13 @@ const ExchangeSummary = (props: {
         {numeral(totalLiquidity).format('$0,0.00')}
       </TableDataRightAlign>
       <TableDataRightAlign>
-        {numeral(maxHalfTradeTotal).format('$0,0.00')}
+        {numeral(maxHalfTradeToken).format('0,0.00')}
       </TableDataRightAlign>
       <TableDataRightAlign>
-        {numeral(maxTradeTotal).format('$0,0.00')}
+        {numeral(maxHalfTradeUSD).format('$0,0.00')}
+      </TableDataRightAlign>
+      <TableDataRightAlign>
+        {numeral(maxTradeUSD).format('$0,0.00')}
       </TableDataRightAlign>
     </>
   )

@@ -37,8 +37,12 @@ const LiquidityTable = () => {
         <TableHeader>Exchange</TableHeader>
         <TableHeaderRightAlign>Pool Size</TableHeaderRightAlign>
         <TableHeaderRightAlign>
-          Max Trade Size{' '}
-          <TableHeaderSubText>(0.5% Slippage)</TableHeaderSubText>
+          Max Trade Size {' '}
+          <TableHeaderSubText>{selectedToken.symbol} - (0.5% Slippage)</TableHeaderSubText>
+        </TableHeaderRightAlign>
+        <TableHeaderRightAlign>
+          Max Trade Size {' '}
+          <TableHeaderSubText>USD - (0.5% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size <TableHeaderSubText>(1% Slippage)</TableHeaderSubText>
@@ -60,7 +64,7 @@ export default LiquidityTable
 
 const DataTable = styled.div`
   display: grid;
-  grid-template-columns: 100px repeat(3, 165px);
+  grid-template-columns: 100px repeat(4, 165px);
   grid-row-gap: 4px;
 `
 

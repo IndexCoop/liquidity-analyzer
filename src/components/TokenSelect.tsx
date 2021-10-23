@@ -2,6 +2,7 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
+import { createFilterOptions } from '@mui/material/Autocomplete'
 import axios from 'axios'
 import { useEffect, useState, useContext } from 'react'
 import { TokenContext } from 'contexts/Token'
@@ -25,6 +26,11 @@ export default function CountrySelect() {
       sx={{ width: 300 }}
       options={tokens}
       autoHighlight
+      filterOptions={createFilterOptions({ 
+          stringify(option){
+              return option.symbol + option.name
+          },
+          limit: 100 })}
       onChange={(_, value) => {
         if (value != null) setSelectedToken(value)
       }}
