@@ -1439,3 +1439,7 @@ export const BALANCER_OCR_ABI = [
     type: 'function',
   },
 ]
+
+// Choose how many decimals to keep when converting float price to BigNumber
+export const PRICE_DECIMALS = 100
+

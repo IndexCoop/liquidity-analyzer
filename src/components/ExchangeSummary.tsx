@@ -4,7 +4,7 @@ import numeral from 'numeral'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { TEN_POW_18 } from '../utils/constants/constants'
+import { TEN_POW_18, PRICE_DECIMALS } from '../utils/constants/constants'
 
 const HALF_PERCENT = 0.5
 const ONE_PERCENT = 1
@@ -40,11 +40,15 @@ const ExchangeSummary = (props: {
     )
   }, [props.exchange, props.tokenAddress])
 
-  const tokenTotal = props.tokenPrice.mul(tokenBalance)
-  const wethTotal = ethereumPrice.mul(wethBalance)
-  const totalLiquidity = tokenTotal.add(wethTotal)
-  const maxHalfTradeTotal = props.tokenPrice.mul(maxHalfTrade).div(TEN_POW_18)
-  const maxTradeTotal = props.tokenPrice.mul(maxTrade).div(TEN_POW_18)
+  const tokenTotal =
+    props.tokenPrice.mul(tokenBalance).toNumber() / PRICE_DECIMALS
+  const wethTotal = ethereumPrice.mul(wethBalance).toNumber() / PRICE_DECIMALS
+  const totalLiquidity = tokenTotal + wethTotal
+  const maxHalfTradeTotal =
+    props.tokenPrice.mul(maxHalfTrade).div(TEN_POW_18).toNumber() /
+    PRICE_DECIMALS
+  const maxTradeTotal =
+    props.tokenPrice.mul(maxTrade).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
 
   return (
     <>
