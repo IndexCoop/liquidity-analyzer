@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from 'react'
+import React, { useEffect } from 'react'
 
 import 'App.css'
 import { PricesProvider } from 'contexts/Prices'
