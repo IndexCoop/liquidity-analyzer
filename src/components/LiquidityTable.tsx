@@ -52,9 +52,8 @@ const LiquidityTable = () => {
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (1% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
-        {exchanges.map((exchange, index) => (
+        {exchanges.map((exchange) => (
           <ExchangeSummary
-            tokenAddress={selectedToken.address}
             tokenPrice={tokenPrice}
             exchange={exchange}
             key={exchange}

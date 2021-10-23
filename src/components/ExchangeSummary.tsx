@@ -1,17 +1,17 @@
 import { BigNumber } from 'ethers'
 import usePrices from 'hooks/usePrices'
 import numeral from 'numeral'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { TEN_POW_18, PRICE_DECIMALS } from '../utils/constants/constants'
+import { PRICE_DECIMALS } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
+import { TokenContext } from 'contexts/Token'
 
 const HALF_PERCENT = 0.5
 const ONE_PERCENT = 1
 
 const ExchangeSummary = (props: {
-  tokenAddress: string
   tokenPrice: BigNumber
   exchange: ExchangeName
 }) => {
@@ -23,10 +23,13 @@ const ExchangeSummary = (props: {
   const [liquidityLoading, setLiquidityLoading] = useState(false)
   const [halfTradeLoading, setHalfTradeLoading] = useState(false)
   const [tradeLoading, setTradeLoading] = useState(false)
+  const { selectedToken } = useContext(TokenContext)
+  const tenPowDecimals = BigNumber.from(10).pow(selectedToken.decimals)
+
 
   useEffect(() => {
     setLiquidityLoading(true)
-    getLiquidity(props.tokenAddress, props.exchange)
+    getLiquidity(selectedToken.address, props.exchange)
       .then((response) => {
         setTokenBalance(response.tokenBalance)
         setWethBalance(response.wethBalance)
@@ -34,37 +37,37 @@ const ExchangeSummary = (props: {
       .finally(() => {
         setLiquidityLoading(false)
       })
-  }, [props.exchange, props.tokenAddress])
+  }, [props.exchange, selectedToken.address])
 
   useEffect(() => {
     setHalfTradeLoading(true)
-    getMaxTrade(props.tokenAddress, HALF_PERCENT, props.exchange)
+    getMaxTrade(selectedToken.address, HALF_PERCENT, props.exchange)
       .then((response) => {
         setHalfMaxTrade(response.size)
       })
       .finally(() => setHalfTradeLoading(false))
-  }, [props.exchange, props.tokenAddress])
+  }, [props.exchange, selectedToken.address])
 
   useEffect(() => {
     setTradeLoading(true)
-    getMaxTrade(props.tokenAddress, ONE_PERCENT, props.exchange)
+    getMaxTrade(selectedToken.address, ONE_PERCENT, props.exchange)
       .then((response) => {
         setMaxTrade(response.size)
       })
       .finally(() => setTradeLoading(false))
-  }, [props.exchange, props.tokenAddress])
+  }, [props.exchange, selectedToken.address])
 
   const tokenTotal =
     props.tokenPrice.mul(tokenBalance).toNumber() / PRICE_DECIMALS
   const wethTotal = ethereumPrice.mul(wethBalance).toNumber() / PRICE_DECIMALS
   const totalLiquidity = tokenTotal + wethTotal
   const maxHalfTradeToken =
-    maxHalfTrade.mul(PRICE_DECIMALS).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
+    maxHalfTrade.mul(PRICE_DECIMALS).div(tenPowDecimals).toNumber() / PRICE_DECIMALS
   const maxHalfTradeUSD =
-    props.tokenPrice.mul(maxHalfTrade).div(TEN_POW_18).toNumber() /
+    props.tokenPrice.mul(maxHalfTrade).div(tenPowDecimals).toNumber() /
     PRICE_DECIMALS
   const maxTradeUSD =
-    props.tokenPrice.mul(maxTrade).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
+    props.tokenPrice.mul(maxTrade).div(tenPowDecimals).toNumber() / PRICE_DECIMALS
 
   return (
     <>
