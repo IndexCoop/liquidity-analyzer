@@ -25,6 +25,7 @@ export { getSushiswapLiquidity } from './sushiswap'
 
 interface MaxTradeResponse {
   size: BigNumber
+  sellSize: BigNumber
 }
 
 export type ExchangeName =
@@ -59,6 +60,12 @@ const exchangeUtilsMapping = {
 
 const wrappedProviderExchanges = ['UniswapV3', 'Sushiswap']
 
+const getSellSize = (exchange: ExchangeName, quote: any) => {
+  return exchange === 'UniswapV3' && quote.sellSize
+    ? BigNumber.from(quote.sellSize)
+    : BigNumber.from(0)
+}
+
 export async function getMaxTrade(
   tokenAddress: string,
   maxSlipagePercent: number,
@@ -77,10 +84,12 @@ export async function getMaxTrade(
     )
     return {
       size: BigNumber.from(quote.size),
+      sellSize: getSellSize(exchange, quote),
     }
   } catch (e) {
     return {
       size: BigNumber.from(0),
+      sellSize: BigNumber.from(0),
     }
   }
 }
