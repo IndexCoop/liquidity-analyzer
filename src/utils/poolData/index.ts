@@ -64,24 +64,18 @@ export async function getMaxTrade(
   maxSlipagePercent: number,
   exchange: ExchangeName
 ): Promise<MaxTradeResponse> {
-  try {
-    let provider = getProvider()
-    if (wrappedProviderExchanges.includes(exchange)) {
-      provider = new DeployHelper(provider)
-    }
-    const { maxTradeGetter } = exchangeUtilsMapping[exchange]
-    const quote = await maxTradeGetter(
-      provider,
-      tokenAddress,
-      ether(maxSlipagePercent)
-    )
-    return {
-      size: BigNumber.from(quote.size),
-    }
-  } catch (e) {
-    return {
-      size: BigNumber.from(0),
-    }
+  let provider = getProvider()
+  if (wrappedProviderExchanges.includes(exchange)) {
+    provider = new DeployHelper(provider)
+  }
+  const { maxTradeGetter } = exchangeUtilsMapping[exchange]
+  const quote = await maxTradeGetter(
+    provider,
+    tokenAddress,
+    ether(maxSlipagePercent)
+  )
+  return {
+    size: BigNumber.from(quote.size),
   }
 }
 
@@ -89,14 +83,7 @@ export async function getLiquidity(
   tokenAddress: string,
   exchange: ExchangeName
 ) {
-  try {
-    return exchangeUtilsMapping[exchange].liquidityGetter(tokenAddress)
-  } catch (e) {
-    return {
-      tokenBalance: BigNumber.from(0),
-      wethBalance: BigNumber.from(0),
-    }
-  }
+  return exchangeUtilsMapping[exchange].liquidityGetter(tokenAddress)
 }
 
 export { getUniswapV2Liquidity }
