@@ -39,32 +39,25 @@ const LiquidityTable = (props: {
     <div>
       <DataTable>
         <TableHeader>Exchange</TableHeader>
-
         <TableHeaderRightAlign>Pool Size</TableHeaderRightAlign>
-
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>{selectedToken.symbol} - (0.5% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
-        
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (0.5% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
-        
         <TableHeaderRightAlign>
           No. of Trades (0.5%){' '}
         </TableHeaderRightAlign>
-        
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (1% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
-
         <TableHeaderRightAlign>
           No. of Trades (1%){' '}
         </TableHeaderRightAlign>
-        
         {exchanges.map((exchange) => (
           <ExchangeSummary
             tokenPrice={tokenPrice}
