@@ -13,7 +13,8 @@ const ONE_PERCENT = 1
 
 const ExchangeSummary = (props: {
   tokenPrice: BigNumber
-  exchange: ExchangeName
+  exchange: ExchangeName,
+  desiredAmount: string
 }) => {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
@@ -130,7 +131,21 @@ const ExchangeSummary = (props: {
         {tradeLoading ? (
           <CircularProgress />
         ) : (
+          <div>{Math.ceil(parseInt(props.desiredAmount) / maxHalfTradeToken)}</div>
+        )}
+      </TableDataRightAlign>
+      <TableDataRightAlign>
+        {tradeLoading ? (
+          <CircularProgress />
+        ) : (
           <div> {numeral(maxTradeUSD).format('$0,0.00')}</div>
+        )}
+      </TableDataRightAlign>
+      <TableDataRightAlign>
+        {tradeLoading ? (
+          <CircularProgress />
+        ) : (
+          <div>{Math.ceil(parseInt(props.desiredAmount) / maxTradeUSD)}</div>
         )}
       </TableDataRightAlign>
     </>

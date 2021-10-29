@@ -8,6 +8,8 @@ import { TokenContext } from 'contexts/Token'
 import { PRICE_DECIMALS } from 'utils/constants/constants'
 
 const LiquidityTable = (props: {
+  desiredAmount: string
+}) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const { selectedToken } = useContext(TokenContext)
 
@@ -37,26 +39,38 @@ const LiquidityTable = (props: {
     <div>
       <DataTable>
         <TableHeader>Exchange</TableHeader>
+
         <TableHeaderRightAlign>Pool Size</TableHeaderRightAlign>
+
         <TableHeaderRightAlign>
           Max Trade Size{' '}
-          <TableHeaderSubText>
-            {selectedToken.symbol} - (0.5% Slippage)
-          </TableHeaderSubText>
+          <TableHeaderSubText>{selectedToken.symbol} - (0.5% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
+        
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (0.5% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
+        
+        <TableHeaderRightAlign>
+          No. of Trades (0.5%){' '}
+        </TableHeaderRightAlign>
+        
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (1% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
+
+        <TableHeaderRightAlign>
+          No. of Trades (1%){' '}
+        </TableHeaderRightAlign>
+        
         {exchanges.map((exchange) => (
           <ExchangeSummary
             tokenPrice={tokenPrice}
             exchange={exchange}
             key={exchange}
+            desiredAmount={props.desiredAmount}
           ></ExchangeSummary>
         ))}
       </DataTable>
@@ -68,7 +82,7 @@ export default LiquidityTable
 
 const DataTable = styled.div`
   display: grid;
-  grid-template-columns: 100px repeat(4, 165px);
+  grid-template-columns: 100px repeat(6, 185px);
   grid-row-gap: 4px;
 `
 
