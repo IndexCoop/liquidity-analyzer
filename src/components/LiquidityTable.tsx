@@ -7,7 +7,7 @@ import ExchangeSummary from './ExchangeSummary'
 import { TokenContext } from 'contexts/Token'
 import { PRICE_DECIMALS } from 'utils/constants/constants'
 
-const LiquidityTable = () => {
+const LiquidityTable = (props: {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const { selectedToken } = useContext(TokenContext)
 
