@@ -4,10 +4,10 @@ import {
   KYBER_FACTORY,
   KYBER_FACTORY_ABI,
   KYBER_POOL_ABI,
-  TEN_POW_18,
 } from 'utils/constants/constants'
-import { WETH } from 'utils/constants/tokens'
+import { ERC20_ABI, WETH } from 'utils/constants/tokens'
 import { getProvider } from 'utils/provider'
+import { tenToThe } from '.'
 
 type KyberBalances = {
   tokenBalance: BigNumber
@@ -22,6 +22,7 @@ export async function getKyberLiquidity(
     wethBalance: BigNumber.from(0),
   }
   const provider = getProvider()
+  const tokenContract = await new Contract(tokenAddress, ERC20_ABI, provider)
   const factoryInstance = await new Contract(
     KYBER_FACTORY,
     KYBER_FACTORY_ABI,
@@ -34,8 +35,10 @@ export async function getKyberLiquidity(
   const pairContract = await new Contract(pools[0], KYBER_POOL_ABI, provider)
   const [tokenBalance, wethBalance] = await pairContract.getReserves()
 
-  response.tokenBalance = tokenBalance.div(TEN_POW_18)
-  response.wethBalance = tokenBalance.div(wethBalance)
+  response.tokenBalance = tokenBalance.div(
+    tenToThe(await tokenContract.decimals())
+  )
+  response.wethBalance = wethBalance.div(tenToThe(18))
 
   return response
 }

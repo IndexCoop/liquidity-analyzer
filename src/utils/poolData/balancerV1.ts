@@ -1,12 +1,9 @@
 import { BigNumber, Contract } from 'ethers'
 
-import {
-  BALANCER_OCR,
-  BALANCER_OCR_ABI,
-  TEN_POW_18,
-} from 'utils/constants/constants'
+import { BALANCER_OCR, BALANCER_OCR_ABI } from 'utils/constants/constants'
 import { getProvider } from 'utils/provider'
 import { ERC20_ABI, WETH } from 'utils/constants/tokens'
+import { tenToThe } from '.'
 
 type BalBalances = {
   tokenBalance: BigNumber
@@ -42,8 +39,10 @@ export async function getBalancerV1Liquidity(
   const reducer = (previousValue: BigNumber, currentValue: BigNumber) =>
     previousValue.add(currentValue)
   response = {
-    tokenBalance: tokenBalances.reduce(reducer).div(TEN_POW_18),
-    wethBalance: wethBalances.reduce(reducer).div(TEN_POW_18),
+    tokenBalance: tokenBalances
+      .reduce(reducer)
+      .div(tenToThe(await tokenContract.decimals())),
+    wethBalance: wethBalances.reduce(reducer).div(tenToThe(18)),
   }
 
   return response

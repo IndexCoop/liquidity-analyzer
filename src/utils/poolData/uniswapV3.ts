@@ -2,9 +2,10 @@ import { FeeAmount } from '@uniswap/v3-sdk'
 import { Contract, BigNumber } from 'ethers'
 import { abi as V3_FACTORY_ABI } from '@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json'
 
-import { ADDRESS_ZERO, TEN_POW_18 } from '../constants/constants'
+import { ADDRESS_ZERO } from '../constants/constants'
 import { getProvider } from '../provider'
 import { WETH, ERC20_ABI } from 'utils/constants/tokens'
+import { tenToThe } from '.'
 
 const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 
@@ -36,8 +37,8 @@ export async function getUniswapV3Liquidity(
   const tokenBalance: BigNumber = await tokenContract.balanceOf(poolAddress)
   const wethBalance: BigNumber = await wethContract.balanceOf(poolAddress)
   const response: V3Balances = {
-    tokenBalance: tokenBalance.div(TEN_POW_18),
-    wethBalance: wethBalance.div(TEN_POW_18),
+    tokenBalance: tokenBalance.div(tenToThe(await tokenContract.decimals())),
+    wethBalance: wethBalance.div(tenToThe(18)),
   }
   return response
 }

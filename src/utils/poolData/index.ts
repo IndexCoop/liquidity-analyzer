@@ -10,7 +10,7 @@ import {
 } from '@setprotocol/index-rebalance-utils/dist/index-rebalances/utils/paramDetermination'
 import { ether } from '@setprotocol/index-coop-contracts/dist/utils/common'
 import { getProvider } from '../provider'
-import { BigNumber } from 'ethers'
+import { BigNumber, BigNumberish } from 'ethers'
 import { getUniswapV3Liquidity } from './uniswapV3'
 import { getUniswapV2Liquidity } from './uniswapV2'
 import { getSushiswapLiquidity } from './sushiswap'
@@ -87,3 +87,5 @@ export async function getLiquidity(
 }
 
 export { getUniswapV2Liquidity }
+
+export const tenToThe = (power: BigNumberish) => BigNumber.from(10).pow(power)
