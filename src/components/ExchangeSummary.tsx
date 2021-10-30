@@ -90,64 +90,39 @@ const ExchangeSummary = (props: {
   const maxTradeUSD =
     props.tokenPrice.mul(maxTrade).div(tenPowDecimals).toNumber() /
     PRICE_DECIMALS
-
+  const calculateMaxNumberOfTrades = (maxTrade: number) => {
+    const desiredAmount = parseInt(props.desiredAmount)
+    return desiredAmount > 0 && maxTrade > 0
+      ? Math.ceil(
+        desiredAmount / maxTrade
+      ).toString()
+      : '0'
+  }
+  const formatUSD = (value: number) => numeral(value).format('$0,0.00')
+  const renderCustomTableData = (isLoading: boolean, value: string, isError?: boolean) => {
+    return (
+      <TableDataRightAlign>
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <div>
+            {isError
+              ? 'Error'
+              : value}
+          </div>
+        )}
+      </TableDataRightAlign>
+    )
+  }
   return (
     <>
       <TableData>{props.exchange}</TableData>
-      <TableDataRightAlign>
-        {liquidityLoading ? (
-          <CircularProgress />
-        ) : (
-          <div>
-            {liquidityError
-              ? 'Error'
-              : numeral(totalLiquidity).format('$0,0.00')}
-          </div>
-        )}
-      </TableDataRightAlign>
-      <TableDataRightAlign>
-        {halfTradeLoading ? (
-          <CircularProgress />
-        ) : (
-          <div>
-            {' '}
-            {halfTradeError
-              ? 'Error'
-              : numeral(maxHalfTradeToken).format('0,0.00')}
-          </div>
-        )}
-      </TableDataRightAlign>
-      <TableDataRightAlign>
-        {halfTradeLoading ? (
-          <CircularProgress />
-        ) : (
-          <div>
-            {' '}
-            {tradeError ? 'Error' : numeral(maxHalfTradeUSD).format('$0,0.00')}
-          </div>
-        )}
-      </TableDataRightAlign>
-      <TableDataRightAlign>
-        {tradeLoading ? (
-          <CircularProgress />
-        ) : (
-          <div>{Math.ceil(parseInt(props.desiredAmount) / maxHalfTradeToken)}</div>
-        )}
-      </TableDataRightAlign>
-      <TableDataRightAlign>
-        {tradeLoading ? (
-          <CircularProgress />
-        ) : (
-          <div> {numeral(maxTradeUSD).format('$0,0.00')}</div>
-        )}
-      </TableDataRightAlign>
-      <TableDataRightAlign>
-        {tradeLoading ? (
-          <CircularProgress />
-        ) : (
-          <div>{Math.ceil(parseInt(props.desiredAmount) / maxTradeUSD)}</div>
-        )}
-      </TableDataRightAlign>
+      {renderCustomTableData(liquidityLoading, formatUSD(totalLiquidity), liquidityError)}
+      {renderCustomTableData(halfTradeLoading, formatUSD(maxHalfTradeToken), halfTradeError)}
+      {renderCustomTableData(tradeLoading, formatUSD(maxHalfTradeUSD), tradeError)}
+      {renderCustomTableData(tradeLoading, calculateMaxNumberOfTrades(maxHalfTradeUSD), tradeError)}
+      {renderCustomTableData(tradeLoading, formatUSD(maxTradeUSD), tradeError)}
+      {renderCustomTableData(tradeLoading, calculateMaxNumberOfTrades(maxTradeUSD), tradeError)}
     </>
   )
 }
