@@ -119,10 +119,10 @@ const ExchangeSummary = (props: {
       <TableData>{props.exchange}</TableData>
       {renderCustomTableData(liquidityLoading, formatUSD(totalLiquidity), liquidityError)}
       {renderCustomTableData(halfTradeLoading, formatUSD(maxHalfTradeToken), halfTradeError)}
-      {renderCustomTableData(tradeLoading, formatUSD(maxHalfTradeUSD), tradeError)}
-      {renderCustomTableData(tradeLoading, calculateMaxNumberOfTrades(maxHalfTradeUSD), tradeError)}
-      {renderCustomTableData(tradeLoading, formatUSD(maxTradeUSD), tradeError)}
-      {renderCustomTableData(tradeLoading, calculateMaxNumberOfTrades(maxTradeUSD), tradeError)}
+      {renderCustomTableData(halfTradeLoading, formatUSD(maxHalfTradeUSD), tradeError)}
+      {renderCustomTableData(halfTradeLoading, calculateMaxNumberOfTrades(maxHalfTradeUSD), tradeError)}
+      {renderCustomTableData(tradeLoading, formatUSD(maxTradeUSD))}
+      {renderCustomTableData(tradeLoading, calculateMaxNumberOfTrades(maxTradeUSD))}
     </>
   )
 }
