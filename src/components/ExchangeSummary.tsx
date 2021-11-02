@@ -114,7 +114,6 @@ const ExchangeSummary = (props: {
       </TableDataRightAlign>
     )
   }
-  console.log('maxHalfTradeToken',maxHalfTradeToken)
   return (
     <>
       <TableData>{props.exchange}</TableData>
