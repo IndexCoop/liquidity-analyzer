@@ -2,10 +2,9 @@ import { BigNumber } from 'ethers'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getCoinGeckoApi } from 'utils/constants/constants'
-import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
 import { TokenContext } from 'contexts/Token'
-import { PRICE_DECIMALS } from 'utils/constants/constants'
+import { PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
 
 const LiquidityTable = (props: {
   desiredAmount: string
@@ -26,14 +25,6 @@ const LiquidityTable = (props: {
       })
       .catch((error) => console.log(error))
   }, [selectedToken.address])
-
-  const exchanges: Array<ExchangeName> = [
-    'UniswapV3',
-    'UniswapV2',
-    'Sushiswap',
-    'Kyber',
-    'Balancer',
-  ]
 
   return (
     <div>
@@ -58,7 +49,7 @@ const LiquidityTable = (props: {
         <TableHeaderRightAlign>
           No. of Trades (1%){' '}
         </TableHeaderRightAlign>
-        {exchanges.map((exchange) => (
+        {EXCHANGES.map((exchange) => (
           <ExchangeSummary
             tokenPrice={tokenPrice}
             exchange={exchange}

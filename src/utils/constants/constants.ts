@@ -1,4 +1,5 @@
 import { constants, BigNumber } from 'ethers'
+import { ExchangeName } from 'utils/poolData'
 
 const { AddressZero, MaxUint256, One, Two, Zero } = constants
 
@@ -42,6 +43,29 @@ export const UNI_V2_FACTORY = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
 export const SUSHI_FACTORY = '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac'
 export const KYBER_FACTORY = '0x833e4083B7ae46CeA85695c4f7ed25CDAd8886dE'
 export const BALANCER_OCR = '0x7226DaaF09B3972320Db05f5aB81FF38417Dd687'
+
+export const INDEX_TOKENS = [
+  {
+    name: 'DPI'
+  },
+  {
+    name: 'MVI'
+  },
+  {
+    name: 'BED'
+  },
+  {
+    name: 'DATA'
+  }
+]
+
+export const EXCHANGES: Array<ExchangeName> = [
+  'UniswapV3',
+  'UniswapV2',
+  'Sushiswap',
+  'Kyber',
+  'Balancer',
+]
 
 export const V2_FACTORY_ABI = [
   {
