@@ -27,7 +27,7 @@ const LiquidityTable = (props: {
   }, [selectedToken.address])
 
   return (
-    <div style={{flex: 10}}>
+    <DataTableContainer>
       <DataTable>
         <TableHeader>Exchange</TableHeader>
         <TableHeaderRightAlign>Pool Size</TableHeaderRightAlign>
@@ -58,11 +58,15 @@ const LiquidityTable = (props: {
           ></ExchangeSummary>
         ))}
       </DataTable>
-    </div>
+    </DataTableContainer>
   )
 }
 
 export default LiquidityTable
+
+const DataTableContainer = styled.div`
+  flex: 10
+`
 
 const DataTable = styled.div`
   display: grid;

@@ -6,7 +6,7 @@ import axios from 'axios'
 import React, { useEffect, useState, useContext, ChangeEvent } from 'react'
 import { TokenContext } from 'contexts/Token'
 
-export default function CountrySelect(props: {
+export default function TokenSelect(props: {
   desiredAmount: string, 
   onDesiredAmountChange: (arg0: ChangeEvent<HTMLInputElement>) => void
 }) {

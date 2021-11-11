@@ -7,7 +7,7 @@ import useMviIndexComponents from 'hooks/useMviIndexComponents'
 import useBedIndexComponents from 'hooks/useBedIndexComponents'
 import useDataIndexComponents from 'hooks/useDataIndexComponents'
 import IndexComponent from 'components/IndexComponent'
-import { INDEX_TOKENS } from 'utils/constants/constants'
+import { INDEX_TOKENS, INDEX_TOKENS_FOR_SELECT } from 'utils/constants/constants'
 import IndexLiquidityDataTableRow from './IndexLiquidityDataTableRow'
 
 interface props {
@@ -83,17 +83,26 @@ const IndexLiquidityTab = (props: props) => {
       )
     }
     switch (selectedToken) {
-        case 'BED':
+        case INDEX_TOKENS.BED.name:
           return formatDataTableRow(bedComponents!) 
-        case 'DATA':
+        case INDEX_TOKENS.DATA.name:
           return formatDataTableRow(dataComponents!) 
-        case 'DPI':
+        case INDEX_TOKENS.DPI.name:
           return formatDataTableRow(dpiComponents!) 
-        case 'MVI':
+        case INDEX_TOKENS.MVI.name:
           return formatDataTableRow(mviComponents!) 
         default:
           return null
       }
+  }
+  const SelectAToken = () => {
+    return (
+      <TitleContainer>
+        <Title>
+          Select a token from the dropdown
+        </Title>
+      </TitleContainer>
+    )
   }
   return (
     <TabContainer>
@@ -101,7 +110,7 @@ const IndexLiquidityTab = (props: props) => {
         <Autocomplete
           id='token-select'
           sx={{ width: 300 }}
-          options={INDEX_TOKENS}
+          options={INDEX_TOKENS_FOR_SELECT}
           autoHighlight
           onChange={(_, value) => {
             if (value != null) setSelectedToken(value.name)
@@ -135,11 +144,24 @@ const IndexLiquidityTab = (props: props) => {
             <Text>$0.00 - src needed</Text>  
           </TextLabel>
         </TextContainer>
+
       </HeaderRow>
       
+      <InstructionContainer>
+        <InstructionsText>
+            Each component's data loads when you remove focus from its Slippage Allowed input. 
+        </InstructionsText>
+      </InstructionContainer>
+
       <DataTable>
-        {renderDataTableHeaders()}
-        {renderComponentsDataTable()}
+        {
+          selectedToken
+            ? <>
+                {renderDataTableHeaders()}
+                {renderComponentsDataTable()}
+              </>
+            : <SelectAToken />
+        }
       </DataTable>
     </TabContainer>
   )
@@ -150,17 +172,39 @@ export default IndexLiquidityTab
 const TabContainer = styled.div`
   display: flex;
   flex: 10;
+  position: relative;
   align-items: flex-start;
   flex-direction: column;
   justify-content: space-around;
 ` 
 
+const TitleContainer = styled.div`
+  display: flex;
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  justify-content: center;
+  align-items: center;
+`
+const Title = styled.div`
+  font-size: 40px;
+  font-weight: 600;
+`
+
 const HeaderRow = styled.div`
   display: flex;
+  padding-top: 15px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   flex: .2;
+`
+
+const InstructionContainer = styled.div`
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px; 
+  align-items: center;
 `
 
 const Checkbox = styled.input.attrs({type: 'checkbox'})`
@@ -181,7 +225,7 @@ const CheckboxContainer = styled.div`
 
 const DataTable = styled.div`
     display: grid;
-    grid-template-columns: 100px repeat(5, 200px);
+    grid-template-columns: 10px repeat(5, 200px);
     // grid-template-columns: 100px repeat(10, 200px); // use this when simulating rebalance
     grid-row-gap: 4px;
     flex: 4;
@@ -190,6 +234,7 @@ const DataTable = styled.div`
 const TextContainer = styled.div`
   
 `
+
 
 const Text = styled.div`
   font-size: 18px;
@@ -204,10 +249,9 @@ const TextLabel = styled.div`
   flex-direction: row;
 `
 
-const TableHeader = styled.div`
+const InstructionsText = styled.div`
   font-size: 18px;
-  font-weight: 600;
-  border-bottom: 2px solid black;
+  font-weight: 400;
 `
 
 const TableHeaderRightAlign = styled.div`

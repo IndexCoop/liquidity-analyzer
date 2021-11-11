@@ -2,8 +2,8 @@ import styled from 'styled-components'
 import { ChangeEvent, FocusEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
-import { PRICE_DECIMALS, TEN_POW_18, EXCHANGES, INDEX_TOKENS } from 'utils/constants/constants'
-import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
+import { PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
+import { getMaxTrade, ExchangeName } from 'utils/poolData'
 import { BigNumber } from 'ethers'
 import CircularProgress from '@mui/material/CircularProgress'
 import { getCoinGeckoApi } from 'utils/constants/constants'
@@ -94,20 +94,21 @@ const IndexLiquidityDataTableRow = (props: props) => {
     return (
       <>
         <TableData>{component.symbol}</TableData>
-        <TableData>{component.percentOfSet}</TableData>
-        <TableData>
+        <TableDataRightAlign>{component.percentOfSet}</TableDataRightAlign>
+        <TableDataRightAlign>
           <TextField
               value={allowedSlippage}
               onChange={onSlippageChange}
               onBlur={(e) => findMaxTrade(e, component)}
+              style={textFieldStyles}
               inputProps={{
                 autoComplete: 'new-password', // disable autocomplete and autofill
               }}
             />
-        </TableData>
-        <TableData>{isLoading ? <CircularProgress /> : bestExchange}</TableData>
-        <TableData>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatDisplay(maxTradeToken)}</TableData>
-        <TableData>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatUSD(maxTradeUSD)}</TableData>
+        </TableDataRightAlign>
+        <TableDataRightAlign>{isLoading ? <CircularProgress /> : bestExchange}</TableDataRightAlign>
+        <TableDataRightAlign>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatDisplay(maxTradeToken)}</TableDataRightAlign>
+        <TableDataRightAlign>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatUSD(maxTradeUSD)}</TableDataRightAlign>
       </>
     )
   }
@@ -121,12 +122,27 @@ export default IndexLiquidityDataTableRow
 
 const TableHeader = styled.div`
   margin: 0;
+  height: 60px;
   font-size: 18px;
-  font-weight: 600;
   border-bottom: 2px solid black;
 `
 const TableData = styled.div`
   font-size: 18px;
+  height: 60px;
   line-height: 24px;
+  border-bottom: 1px solid gray;
+`
+const textFieldStyles = {
+  height: 20,
+  borderLeftWidth: 10,
+  borderLeftColor: '#222',
+  paddingLeft: 50,
+}
+
+const TableDataRightAlign = styled(TableHeader)`
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  text-align: right;
   border-bottom: 1px solid gray;
 `
