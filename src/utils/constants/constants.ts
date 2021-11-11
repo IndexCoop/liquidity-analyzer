@@ -45,18 +45,10 @@ export const KYBER_FACTORY = '0x833e4083B7ae46CeA85695c4f7ed25CDAd8886dE'
 export const BALANCER_OCR = '0x7226DaaF09B3972320Db05f5aB81FF38417Dd687'
 
 export const INDEX_TOKENS = {
-  DPI: {
-    name: 'DPI'
-  },
-  MVI: {
-    name: 'MVI'
-  },
-  BED: {
-    name: 'BED'
-  },
-  DATA: {
-    name: 'DATA'
-  }
+  DPI: 'DPI',
+  MVI: 'MVI',
+  BED: 'BED',
+  DATA: 'DATA'
 }
 
 export const INDEX_TOKENS_FOR_SELECT = [

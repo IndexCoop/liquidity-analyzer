@@ -83,13 +83,13 @@ const IndexLiquidityTab = (props: props) => {
       )
     }
     switch (selectedToken) {
-        case INDEX_TOKENS.BED.name:
+        case INDEX_TOKENS.BED:
           return formatDataTableRow(bedComponents!) 
-        case INDEX_TOKENS.DATA.name:
+        case INDEX_TOKENS.DATA:
           return formatDataTableRow(dataComponents!) 
-        case INDEX_TOKENS.DPI.name:
+        case INDEX_TOKENS.DPI:
           return formatDataTableRow(dpiComponents!) 
-        case INDEX_TOKENS.MVI.name:
+        case INDEX_TOKENS.MVI:
           return formatDataTableRow(mviComponents!) 
         default:
           return null
