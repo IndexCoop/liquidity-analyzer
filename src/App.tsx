@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent, MouseEvent } from 'react'
+import React, { useState, ChangeEvent, MouseEvent } from 'react'
 import TextField from '@mui/material/TextField'
 import 'App.css'
 import { PricesProvider } from 'contexts/Prices'
@@ -21,22 +21,13 @@ const TABS = {
 
 const App: React.FC = () => {
   const [desiredAmount, setDesiredAmount] = useState('')
-  // const [activeTab, setActiveTab] = useState(TABS.tokenLiquidity)
   const [activeTab, setActiveTab] = useState(TABS.indexLiquidity)
-
-  useEffect(() => {
-    return
-  }, [])
-
-
   const onActiveTabChange = (e: MouseEvent): void => {
     setActiveTab(e.currentTarget.innerHTML)
   }
-
   const onDesiredAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDesiredAmount(e.target.value)
   }
-
   const renderTokenLiquidityTab = () => {
     return activeTab === TABS.tokenLiquidity
       ? <>
@@ -61,7 +52,6 @@ const App: React.FC = () => {
         </>
       : null
   }
-
   const renderIndexLiquidityTab = () => {
     return activeTab === TABS.indexLiquidity
       ? <>
@@ -71,12 +61,10 @@ const App: React.FC = () => {
         </>
       : null
   }
-
   const props = {
     desiredAmount, 
     onDesiredAmountChange
   }
-
   return (
     <Providers>
       <div className='App'>
@@ -116,6 +104,7 @@ export default App
 
 const Container = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: row;
   align-items: center;
 `

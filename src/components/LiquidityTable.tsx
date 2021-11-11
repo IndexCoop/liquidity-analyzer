@@ -27,7 +27,7 @@ const LiquidityTable = (props: {
   }, [selectedToken.address])
 
   return (
-    <div>
+    <div style={{flex: 10}}>
       <DataTable>
         <TableHeader>Exchange</TableHeader>
         <TableHeaderRightAlign>Pool Size</TableHeaderRightAlign>

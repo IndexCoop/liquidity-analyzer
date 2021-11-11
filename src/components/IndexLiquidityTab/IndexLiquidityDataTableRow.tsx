@@ -1,19 +1,9 @@
 import styled from 'styled-components'
-import Box from '@mui/material/Box'
-import { ChangeEvent, FocusEvent, useState, useEffect, useContext, Component, Fragment } from 'react'
+import { ChangeEvent, FocusEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
-import Autocomplete from '@mui/material/Autocomplete'
-import { createFilterOptions } from '@mui/material/Autocomplete'
-// import LiquidityTable from 'components/LiquidityTable'
-import useDpiIndexComponents from 'hooks/useDpiIndexComponents'
-import useMviIndexComponents from 'hooks/useMviIndexComponents'
-import useBedIndexComponents from 'hooks/useBedIndexComponents'
-import useDataIndexComponents from 'hooks/useDataIndexComponents'
-import { format } from 'util'
 import IndexComponent from 'components/IndexComponent'
 import { PRICE_DECIMALS, TEN_POW_18, EXCHANGES, INDEX_TOKENS } from 'utils/constants/constants'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { TokenContext } from 'contexts/Token'
 import { BigNumber } from 'ethers'
 import CircularProgress from '@mui/material/CircularProgress'
 import { getCoinGeckoApi } from 'utils/constants/constants'
@@ -26,9 +16,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
   const [maxTrade, setMaxTrade] = useState<void | BigNumber>(BigNumber.from(0))
   const [allowedSlippage, setAllowedSlippage] = useState('0.5')
   const [isLoading, setIsLoading] = useState(false)
-  const [maxTradeSize, setMaxTradeSize] = useState(0)
   const [bestExchange, setBestExchange] = useState('')
-  const [maxTradeSizeUSD, setMaxTradeSizeUSD] = useState('')
   const [tradeError, setTradeError] = useState(false)
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const tenPowDecimals = BigNumber.from(10).pow(18)
@@ -47,18 +35,13 @@ const IndexLiquidityDataTableRow = (props: props) => {
 
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
-    // updateTableDataRow
   }
-  // const formatMaxT
-  
   const checkMaxTrade = async (exchange: ExchangeName, component: IndexComponent) => {
-    // if (!component) return null 
-
     setIsLoading(true)
     return await getMaxTrade(component.address, parseFloat(allowedSlippage), exchange)
       .then((response) => {
-        return response.size
         setTradeError(false)
+        return response.size
       })
       .catch((error) => {
         setTradeError(true)
@@ -141,10 +124,9 @@ const TableHeader = styled.div`
   font-size: 18px;
   font-weight: 600;
   border-bottom: 2px solid black;
-  // padding-right: 10px;
 `
 const TableData = styled.div`
-  font-size: 16px;
+  font-size: 18px;
   line-height: 24px;
   border-bottom: 1px solid gray;
 `
