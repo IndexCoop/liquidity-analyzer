@@ -29,6 +29,7 @@ const ExchangeSummary = (props: {
   const [tradeLoading, setTradeLoading] = useState(false)
   const [tradeError, setTradeError] = useState(false)
   const { selectedToken } = useContext(TokenContext)
+  console.log('tell me',selectedToken.decimals)
   const tenPowDecimals = BigNumber.from(10).pow(selectedToken.decimals)
 
   useEffect(() => {

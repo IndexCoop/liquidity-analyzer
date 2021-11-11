@@ -76,7 +76,7 @@ const IndexLiquidityTab = (props: props) => {
     // ? '100px repeat(10, 155px);'
     // : '100px repeat(10, 155px);'   
 
-    // console.log('bed',bedComponents)
+    console.log('bed',bedComponents)
     // console.log('dpi',dpiComponents)
     // console.log('mvi',mviComponents)
     // console.log('data',dataComponents)
@@ -111,32 +111,28 @@ const IndexLiquidityTab = (props: props) => {
       )
     })
   }
-  
-  // useEffect(() => {
-    // setIsLoading(true)
-    // getMaxTrade(selectedToken.address, ONE_PERCENT, props.exchange)
-    //   .then((response) => {
-    //     setMaxTrade(response.size)
-    //     setTradeError(false)
-    //   })
-    //   .catch(() => {
-    //     setTradeError(true)
-    //   })
-    //   .finally(() => setTradeLoading(false))
-  // }, [props.exchange, selectedToken.address])
-      
-      // switch (selectedToken.name) {
-      //   case 'BED':
-      //     return formatDataTableRow(bedComponents) 
-      //   case 'DATA':
-      //     return formatDataTableRow(dataComponents) 
-      //   case 'DPI':
-      //     return formatDataTableRow(dpiComponents) 
-      //   case 'MVI':
-      //     return formatDataTableRow(mviComponents) 
-      //   default:
-      //     return null
-      // }
+  const renderComponentsDataTable = () => {
+    const formatDataTableRow = (components: IndexComponent[]) => {
+      return components?.map((component, index) => 
+        <IndexLiquidityDataTableRow 
+          component={component} 
+          key={index} 
+        />
+      )
+    }
+    switch (selectedToken) {
+        case 'BED':
+          return formatDataTableRow(bedComponents!) 
+        case 'DATA':
+          return formatDataTableRow(dataComponents!) 
+        case 'DPI':
+          return formatDataTableRow(dpiComponents!) 
+        case 'MVI':
+          return formatDataTableRow(mviComponents!) 
+        default:
+          return null
+      }
+  }
   return (
     <TabContainer>
       <HeaderRow>
@@ -198,28 +194,7 @@ const IndexLiquidityTab = (props: props) => {
       
       <DataTable>
         {renderDataTableHeaders()}
-
-        {
-          bedComponents?.map((component, index) => <IndexLiquidityDataTableRow component={component} key={index} />)
-        }
-
-        {/* {
-          bedComponents
-              
-            : null
-        } */}
-        {/* {renderDataTable()} */}
-        
-        
-        {/* {exchanges.map((exchange) => ( */}
-          {/* <ExchangeSummary
-            tokenPrice={tokenPrice}
-            exchange={exchange}
-            key={exchange}
-            desiredAmount={props.desiredAmount}
-          />
-        ))} */}
-
+        {renderComponentsDataTable()}
       </DataTable>
     </TabContainer>
   )

@@ -31,7 +31,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
   const [maxTradeSizeUSD, setMaxTradeSizeUSD] = useState('')
   const [tradeError, setTradeError] = useState(false)
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
-  const tenPowDecimals = BigNumber.from(10).pow(5)
+  const tenPowDecimals = BigNumber.from(10).pow(18)
 
 // get token price in USD
   useEffect(() => {
@@ -102,16 +102,12 @@ const IndexLiquidityDataTableRow = (props: props) => {
   }
   const renderDataTableRow = (component: IndexComponent | undefined) => {
     if (!component) return null
-    const maxTradeToken = 5
-      // maxTrade!.mul(PRICE_DECIMALS).div(tenPowDecimals).toNumber() /
-      // PRICE_DECIMALS
+    const maxTradeToken =
+      maxTrade!.mul(PRICE_DECIMALS).div(tenPowDecimals).toNumber() /
+      PRICE_DECIMALS
     const maxTradeUSD =
       tokenPrice.mul(maxTrade!).div(tenPowDecimals).toNumber() /
       PRICE_DECIMALS
-    
-    // const maxTradeUSD =
-      // props.tokenPrice.mul(maxTrade).div(tenPowDecimals).toNumber() /
-      // PRICE_DECIMALS
     return (
       <>
         <TableData>{component.symbol}</TableData>
