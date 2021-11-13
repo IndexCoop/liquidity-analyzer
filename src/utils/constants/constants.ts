@@ -44,6 +44,13 @@ export const SUSHI_FACTORY = '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac'
 export const KYBER_FACTORY = '0x833e4083B7ae46CeA85695c4f7ed25CDAd8886dE'
 export const BALANCER_OCR = '0x7226DaaF09B3972320Db05f5aB81FF38417Dd687'
 
+export const ALL_INDEX_SET_HTML_REFS: any = {
+  DPI: 'defipulse-index',
+  MVI: 'metaverse-index',
+  BED: 'bankless-bed-index',
+  DATA: 'data-economy-index'
+}
+
 export const INDEX_TOKENS = {
   DPI: 'DPI',
   MVI: 'MVI',

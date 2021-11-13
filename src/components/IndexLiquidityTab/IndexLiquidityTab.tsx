@@ -9,6 +9,8 @@ import useDataIndexComponents from 'hooks/useDataIndexComponents'
 import IndexComponent from 'components/IndexComponent'
 import { INDEX_TOKENS, INDEX_TOKENS_FOR_SELECT } from 'utils/constants/constants'
 import IndexLiquidityDataTableRow from './IndexLiquidityDataTableRow'
+import { fetchMarketCap, fetchTotalMarketCap } from 'utils/tokensetsApi'
+import { formatUSD } from 'utils/formatters'
 
 interface props {
   desiredAmount: string,
@@ -37,11 +39,55 @@ const DATA_TABLE_SIMULATION_HEADERS = [
 ]
 const IndexLiquidityTab = (props: props) => {
   const [shouldSimulateRebalance, setShouldSimulateRebalance] = useState(false)
-  const [selectedToken, setSelectedToken] = useState('')
+  const [selectedIndex, setSelectedIndex] = useState('')
+  const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
+  const [totalMarketCap, setTotalMarketCap] = useState(0)
+  const [netAssetValue, setNetAssetValue] = useState(0)
   const bedComponents = useBedIndexComponents().components
   const dataComponents = useDataIndexComponents().components
   const dpiComponents = useDpiIndexComponents().components
   const mviComponents = useMviIndexComponents().components
+  const setComponents: any = {
+    BED: bedComponents,
+    DATA: dataComponents,
+    DPI: dpiComponents,
+    MVI: mviComponents
+  }
+  useEffect(() => {
+    fetchTotalMarketCap()
+      .then((response: any) => {
+        setTotalMarketCap(response)
+      })
+      .catch((error: any) => console.log(error))
+  }, [])
+  
+  useEffect(() => {
+    if (selectedIndex) { 
+      fetchMarketCap(selectedIndex)
+        .then((response: any) => {
+          setSelectedIndexMarketCap(response)
+        })
+        .catch((error: any) => console.log(error))
+    }
+  }, [selectedIndex])
+  
+  useEffect(() => {
+    const tokenData = setComponents[selectedIndex]
+    const netAssetValueReducer = (
+      netAssetValue: number,
+      component: IndexComponent
+    ): number => {
+      return netAssetValue + (parseFloat(component.totalPriceUsd) || 0)
+    }
+    const getNetAssetValue = () => {
+      return tokenData
+        ? tokenData.reduce(netAssetValueReducer, 0)
+        : 0
+    }
+    setNetAssetValue(getNetAssetValue())
+  }, [selectedIndex])
+
+  
   const RebalanceCheckbox = () => {
     return (
       <CheckboxContainer>
@@ -82,7 +128,7 @@ const IndexLiquidityTab = (props: props) => {
         />
       )
     }
-    switch (selectedToken) {
+    switch (selectedIndex) {
         case INDEX_TOKENS.BED:
           return formatDataTableRow(bedComponents!) 
         case INDEX_TOKENS.DATA:
@@ -113,7 +159,7 @@ const IndexLiquidityTab = (props: props) => {
           options={INDEX_TOKENS_FOR_SELECT}
           autoHighlight
           onChange={(_, value) => {
-            if (value != null) setSelectedToken(value.name)
+            if (value != null) setSelectedIndex(value.name)
           }}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
@@ -135,13 +181,18 @@ const IndexLiquidityTab = (props: props) => {
         
         <TextContainer>
           <TextLabel>
+            Total Market Cap:
+            <Text>{formatUSD(totalMarketCap)}</Text>  
+          </TextLabel>
+            <hr />
+          <TextLabel>
             Market Cap:
-            <Text>$0.00 - src needed</Text>  
+            <Text>{formatUSD(selectedIndexMarketCap)}</Text>  
           </TextLabel>
           
           <TextLabel>
             Net Asset Value:
-            <Text>$0.00 - src needed</Text>  
+            <Text>{formatUSD(netAssetValue)}</Text>  
           </TextLabel>
         </TextContainer>
 
@@ -155,7 +206,7 @@ const IndexLiquidityTab = (props: props) => {
 
       <DataTable>
         {
-          selectedToken
+          selectedIndex
             ? <>
                 {renderDataTableHeaders()}
                 {renderComponentsDataTable()}
@@ -181,7 +232,7 @@ const TabContainer = styled.div`
 const TitleContainer = styled.div`
   display: flex;
   position: absolute;
-  top: 30%;
+  top: 50%;
   left: 10%;
   justify-content: center;
   align-items: center;
