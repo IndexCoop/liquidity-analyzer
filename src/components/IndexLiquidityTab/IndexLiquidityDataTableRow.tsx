@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ChangeEvent, FocusEvent, useState, useEffect } from 'react'
+import { ChangeEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
 import { PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
@@ -32,7 +32,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
       })
       .catch((error) => console.log(error))
   }, [props.component!.address])
-
+  useEffect(():void => {findMaxTrade(props.component)},[props.component])
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
   }
@@ -48,7 +48,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
         console.error(error.toString())
       })
   }
-  const findMaxTrade = async (e: FocusEvent, component: IndexComponent) => {
+  const findMaxTrade = async (component: IndexComponent) => {
     const checkExchanges = async () => Promise.all(
       EXCHANGES.map((exchange) => checkMaxTrade(exchange, component)
         .then((response) => {
@@ -99,7 +99,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
           <TextField
               value={allowedSlippage}
               onChange={onSlippageChange}
-              onBlur={(e) => findMaxTrade(e, component)}
+              onBlur={(e) => findMaxTrade(component)}
               style={textFieldStyles}
               inputProps={{
                 autoComplete: 'new-password', // disable autocomplete and autofill
@@ -113,6 +113,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
     )
   }
   if (props.component) {
+    console.log('yes')
     return renderDataTableRow(props.component)
   }
   return null
