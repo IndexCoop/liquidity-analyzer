@@ -47,7 +47,6 @@ export const fetchMarketCap = async (selectedIndex: string) => {
   return fetch(requestUrl)
     .then((response) => response.json())
     .then((response) => {
-      console.log(response[0])
       return response[0].market_cap
     })
     .catch(console.error)

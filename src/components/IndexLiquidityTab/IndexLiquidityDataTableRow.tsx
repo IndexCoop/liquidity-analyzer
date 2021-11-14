@@ -113,7 +113,6 @@ const IndexLiquidityDataTableRow = (props: props) => {
     )
   }
   if (props.component) {
-    console.log('yes')
     return renderDataTableRow(props.component)
   }
   return null
