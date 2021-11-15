@@ -4,6 +4,7 @@ import 'App.css'
 import { PricesProvider } from 'contexts/Prices'
 import { TokenProvider } from 'contexts/Token'
 import LiquidityTable from 'components/LiquidityTable'
+import NetworkSelector from 'components/NetworkSelector'
 import TokenSelect from 'components/TokenSelect'
 import TokenTitle from 'components/TokenTitle'
 import TabNavigator from 'components/TabNavigator'
@@ -31,9 +32,12 @@ const App: React.FC = () => {
   const renderTokenLiquidityTab = () => {
     return activeTab === TABS.tokenLiquidity
       ? <>
-          <TokenTitle />
+          <TitleHeader>
+            <TokenTitle />
+            <NetworkSelector />
+          </TitleHeader>
           <Container>
-            <TokenSelect 
+            <TokenSelect
               {...props}
             />
             <StyledLabel>$</StyledLabel>
@@ -112,4 +116,10 @@ const Container = styled.div`
 const StyledLabel = styled.label`
   padding-left: 15px;
   padding-right: 5px;
+`
+
+const TitleHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: left;
 `
