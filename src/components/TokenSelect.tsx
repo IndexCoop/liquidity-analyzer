@@ -5,9 +5,8 @@ import { createFilterOptions } from '@mui/material/Autocomplete'
 import axios from 'axios'
 import React, { useEffect, useState, useContext, ChangeEvent } from 'react'
 import { TokenContext } from 'contexts/Token'
-import styled from 'styled-components'
 
-export default function CountrySelect(props: {
+export default function TokenSelect(props: {
   desiredAmount: string, 
   onDesiredAmountChange: (arg0: ChangeEvent<HTMLInputElement>) => void
 }) {
@@ -24,7 +23,6 @@ export default function CountrySelect(props: {
   }, [])
 
   return (
-      <Container>
         <Autocomplete
           id='token-select'
           sx={{ width: 300 }}
@@ -62,30 +60,8 @@ export default function CountrySelect(props: {
             />
           )}
         />
-          <StyledLabel>$</StyledLabel>
-          <TextField
-            value={props.desiredAmount}
-            onChange={props.onDesiredAmountChange}
-            label='Desired Amount'
-            inputProps={{
-              autoComplete: 'new-password', // disable autocomplete and autofill
-            }}
-          />
-        
-      </Container>
   )
 }
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
-
-const StyledLabel = styled.label`
-  padding-left: 15px;
-  padding-right: 5px;
-`
 
 export interface TokenData {
   chainId: number
