@@ -3,6 +3,16 @@ import { ExchangeName } from 'utils/poolData'
 
 const { AddressZero, MaxUint256, One, Two, Zero } = constants
 
+export enum ChainId {
+  ethereum = 1,
+  polygon = 137,
+}
+
+export const COIN_GECKO_CHAIN_KEY = {
+  [ChainId.ethereum]: 'ethereum',
+  [ChainId.polygon]: 'polygon-pos',
+}
+
 export const ADDRESS_ZERO = AddressZero
 export const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const EMPTY_BYTES = '0x'

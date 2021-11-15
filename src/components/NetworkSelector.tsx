@@ -1,27 +1,30 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 
+import { ChainId } from '../utils/constants/constants'
+
 interface Network {
   chainId: number
-  key: string
   label: string
 }
 
 // Default chain is Ethereum Mainnet
 const defaultChainId = 1
 
-// TODO: add keys and ids to constants?
 const selectableNetworks: Network[] = [
-  { chainId: 1, key: 'ethereum', label: 'Mainnet' },
-  { chainId: 137, key: 'polygon-pos', label: 'Polygon' },
+  { chainId: ChainId.ethereum, label: 'Mainnet' },
+  { chainId: ChainId.polygon, label: 'Polygon' },
 ]
 
-export default function NetworkSelector() {
+interface NetworkSelectorProps {
+  didSelectNetwork: (chainId: ChainId) => void
+}
+
+export default function NetworkSelector(props: NetworkSelectorProps) {
   const [selectedChainId, setSelectedChainId] = useState(defaultChainId)
 
-  const selectChain = (chainId: number) => {
-    // TODO: notify provider??
-    console.log(chainId)
+  const selectChain = (chainId: ChainId) => {
+    props.didSelectNetwork(chainId)
     setSelectedChainId(chainId)
   }
 
@@ -30,7 +33,7 @@ export default function NetworkSelector() {
       {selectableNetworks.map((network) => {
         return (
           <NetworkButtonToggle
-            key={network.key}
+            key={network.chainId}
             active={network.chainId === selectedChainId}
             onClick={() => selectChain(network.chainId)}
           >
