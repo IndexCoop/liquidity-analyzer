@@ -75,9 +75,6 @@ const ExchangeSummary = (props: {
   const tokenTotal =
     props.tokenPrice
       .mul(tokenBalance)
-      // Adjust balance if token decimals is not 18
-      .mul(TEN_POW_18)
-      .div(tenPowDecimals)
       .toNumber() / PRICE_DECIMALS
   const wethTotal = ethereumPrice.mul(wethBalance).toNumber() / PRICE_DECIMALS
   const totalLiquidity = tokenTotal + wethTotal

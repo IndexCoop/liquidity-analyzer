@@ -12,7 +12,17 @@ const LiquidityTable = (props: {
 }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const { selectedToken } = useContext(TokenContext)
+  const [tokenPriceLoading, setTokenPriceLoading] = useState(true)
+  const [selectedTokenAddress, setSelectedTokenAddress] = useState("")
 
+  const didTokenUpdate = (prevTokenAddresss: string, presTokenAddress: string) => {
+    if (prevTokenAddresss !== presTokenAddress) {
+      setTokenPriceLoading(true)
+      setSelectedTokenAddress(presTokenAddress)
+    }
+  }
+  didTokenUpdate(selectedTokenAddress,selectedToken.address)
+  
   // get token price in USD
   useEffect(() => {
     fetch(getCoinGeckoApi(selectedToken.address))
@@ -25,6 +35,9 @@ const LiquidityTable = (props: {
         )
       })
       .catch((error) => console.log(error))
+      .finally(() => {
+        setTokenPriceLoading(false)
+      })
   }, [selectedToken.address])
 
   const exchanges: Array<ExchangeName> = [
@@ -34,6 +47,21 @@ const LiquidityTable = (props: {
     'Kyber',
     'Balancer',
   ]
+
+  const renderExchangeSummary = (isLoading: boolean, tokenPriceLoaded: BigNumber, exchange: ExchangeName) => {
+    return (
+      isLoading ? (
+        <div key={exchange}></div>
+      ) : (
+        <ExchangeSummary
+          tokenPrice={tokenPriceLoaded}
+          exchange={exchange}
+          key={exchange}
+          desiredAmount={props.desiredAmount}
+      ></ExchangeSummary>
+      )
+    )
+}
 
   return (
     <div>
@@ -59,12 +87,7 @@ const LiquidityTable = (props: {
           No. of Trades (1%){' '}
         </TableHeaderRightAlign>
         {exchanges.map((exchange) => (
-          <ExchangeSummary
-            tokenPrice={tokenPrice}
-            exchange={exchange}
-            key={exchange}
-            desiredAmount={props.desiredAmount}
-          ></ExchangeSummary>
+          renderExchangeSummary(tokenPriceLoading,tokenPrice,exchange)
         ))}
       </DataTable>
     </div>
