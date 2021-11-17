@@ -7,9 +7,7 @@ import ExchangeSummary from './ExchangeSummary'
 import { TokenContext } from 'contexts/Token'
 import { PRICE_DECIMALS } from 'utils/constants/constants'
 
-const LiquidityTable = (props: {
-  desiredAmount: string
-}) => {
+const LiquidityTable = (props: { desiredAmount: string }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const { selectedToken } = useContext(TokenContext)
 
@@ -42,21 +40,23 @@ const LiquidityTable = (props: {
         <TableHeaderRightAlign>Pool Size</TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
-          <TableHeaderSubText>{selectedToken.symbol} - (0.5% Slippage)</TableHeaderSubText>
+          <TableHeaderSubText>
+            {selectedToken.symbol} - (0.5% Slippage)
+          </TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (0.5% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
-        <TableHeaderRightAlign>
-          No. of Trades (0.5%){' '}
-        </TableHeaderRightAlign>
+        <TableHeaderRightAlign>No. of Trades (0.5%) </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (1% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
+        <TableHeaderRightAlign>No. of Trades (1%) </TableHeaderRightAlign>
         <TableHeaderRightAlign>
-          No. of Trades (1%){' '}
+          Last 24h trade volume
+          <TableHeaderSubText>BTC</TableHeaderSubText>
         </TableHeaderRightAlign>
         {exchanges.map((exchange) => (
           <ExchangeSummary
@@ -75,7 +75,7 @@ export default LiquidityTable
 
 const DataTable = styled.div`
   display: grid;
-  grid-template-columns: 100px repeat(6, 185px);
+  grid-template-columns: 100px repeat(7, 185px);
   grid-row-gap: 4px;
 `
 
