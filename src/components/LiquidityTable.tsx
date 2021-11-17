@@ -2,6 +2,7 @@ import { BigNumber } from 'ethers'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getCoinGeckoApi } from 'utils/constants/constants'
+import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
 import { TokenContext } from 'contexts/Token'
 import { PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
@@ -12,6 +13,16 @@ const LiquidityTable = (props: {
 }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const { selectedToken } = useContext(TokenContext)
+  const [tokenPriceLoading, setTokenPriceLoading] = useState(true)
+  const [prevTokenAddress, setSelectedTokenAddress] = useState("")
+
+  const didTokenUpdate = (prevTokenAddresss: string, presTokenAddress: string) => {
+    if (prevTokenAddresss !== presTokenAddress) {
+      setTokenPriceLoading(true)
+      setSelectedTokenAddress(presTokenAddress)
+    }
+  }
+  didTokenUpdate(prevTokenAddress,selectedToken.address)
 
   // get token price in USD
   useEffect(() => {
@@ -25,8 +36,25 @@ const LiquidityTable = (props: {
         )
       })
       .catch((error) => console.log(error))
+      .finally(() => {
+        setTokenPriceLoading(false)
+      })
   }, [selectedToken.address, props.networkKey])
 
+  const renderExchangeSummary = (isLoading: boolean, tokenPriceLoaded: BigNumber, exchange: ExchangeName) => {
+    return (
+      isLoading ? (
+        <div key={exchange}></div>
+      ) : (
+        <ExchangeSummary
+          tokenPrice={tokenPriceLoaded}
+          exchange={exchange}
+          key={exchange}
+          desiredAmount={props.desiredAmount}
+      ></ExchangeSummary>
+      )
+    )
+  }
   return (
     <DataTableContainer>
       <DataTable>
@@ -51,17 +79,13 @@ const LiquidityTable = (props: {
           No. of Trades (1%){' '}
         </TableHeaderRightAlign>
         {EXCHANGES.map((exchange) => (
-          <ExchangeSummary
-            tokenPrice={tokenPrice}
-            exchange={exchange}
-            key={exchange}
-            desiredAmount={props.desiredAmount}
-          ></ExchangeSummary>
+          renderExchangeSummary(tokenPriceLoading,tokenPrice,exchange)
         ))}
       </DataTable>
     </DataTableContainer>
   )
 }
+
 
 export default LiquidityTable
 

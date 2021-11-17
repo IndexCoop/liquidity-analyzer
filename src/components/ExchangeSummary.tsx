@@ -1,10 +1,9 @@
 import { BigNumber } from 'ethers'
 import usePrices from 'hooks/usePrices'
-import numeral from 'numeral'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { PRICE_DECIMALS, TEN_POW_18 } from '../utils/constants/constants'
+import { PRICE_DECIMALS } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
 import { TokenContext } from 'contexts/Token'
 import { formatDisplay, formatUSD } from 'utils/formatters'
@@ -76,9 +75,6 @@ const ExchangeSummary = (props: {
   const tokenTotal =
     props.tokenPrice
       .mul(tokenBalance)
-      // Adjust balance if token decimals is not 18
-      .mul(TEN_POW_18)
-      .div(tenPowDecimals)
       .toNumber() / PRICE_DECIMALS
   const wethTotal = ethereumPrice.mul(wethBalance).toNumber() / PRICE_DECIMALS
   const totalLiquidity = tokenTotal + wethTotal
