@@ -3,6 +3,16 @@ import { ExchangeName } from 'utils/poolData'
 
 const { AddressZero, MaxUint256, One, Two, Zero } = constants
 
+export enum ChainId {
+  ethereum = 1,
+  polygon = 137,
+}
+
+export const COIN_GECKO_CHAIN_KEY = {
+  [ChainId.ethereum]: 'ethereum',
+  [ChainId.polygon]: 'polygon-pos',
+}
+
 export const ADDRESS_ZERO = AddressZero
 export const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const EMPTY_BYTES = '0x'
@@ -35,8 +45,11 @@ export const ALCHEMY_API =
   'https://eth-mainnet.alchemyapi.io/v2/5j2PCDrDSbB5C6n8pnka21H3NSoUje4j' // + process.env.ALCHEMY_TOKEN;
 
 export const CG_ETH_PRICE_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
-export const getCoinGeckoApi = (tokenAddress: string) => {
-  return `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${tokenAddress}&vs_currencies=usd`
+export const getCoinGeckoApi = (
+  tokenAddress: string,
+  networkKey: string = 'ethereum'
+) => {
+  return `https://api.coingecko.com/api/v3/simple/token_price/${networkKey}?contract_addresses=${tokenAddress}&vs_currencies=usd`
 }
 
 export const UNI_V2_FACTORY = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'

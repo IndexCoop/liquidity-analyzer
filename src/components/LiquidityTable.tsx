@@ -9,6 +9,7 @@ import { PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
 
 const LiquidityTable = (props: {
   desiredAmount: string
+  networkKey: string
 }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const { selectedToken } = useContext(TokenContext)
@@ -25,7 +26,7 @@ const LiquidityTable = (props: {
 
   // get token price in USD
   useEffect(() => {
-    fetch(getCoinGeckoApi(selectedToken.address))
+    fetch(getCoinGeckoApi(selectedToken.address, props.networkKey))
       .then((response) => response.json())
       .then((response) => {
         setTokenPrice(
@@ -38,7 +39,7 @@ const LiquidityTable = (props: {
       .finally(() => {
         setTokenPriceLoading(false)
       })
-  }, [selectedToken.address])
+  }, [selectedToken.address, props.networkKey])
 
   const renderExchangeSummary = (isLoading: boolean, tokenPriceLoaded: BigNumber, exchange: ExchangeName) => {
     return (

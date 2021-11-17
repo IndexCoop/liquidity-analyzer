@@ -4,6 +4,7 @@ import 'App.css'
 import { PricesProvider } from 'contexts/Prices'
 import { TokenProvider } from 'contexts/Token'
 import LiquidityTable from 'components/LiquidityTable'
+import NetworkSelector from 'components/NetworkSelector'
 import TokenSelect from 'components/TokenSelect'
 import TokenTitle from 'components/TokenTitle'
 import TabNavigator from 'components/TabNavigator'
@@ -14,66 +15,70 @@ import { MviIndexComponentsProvider } from 'contexts/MviIndexComponents'
 import { BedIndexComponentsProvider } from 'contexts/BedIndexComponents'
 import { DataIndexComponentsProvider } from 'contexts/DataIndexComponents'
 
+import { ChainId, COIN_GECKO_CHAIN_KEY } from './utils/constants/constants'
+
 const TABS = {
   tokenLiquidity: 'Token Liquidity',
-  indexLiquidity: 'Index Liquidity'
+  indexLiquidity: 'Index Liquidity',
 }
 
 const App: React.FC = () => {
   const [desiredAmount, setDesiredAmount] = useState('')
-  const [activeTab, setActiveTab] = useState(TABS.indexLiquidity)
+  const [networkKey, setNetworkKey] = useState(COIN_GECKO_CHAIN_KEY[1])
+  const [activeTab, setActiveTab] = useState(TABS.tokenLiquidity)
   const onActiveTabChange = (e: MouseEvent): void => {
     setActiveTab(e.currentTarget.innerHTML)
   }
   const onDesiredAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDesiredAmount(e.target.value)
   }
+  const onSelectedNetwork = (chainId: ChainId) => {
+    const networkKey = COIN_GECKO_CHAIN_KEY[chainId]
+    setNetworkKey(networkKey)
+  }
   const renderTokenLiquidityTab = () => {
-    return activeTab === TABS.tokenLiquidity
-      ? <>
+    return activeTab === TABS.tokenLiquidity ? (
+      <>
+        <TitleHeader>
           <TokenTitle />
-          <Container>
-            <TokenSelect 
-              {...props}
-            />
-            <StyledLabel>$</StyledLabel>
-            <TextField
-              value={props.desiredAmount}
-              onChange={props.onDesiredAmountChange}
-              label='Desired Amount'
-              inputProps={{
-                autoComplete: 'new-password', // disable autocomplete and autofill
-              }}
-            />
-          </Container>
-          <LiquidityTable
-            {...props}
+          <NetworkSelector didSelectNetwork={onSelectedNetwork} />
+        </TitleHeader>
+        <Container>
+          <TokenSelect {...props} />
+          <StyledLabel>$</StyledLabel>
+          <TextField
+            value={props.desiredAmount}
+            onChange={props.onDesiredAmountChange}
+            label='Desired Amount'
+            inputProps={{
+              autoComplete: 'new-password', // disable autocomplete and autofill
+            }}
           />
-        </>
-      : null
+        </Container>
+        <LiquidityTable {...props} networkKey={networkKey} />
+      </>
+    ) : null
   }
   const renderIndexLiquidityTab = () => {
-    return activeTab === TABS.indexLiquidity
-      ? <>
-          <IndexLiquidityTab 
-            {...props}
-          />
-        </>
-      : null
+    return activeTab === TABS.indexLiquidity ? (
+      <>
+        <IndexLiquidityTab {...props} />
+      </>
+    ) : null
   }
   const props = {
-    desiredAmount, 
-    onDesiredAmountChange
+    desiredAmount,
+    onDesiredAmountChange,
   }
   return (
     <Providers>
       <div className='App'>
         <header className='App-header'>
-          <TabNavigator 
+          <TabNavigator
             activeTab={activeTab}
             tabs={TABS}
             onActiveTabChange={onActiveTabChange}
-          />            
+          />
           {renderTokenLiquidityTab()}
           {renderIndexLiquidityTab()}
         </header>
@@ -89,9 +94,7 @@ const Providers: React.FC = ({ children }) => {
         <BedIndexComponentsProvider>
           <DataIndexComponentsProvider>
             <TokenProvider>
-              <PricesProvider>
-                {children}
-              </PricesProvider>
+              <PricesProvider>{children}</PricesProvider>
             </TokenProvider>
           </DataIndexComponentsProvider>
         </BedIndexComponentsProvider>
@@ -112,4 +115,10 @@ const Container = styled.div`
 const StyledLabel = styled.label`
   padding-left: 15px;
   padding-right: 5px;
+`
+
+const TitleHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: left;
 `
