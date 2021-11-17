@@ -47,7 +47,7 @@ export const ALCHEMY_API =
 export const CG_ETH_PRICE_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
 export const getCoinGeckoApi = (
   tokenAddress: string,
-  networkKey: string = 'ethereum'
+  networkKey: string = COIN_GECKO_CHAIN_KEY[1]
 ) => {
   return `https://api.coingecko.com/api/v3/simple/token_price/${networkKey}?contract_addresses=${tokenAddress}&vs_currencies=usd`
 }
