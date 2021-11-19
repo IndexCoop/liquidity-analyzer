@@ -13,6 +13,11 @@ export const COIN_GECKO_CHAIN_KEY = {
   [ChainId.polygon]: 'polygon-pos',
 }
 
+export const TOKEN_LIST = {
+  [ChainId.ethereum]: 'https://tokens.coingecko.com/uniswap/all.json',
+  [ChainId.polygon]: 'https://raw.githubusercontent.com/sushiswap/default-token-list/master/tokens/matic.json',
+}
+
 export const ADDRESS_ZERO = AddressZero
 export const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const EMPTY_BYTES = '0x'
@@ -1490,4 +1495,3 @@ export const BALANCER_OCR_ABI = [
 
 // Choose how many decimals to keep when converting float price to BigNumber
 export const PRICE_DECIMALS = 100
-

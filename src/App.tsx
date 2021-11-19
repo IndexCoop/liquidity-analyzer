@@ -18,6 +18,7 @@ const TABS = {
 }
 
 const App: React.FC = () => {
+  const [chainId, setChainId] = useState(ChainId.ethereum)
   const [desiredAmount, setDesiredAmount] = useState('')
   const [networkKey, setNetworkKey] = useState(COIN_GECKO_CHAIN_KEY[1])
   const [activeTab, setActiveTab] = useState(TABS.tokenLiquidity)
@@ -30,6 +31,7 @@ const App: React.FC = () => {
   const onSelectedNetwork = (chainId: ChainId) => {
     const networkKey = COIN_GECKO_CHAIN_KEY[chainId]
     setNetworkKey(networkKey)
+    setChainId(chainId)
   }
   const renderTokenLiquidityTab = () => {
     return activeTab === TABS.tokenLiquidity ? (
@@ -62,6 +64,7 @@ const App: React.FC = () => {
     ) : null
   }
   const props = {
+    chainId,
     desiredAmount,
     onDesiredAmountChange,
   }
