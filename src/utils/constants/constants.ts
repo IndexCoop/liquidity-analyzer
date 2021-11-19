@@ -41,8 +41,12 @@ export const DPI_SINGLE_INDEX_MODULE =
 export const TEN_POW_18 = BigNumber.from(10).pow(18)
 export const TEN_POW_16 = BigNumber.from(10).pow(16)
 
-export const ALCHEMY_API =
-  'https://eth-mainnet.alchemyapi.io/v2/5j2PCDrDSbB5C6n8pnka21H3NSoUje4j' // + process.env.ALCHEMY_TOKEN;
+export const ALCHEMY_API = {
+  [ChainId.ethereum]:
+    'https://eth-mainnet.alchemyapi.io/v2/5j2PCDrDSbB5C6n8pnka21H3NSoUje4j', // + process.env.ALCHEMY_TOKEN;
+  [ChainId.polygon]:
+    'https://polygon-mainnet.g.alchemy.com/v2/L9jbLT6_-U9rEuvLoMXVvUYoZQx04pEI',
+}
 
 export const CG_ETH_PRICE_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
 export const getCoinGeckoApi = (
