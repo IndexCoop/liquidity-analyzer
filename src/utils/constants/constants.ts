@@ -15,7 +15,8 @@ export const COIN_GECKO_CHAIN_KEY = {
 
 export const TOKEN_LIST = {
   [ChainId.ethereum]: 'https://tokens.coingecko.com/uniswap/all.json',
-  [ChainId.polygon]: 'https://raw.githubusercontent.com/sushiswap/default-token-list/master/tokens/matic.json',
+  [ChainId.polygon]:
+    'https://raw.githubusercontent.com/sushiswap/default-token-list/master/tokens/matic.json',
 }
 
 export const ADDRESS_ZERO = AddressZero
@@ -63,6 +64,8 @@ export const getCoinGeckoApi = (
 
 export const UNI_V2_FACTORY = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
 export const SUSHI_FACTORY = '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac'
+export const SUSHI_FACTORY_POLYGON =
+  '0xc35DADB65012eC5796536bD9864eD8773aBc74C4'
 export const KYBER_FACTORY = '0x833e4083B7ae46CeA85695c4f7ed25CDAd8886dE'
 export const BALANCER_OCR = '0x7226DaaF09B3972320Db05f5aB81FF38417Dd687'
 

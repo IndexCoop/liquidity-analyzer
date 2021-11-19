@@ -3,7 +3,7 @@ import useMarketData from 'hooks/useMarketDataComponents'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { PRICE_DECIMALS } from '../utils/constants/constants'
+import { ChainId, PRICE_DECIMALS } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
 import { MarketDataContext } from 'contexts/MarketData'
 import { formatDisplay, formatUSD } from 'utils/formatters'
@@ -13,8 +13,9 @@ const ONE_PERCENT = 1
 
 const ExchangeSummary = (props: {
   tokenPrice: BigNumber
-  exchange: ExchangeName,
+  exchange: ExchangeName
   desiredAmount: string
+  chainId: ChainId
 }) => {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
@@ -32,7 +33,7 @@ const ExchangeSummary = (props: {
 
   useEffect(() => {
     setLiquidityLoading(true)
-    getLiquidity(selectedToken.address, props.exchange)
+    getLiquidity(selectedToken.address, props.exchange, props.chainId)
       .then((response) => {
         setTokenBalance(response.tokenBalance)
         setWethBalance(response.wethBalance)
@@ -44,7 +45,7 @@ const ExchangeSummary = (props: {
       .finally(() => {
         setLiquidityLoading(false)
       })
-  }, [props.exchange, selectedToken.address])
+  }, [props.chainId, props.exchange, selectedToken.address])
 
   useEffect(() => {
     setHalfTradeLoading(true)
@@ -93,17 +94,17 @@ const ExchangeSummary = (props: {
       ? Math.ceil(desiredAmount / maxTrade).toString()
       : '0'
   }
-  const renderCustomTableData = (isLoading: boolean, value: string, isError?: boolean) => {
+  const renderCustomTableData = (
+    isLoading: boolean,
+    value: string,
+    isError?: boolean
+  ) => {
     return (
       <TableDataRightAlign>
         {isLoading ? (
           <CircularProgress />
         ) : (
-          <div>
-            {isError
-              ? 'Error'
-              : value}
-          </div>
+          <div>{isError ? 'Error' : value}</div>
         )}
       </TableDataRightAlign>
     )
@@ -111,12 +112,31 @@ const ExchangeSummary = (props: {
   return (
     <>
       <TableData>{props.exchange}</TableData>
-      {renderCustomTableData(liquidityLoading, formatUSD(totalLiquidity), liquidityError)}
-      {renderCustomTableData(halfTradeLoading, formatDisplay(maxHalfTradeToken), halfTradeError)}
-      {renderCustomTableData(halfTradeLoading, formatUSD(maxHalfTradeUSD), tradeError)}
-      {renderCustomTableData(halfTradeLoading, calculateMaxNumberOfTrades(maxHalfTradeUSD), tradeError)}
+      {renderCustomTableData(
+        liquidityLoading,
+        formatUSD(totalLiquidity),
+        liquidityError
+      )}
+      {renderCustomTableData(
+        halfTradeLoading,
+        formatDisplay(maxHalfTradeToken),
+        halfTradeError
+      )}
+      {renderCustomTableData(
+        halfTradeLoading,
+        formatUSD(maxHalfTradeUSD),
+        tradeError
+      )}
+      {renderCustomTableData(
+        halfTradeLoading,
+        calculateMaxNumberOfTrades(maxHalfTradeUSD),
+        tradeError
+      )}
       {renderCustomTableData(tradeLoading, formatUSD(maxTradeUSD))}
-      {renderCustomTableData(tradeLoading, calculateMaxNumberOfTrades(maxTradeUSD))}
+      {renderCustomTableData(
+        tradeLoading,
+        calculateMaxNumberOfTrades(maxTradeUSD)
+      )}
     </>
   )
 }

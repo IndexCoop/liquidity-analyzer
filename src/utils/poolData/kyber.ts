@@ -1,6 +1,7 @@
 import { BigNumber, Contract } from 'ethers'
 
 import {
+  ChainId,
   KYBER_FACTORY,
   KYBER_FACTORY_ABI,
   KYBER_POOL_ABI,
@@ -15,7 +16,8 @@ type KyberBalances = {
 }
 
 export async function getKyberLiquidity(
-  tokenAddress: string
+  tokenAddress: string,
+  chainId: ChainId
 ): Promise<KyberBalances> {
   let response: KyberBalances = {
     tokenBalance: BigNumber.from(0),

@@ -2,7 +2,7 @@ import { FeeAmount } from '@uniswap/v3-sdk'
 import { Contract, BigNumber } from 'ethers'
 import { abi as V3_FACTORY_ABI } from '@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json'
 
-import { ADDRESS_ZERO, TEN_POW_18 } from '../constants/constants'
+import { ADDRESS_ZERO, ChainId, TEN_POW_18 } from '../constants/constants'
 import { getProvider } from '../provider'
 import { WETH, ERC20_ABI } from 'utils/constants/tokens'
 
@@ -14,7 +14,8 @@ type V3Balances = {
 }
 
 export async function getUniswapV3Liquidity(
-  tokenAddress: string
+  tokenAddress: string,
+  chainId: ChainId
 ): Promise<V3Balances> {
   const provider = getProvider()
   const factoryInstance = await new Contract(

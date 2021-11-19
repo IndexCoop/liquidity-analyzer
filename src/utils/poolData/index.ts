@@ -16,12 +16,7 @@ import { getUniswapV2Liquidity } from './uniswapV2'
 import { getSushiswapLiquidity } from './sushiswap'
 import { getBalancerV1Liquidity } from './balancerV1'
 import { getKyberLiquidity } from './kyber'
-
-export { getBalancerV1Liquidity } from './balancerV1'
-
-export { getKyberLiquidity } from './kyber'
-
-export { getSushiswapLiquidity } from './sushiswap'
+import { ChainId } from '../../utils/constants/constants'
 
 interface MaxTradeResponse {
   size: BigNumber
@@ -81,9 +76,10 @@ export async function getMaxTrade(
 
 export async function getLiquidity(
   tokenAddress: string,
-  exchange: ExchangeName
+  exchange: ExchangeName,
+  chainId: ChainId
 ) {
-  return exchangeUtilsMapping[exchange].liquidityGetter(tokenAddress)
+  return exchangeUtilsMapping[exchange].liquidityGetter(tokenAddress, chainId)
 }
 
 export { getUniswapV2Liquidity }

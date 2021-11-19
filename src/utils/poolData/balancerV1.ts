@@ -3,6 +3,7 @@ import { BigNumber, Contract } from 'ethers'
 import {
   BALANCER_OCR,
   BALANCER_OCR_ABI,
+  ChainId,
   TEN_POW_18,
 } from 'utils/constants/constants'
 import { getProvider } from 'utils/provider'
@@ -16,7 +17,8 @@ type BalBalances = {
 // Usage note, targetPriceImpact should be the impact including fees! Balancer pool fees can change and it's not easy to extract from the data
 // we have so put in a number that is net of fees.
 export async function getBalancerV1Liquidity(
-  tokenAddress: string
+  tokenAddress: string,
+  chainId: ChainId
 ): Promise<BalBalances> {
   let response: BalBalances = {
     tokenBalance: BigNumber.from(0),
