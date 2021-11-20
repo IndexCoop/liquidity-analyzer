@@ -32,7 +32,6 @@ export async function getSushiswapLiquidity(
   const provider = getProvider(chainId)
   const WETH = getWETH(chainId)
   const factoryAddress = getFactoryAddress(chainId)
-
   const factoryInstance = await new Contract(
     factoryAddress,
     V2_FACTORY_ABI,
@@ -47,7 +46,7 @@ export async function getSushiswapLiquidity(
 
   const [tokenBalance, wethBalance] = await pairContract.getReserves()
 
-  // For some reason for polygon the tokens seem to be returned switched up
+  // For some reason for polygon the tokens returned seem to be switched up
   const response: V2Balances = {
     tokenBalance:
       chainId === ChainId.polygon
