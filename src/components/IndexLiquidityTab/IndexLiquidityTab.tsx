@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import useDpiIndexComponents from 'hooks/useDpiIndexComponents'
 import useMviIndexComponents from 'hooks/useMviIndexComponents'
-import useBedIndexComponents from 'hooks/useBedIndexComponents'
+import useMarketDataComponents from 'hooks/useMarketDataComponents'
 import useDataIndexComponents from 'hooks/useDataIndexComponents'
 import IndexComponent from 'components/IndexComponent'
 import { INDEX_TOKENS, INDEX_TOKENS_FOR_SELECT } from 'utils/constants/constants'
@@ -43,10 +43,10 @@ const IndexLiquidityTab = (props: props) => {
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
   const [totalMarketCap, setTotalMarketCap] = useState(0)
   const [netAssetValue, setNetAssetValue] = useState(0)
-  const bedComponents = useBedIndexComponents().components
-  const dataComponents = useDataIndexComponents().components
-  const dpiComponents = useDpiIndexComponents().components
-  const mviComponents = useMviIndexComponents().components
+  const bedComponents = useMarketDataComponents().bedComponent
+  const dataComponents = useMarketDataComponents().dataComponent
+  const dpiComponents = useMarketDataComponents().dpiComponent
+  const mviComponents = useMarketDataComponents().mviComponent
   const setComponents: any = {
     BED: bedComponents,
     DATA: dataComponents,

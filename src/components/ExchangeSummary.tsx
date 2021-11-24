@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
 import { PRICE_DECIMALS } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
-import { TokenContext } from 'contexts/Token'
+import { MarketDataContext } from 'contexts/MarketData'
 import { formatDisplay, formatUSD } from 'utils/formatters'
 
 const HALF_PERCENT = 0.5
@@ -27,7 +27,7 @@ const ExchangeSummary = (props: {
   const [halfTradeError, setHalfTradeError] = useState(false)
   const [tradeLoading, setTradeLoading] = useState(false)
   const [tradeError, setTradeError] = useState(false)
-  const { selectedToken } = useContext(TokenContext)
+  const { selectedToken } = useContext(MarketDataContext)
   const tenPowDecimals = BigNumber.from(10).pow(selectedToken.decimals)
 
   useEffect(() => {

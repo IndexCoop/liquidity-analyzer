@@ -12,7 +12,7 @@ import IndexLiquidityTab from 'components/IndexLiquidityTab/IndexLiquidityTab'
 import styled from 'styled-components'
 import { DpiIndexComponentsProvider } from 'contexts/DpiIndexComponents'
 import { MviIndexComponentsProvider } from 'contexts/MviIndexComponents'
-import { BedIndexComponentsProvider } from 'contexts/BedIndexComponents'
+import { MarketDataProvider } from 'contexts/MarketData'
 import { DataIndexComponentsProvider } from 'contexts/DataIndexComponents'
 
 import { ChainId, COIN_GECKO_CHAIN_KEY } from './utils/constants/constants'
@@ -91,13 +91,13 @@ const Providers: React.FC = ({ children }) => {
   return (
     <DpiIndexComponentsProvider>
       <MviIndexComponentsProvider>
-        <BedIndexComponentsProvider>
+        <MarketDataProvider>
           <DataIndexComponentsProvider>
             <TokenProvider>
               <PricesProvider>{children}</PricesProvider>
-            </TokenProvider>
+            </TokenProvider>s
           </DataIndexComponentsProvider>
-        </BedIndexComponentsProvider>
+        </MarketDataProvider>
       </MviIndexComponentsProvider>
     </DpiIndexComponentsProvider>
   )
