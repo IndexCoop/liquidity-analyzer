@@ -5,18 +5,14 @@ import { abi as V3_FACTORY_ABI } from '@uniswap/v3-core/artifacts/contracts/Unis
 import { ADDRESS_ZERO, ChainId, TEN_POW_18 } from '../constants/constants'
 import { getProvider } from '../provider'
 import { WETH, ERC20_ABI } from 'utils/constants/tokens'
+import { LiquidityBalance } from './types'
 
 const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
-
-type V3Balances = {
-  tokenBalance: BigNumber
-  wethBalance: BigNumber
-}
 
 export async function getUniswapV3Liquidity(
   tokenAddress: string,
   chainId: ChainId
-): Promise<V3Balances> {
+): Promise<LiquidityBalance> {
   const provider = getProvider()
   const factoryInstance = await new Contract(
     UNI_V3_FACTORY,
@@ -36,9 +32,8 @@ export async function getUniswapV3Liquidity(
 
   const tokenBalance: BigNumber = await tokenContract.balanceOf(poolAddress)
   const wethBalance: BigNumber = await wethContract.balanceOf(poolAddress)
-  const response: V3Balances = {
+  return {
     tokenBalance: tokenBalance.div(TEN_POW_18),
     wethBalance: wethBalance.div(TEN_POW_18),
   }
-  return response
 }

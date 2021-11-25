@@ -16,6 +16,7 @@ type V2Balances = {
   tokenBalance: BigNumber
   wethBalance: BigNumber
 }
+import { LiquidityBalance } from './types'
 
 function getFactoryAddress(chainId: ChainId) {
   switch (chainId) {
@@ -29,7 +30,7 @@ function getFactoryAddress(chainId: ChainId) {
 export async function getSushiswapLiquidity(
   tokenAddress: string,
   chainId: ChainId
-): Promise<V2Balances> {
+): Promise<LiquidityBalance> {
   let response: V2Balances = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),

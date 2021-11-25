@@ -10,11 +10,7 @@ import {
 import { getProvider } from 'utils/provider'
 import { ERC20_ABI } from 'utils/constants/tokens'
 import { getWETH } from 'utils/weth'
-
-type BalBalances = {
-  tokenBalance: BigNumber
-  wethBalance: BigNumber
-}
+import { LiquidityBalance } from './types'
 
 function getFactoryAddress(chainId: ChainId) {
   switch (chainId) {
@@ -54,12 +50,10 @@ async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
 
   const reducer = (previousValue: BigNumber, currentValue: BigNumber) =>
     previousValue.add(currentValue)
-  response = {
+  return {
     tokenBalance: tokenBalances.reduce(reducer).div(TEN_POW_18),
     wethBalance: wethBalances.reduce(reducer).div(TEN_POW_18),
   }
-
-  return response
 }
 
 async function getBalancerV2(tokenAddress: string, chainId: ChainId) {

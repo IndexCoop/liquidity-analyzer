@@ -16,6 +16,7 @@ type KyberBalances = {
   tokenBalance: BigNumber
   wethBalance: BigNumber
 }
+import { LiquidityBalance } from './types'
 
 function getFactoryAddress(chainId: ChainId) {
   switch (chainId) {
@@ -29,8 +30,8 @@ function getFactoryAddress(chainId: ChainId) {
 export async function getKyberLiquidity(
   tokenAddress: string,
   chainId: ChainId
-): Promise<KyberBalances> {
-  let response: KyberBalances = {
+): Promise<LiquidityBalance> {
+  let response = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
