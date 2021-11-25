@@ -1,8 +1,6 @@
 import React, { useState, ChangeEvent, MouseEvent } from 'react'
 import TextField from '@mui/material/TextField'
 import 'App.css'
-import { PricesProvider } from 'contexts/Prices'
-import { TokenProvider } from 'contexts/Token'
 import LiquidityTable from 'components/LiquidityTable'
 import NetworkSelector from 'components/NetworkSelector'
 import TokenSelect from 'components/TokenSelect'
@@ -10,10 +8,7 @@ import TokenTitle from 'components/TokenTitle'
 import TabNavigator from 'components/TabNavigator'
 import IndexLiquidityTab from 'components/IndexLiquidityTab/IndexLiquidityTab'
 import styled from 'styled-components'
-import { DpiIndexComponentsProvider } from 'contexts/DpiIndexComponents'
-import { MviIndexComponentsProvider } from 'contexts/MviIndexComponents'
 import { MarketDataProvider } from 'contexts/MarketData'
-import { DataIndexComponentsProvider } from 'contexts/DataIndexComponents'
 
 import { ChainId, COIN_GECKO_CHAIN_KEY } from './utils/constants/constants'
 
@@ -89,19 +84,10 @@ const App: React.FC = () => {
 
 const Providers: React.FC = ({ children }) => {
   return (
-    <DpiIndexComponentsProvider>
-      <MviIndexComponentsProvider>
-        <MarketDataProvider>
-          <DataIndexComponentsProvider>
-            <TokenProvider>
-              <PricesProvider>{children}</PricesProvider>
-            </TokenProvider>s
-          </DataIndexComponentsProvider>
-        </MarketDataProvider>
-      </MviIndexComponentsProvider>
-    </DpiIndexComponentsProvider>
+        <MarketDataProvider>{children}</MarketDataProvider>
   )
 }
+
 
 export default App
 

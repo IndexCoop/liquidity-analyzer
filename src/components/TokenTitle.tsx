@@ -1,8 +1,8 @@
 import { useContext } from 'react'
-import { TokenContext } from 'contexts/Token'
+import { MarketDataContext } from 'contexts/MarketData'
 
 export default function TokenTitle() {
-  const { selectedToken } = useContext(TokenContext)
+  const { selectedToken } = useContext(MarketDataContext)
 
   return <h2>{selectedToken.symbol}</h2>
 }

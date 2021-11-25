@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import usePrices from 'hooks/usePrices'
+import useMarketData from 'hooks/useMarketDataComponents'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
@@ -20,7 +20,7 @@ const ExchangeSummary = (props: {
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
   const [maxTrade, setMaxTrade] = useState<BigNumber>(BigNumber.from(0))
   const [maxHalfTrade, setHalfMaxTrade] = useState<BigNumber>(BigNumber.from(0))
-  const { ethereumPrice } = usePrices()
+  const { ethereumPrice } = useMarketData()
   const [liquidityLoading, setLiquidityLoading] = useState(false)
   const [liquidityError, setLiquidityError] = useState(false)
   const [halfTradeLoading, setHalfTradeLoading] = useState(false)
