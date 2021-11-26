@@ -29,7 +29,7 @@ export async function getZeroExLiquidity(tokenAddress: string): Promise<Liquidit
 export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: number): Promise<MaxTradeResponse> {
     const requestUrl = `${mainNet}/${pricePath}?`
         + `sellToken=ETH&`
-        + `sellAmount=${constants.WeiPerEther.mul(50)}&`
+        + `sellAmount=${constants.WeiPerEther.mul(1)}&`
         + `buyToken=${tokenAddress}&`
         + `slippagePercentage=${maxSlippagePercent / 100}`;
 
