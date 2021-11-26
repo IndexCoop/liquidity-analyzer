@@ -1,5 +1,4 @@
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { LiquidityBalance, MaxTradeResponse } from "./types";
 
 const mainNet = "https://api.0x.org";
@@ -29,11 +28,12 @@ export async function getZeroExLiquidity(tokenAddress: string): Promise<Liquidit
  */
 export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: number): Promise<MaxTradeResponse> {
     const requestUrl = `${mainNet}/${pricePath}?`
-        + `sellToken=WETH&`
+        + `sellToken=ETH&`
+        + `sellAmount=${constants.WeiPerEther.mul(50)}&`
         + `buyToken=${tokenAddress}&`
-        + `sellAmount=10000000&`
         + `slippagePercentage=${maxSlippagePercent / 100}`;
 
+    console.log(requestUrl);
     const res = await fetch(requestUrl);
     if (!res.ok) {
         throw new Error('Failed to retrieve quote')
@@ -41,6 +41,6 @@ export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: n
     const body: ZeroExQuote = await res.json();
     console.log(body);
     return {
-        size: BigNumber.from(body.value),
+        size: BigNumber.from(body.buyAmount),
     }
 }
