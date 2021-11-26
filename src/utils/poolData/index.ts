@@ -57,7 +57,8 @@ const wrappedProviderExchanges = ['UniswapV3', 'Sushiswap']
 export async function getMaxTrade(
   tokenAddress: string,
   maxSlipagePercent: number,
-  exchange: ExchangeName
+  exchange: ExchangeName,
+  chainId: ChainId
 ): Promise<MaxTradeResponse> {
   let provider = getProvider()
   if (wrappedProviderExchanges.includes(exchange)) {
@@ -67,7 +68,8 @@ export async function getMaxTrade(
   const quote = await maxTradeGetter(
     provider,
     tokenAddress,
-    ether(maxSlipagePercent)
+    ether(maxSlipagePercent),
+    chainId
   )
   return {
     size: BigNumber.from(quote.size),

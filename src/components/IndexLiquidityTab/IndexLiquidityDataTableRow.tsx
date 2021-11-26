@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
-import { PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
+import { ChainId, PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
 import { getMaxTrade, ExchangeName } from 'utils/poolData'
 import { BigNumber } from 'ethers'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -21,24 +21,34 @@ const IndexLiquidityDataTableRow = (props: props) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const tenPowDecimals = BigNumber.from(10).pow(18)
 
-// get token price in USD
+  // get token price in USD
   useEffect(() => {
     const tokenAddress = props.component.address.toLowerCase()
     fetch(getCoinGeckoApi(tokenAddress))
       .then((response) => response.json())
       .then((response) => {
-        const {usd} = response[tokenAddress]
+        const { usd } = response[tokenAddress]
         setTokenPrice(BigNumber.from(Math.round(usd * PRICE_DECIMALS)))
       })
       .catch((error) => console.log(error))
   }, [props.component!.address])
-  useEffect(():void => {findMaxTrade(props.component)},[props.component])
+  useEffect((): void => {
+    findMaxTrade(props.component)
+  }, [props.component])
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
   }
-  const checkMaxTrade = async (exchange: ExchangeName, component: IndexComponent) => {
+  const checkMaxTrade = async (
+    exchange: ExchangeName,
+    component: IndexComponent
+  ) => {
     setIsLoading(true)
-    return await getMaxTrade(component.address, parseFloat(allowedSlippage), exchange)
+    return await getMaxTrade(
+      component.address,
+      parseFloat(allowedSlippage),
+      exchange,
+      ChainId.ethereum
+    )
       .then((response) => {
         setTradeError(false)
         return response.size

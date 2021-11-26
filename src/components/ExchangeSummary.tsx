@@ -49,7 +49,12 @@ const ExchangeSummary = (props: {
 
   useEffect(() => {
     setHalfTradeLoading(true)
-    getMaxTrade(selectedToken.address, HALF_PERCENT, props.exchange)
+    getMaxTrade(
+      selectedToken.address,
+      HALF_PERCENT,
+      props.exchange,
+      props.chainId
+    )
       .then((response) => {
         setHalfMaxTrade(response.size)
         setHalfTradeError(false)
@@ -58,11 +63,16 @@ const ExchangeSummary = (props: {
         setHalfTradeError(true)
       })
       .finally(() => setHalfTradeLoading(false))
-  }, [props.exchange, selectedToken.address])
+  }, [props.chainId, props.exchange, selectedToken.address])
 
   useEffect(() => {
     setTradeLoading(true)
-    getMaxTrade(selectedToken.address, ONE_PERCENT, props.exchange)
+    getMaxTrade(
+      selectedToken.address,
+      ONE_PERCENT,
+      props.exchange,
+      props.chainId
+    )
       .then((response) => {
         setMaxTrade(response.size)
         setTradeError(false)
@@ -71,12 +81,10 @@ const ExchangeSummary = (props: {
         setTradeError(true)
       })
       .finally(() => setTradeLoading(false))
-  }, [props.exchange, selectedToken.address])
+  }, [props.chainId, props.exchange, selectedToken.address])
 
   const tokenTotal =
-    props.tokenPrice
-      .mul(tokenBalance)
-      .toNumber() / PRICE_DECIMALS
+    props.tokenPrice.mul(tokenBalance).toNumber() / PRICE_DECIMALS
   const wethTotal = ethereumPrice.mul(wethBalance).toNumber() / PRICE_DECIMALS
   const totalLiquidity = tokenTotal + wethTotal
   const maxHalfTradeToken =
