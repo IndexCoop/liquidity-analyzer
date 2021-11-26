@@ -35,13 +35,6 @@ const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
     fetch(getCoinGeckoApi(selectedToken.address, networkKey))
       .then((response) => response.json())
       .then((response) => {
-        console.log(response)
-        console.log(
-          '-->',
-          selectedToken.address,
-          response[selectedToken.address.toLowerCase()]?.usd,
-          networkKey
-        )
         setTokenPrice(
           BigNumber.from(
             Math.round(
