@@ -4,9 +4,11 @@ import { LiquidityBalance, MaxTradeResponse } from "./types";
 
 const mainNet = "https://api.0x.org";
 const pricePath = "swap/v1/price";
+const swapPath = "swap/v1/quote";
 
 type ZeroExQuote = {
     price: string,
+    guaranteedPrice: string,
     buyAmount: string,
     buyTokenToEthRate: string,
 }
@@ -27,18 +29,22 @@ export async function getZeroExLiquidity(tokenAddress: string): Promise<Liquidit
  * @returns 
  */
 export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: number): Promise<MaxTradeResponse> {
+    const price = await getPrice(tokenAddress, "WETH", maxSlippagePercent);
+    console.log(price);
     let slippage = 0;
-    let quote = await getQuote(tokenAddress, "WETH", 1, maxSlippagePercent);;
-    // let sellAmount = 1;
-    // while (slippage < maxSlippagePercent) {
-    //     quote = await getQuote(tokenAddress, "WETH", sellAmount, maxSlippagePercent);
-    //     slippage = (parseFloat(quote.buyTokenToEthRate) - parseFloat(quote.price)) / parseFloat(quote.buyTokenToEthRate);
-    //     sellAmount += 10;
-    //     await new Promise(f => setTimeout(f, 10000));
-    // }
-    // if (quote == null) {
-    //     throw new Error('No quote retrieved');
-    // }
+    let quote;
+    let numWeth = 1;
+    while (slippage < maxSlippagePercent) {
+        quote = await getQuote(tokenAddress, "WETH", numWeth, maxSlippagePercent);
+        slippage = (parseFloat(quote.buyTokenToEthRate) - parseFloat(quote.guaranteedPrice)) / parseFloat(quote.buyTokenToEthRate);
+        slippage = slippage * 100;
+        numWeth++;
+        await new Promise(f => setTimeout(f, 250));
+    }
+    if (quote == null) {
+        throw new Error('No quote retrieved');
+    }
+    console.log(quote)
 
     if (BigNumber.from(quote.buyAmount).eq(0)) {
         return {
@@ -50,13 +56,25 @@ export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: n
     }
 }
 
-async function getQuote(buyToken: string, sellToken: string, sellAmount: number, slippagePercent: number): Promise<ZeroExQuote> {
+async function getPrice(buyToken: string, sellToken: string, slippagePercent: number): Promise<ZeroExQuote> {
     const requestUrl = `${mainNet}/${pricePath}?`
+        + `sellToken=${sellToken}&`
+        + `sellAmount=${constants.WeiPerEther}&`
+        + `buyToken=${buyToken}&`
+        + `slippagePercentage=${slippagePercent / 100}`;
+    const res = await fetch(requestUrl);
+    if (!res.ok) {
+        throw new Error('Failed to retrieve quote')
+    }
+    return await res.json();
+}
+
+async function getQuote(buyToken: string, sellToken: string, sellAmount: number, slippagePercent: number): Promise<ZeroExQuote> {
+    const requestUrl = `${mainNet}/${swapPath}?`
         + `sellToken=${sellToken}&`
         + `sellAmount=${constants.WeiPerEther.mul(sellAmount)}&`
         + `buyToken=${buyToken}&`
         + `slippagePercentage=${slippagePercent / 100}`;
-    console.log(requestUrl);
     const res = await fetch(requestUrl);
     if (!res.ok) {
         throw new Error('Failed to retrieve quote')
