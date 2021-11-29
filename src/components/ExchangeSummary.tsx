@@ -1,11 +1,11 @@
 import { BigNumber } from 'ethers'
-import usePrices from 'hooks/usePrices'
+import useMarketData from 'hooks/useMarketDataComponents'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
 import { PRICE_DECIMALS } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
-import { TokenContext } from 'contexts/Token'
+import { MarketDataContext } from 'contexts/MarketData'
 import { formatDisplay, formatUSD } from 'utils/formatters'
 
 const HALF_PERCENT = 0.5
@@ -20,14 +20,14 @@ const ExchangeSummary = (props: {
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
   const [maxTrade, setMaxTrade] = useState<BigNumber>(BigNumber.from(0))
   const [maxHalfTrade, setHalfMaxTrade] = useState<BigNumber>(BigNumber.from(0))
-  const { ethereumPrice } = usePrices()
+  const { ethereumPrice } = useMarketData()
   const [liquidityLoading, setLiquidityLoading] = useState(false)
   const [liquidityError, setLiquidityError] = useState(false)
   const [halfTradeLoading, setHalfTradeLoading] = useState(false)
   const [halfTradeError, setHalfTradeError] = useState(false)
   const [tradeLoading, setTradeLoading] = useState(false)
   const [tradeError, setTradeError] = useState(false)
-  const { selectedToken } = useContext(TokenContext)
+  const { selectedToken } = useContext(MarketDataContext)
   const tenPowDecimals = BigNumber.from(10).pow(selectedToken.decimals)
 
   useEffect(() => {

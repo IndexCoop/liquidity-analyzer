@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { getCoinGeckoApi } from 'utils/constants/constants'
 import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
-import { TokenContext } from 'contexts/Token'
+import { MarketDataContext } from 'contexts/MarketData'
 import { PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
 
 const LiquidityTable = (props: {
@@ -12,7 +12,7 @@ const LiquidityTable = (props: {
   networkKey: string
 }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
-  const { selectedToken } = useContext(TokenContext)
+  const { selectedToken } = useContext(MarketDataContext)
   const [tokenPriceLoading, setTokenPriceLoading] = useState(true)
   const [prevTokenAddress, setSelectedTokenAddress] = useState("")
 

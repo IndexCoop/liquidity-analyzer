@@ -4,14 +4,14 @@ import Autocomplete from '@mui/material/Autocomplete'
 import { createFilterOptions } from '@mui/material/Autocomplete'
 import axios from 'axios'
 import React, { useEffect, useState, useContext, ChangeEvent } from 'react'
-import { TokenContext } from 'contexts/Token'
+import { MarketDataContext } from 'contexts/MarketData'
 
 export default function TokenSelect(props: {
   desiredAmount: string, 
   onDesiredAmountChange: (arg0: ChangeEvent<HTMLInputElement>) => void
 }) {
   const [tokens, setTokens] = useState<TokenData[]>([])
-  const { setSelectedToken } = useContext(TokenContext)
+  const { setSelectedToken } = useContext(MarketDataContext)
 
   useEffect(() => {
     axios
