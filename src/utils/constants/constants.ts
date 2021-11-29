@@ -13,6 +13,12 @@ export const COIN_GECKO_CHAIN_KEY = {
   [ChainId.polygon]: 'polygon-pos',
 }
 
+export const TOKEN_LIST = {
+  [ChainId.ethereum]: 'https://tokens.coingecko.com/uniswap/all.json',
+  [ChainId.polygon]:
+    'https://raw.githubusercontent.com/sushiswap/default-token-list/master/tokens/matic.json',
+}
+
 export const ADDRESS_ZERO = AddressZero
 export const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const EMPTY_BYTES = '0x'
@@ -41,21 +47,30 @@ export const DPI_SINGLE_INDEX_MODULE =
 export const TEN_POW_18 = BigNumber.from(10).pow(18)
 export const TEN_POW_16 = BigNumber.from(10).pow(16)
 
-export const ALCHEMY_API =
-  'https://eth-mainnet.alchemyapi.io/v2/5j2PCDrDSbB5C6n8pnka21H3NSoUje4j' // + process.env.ALCHEMY_TOKEN;
+export const ALCHEMY_API = {
+  [ChainId.ethereum]:
+    'https://eth-mainnet.alchemyapi.io/v2/5j2PCDrDSbB5C6n8pnka21H3NSoUje4j', // + process.env.ALCHEMY_TOKEN;
+  [ChainId.polygon]:
+    'https://polygon-mainnet.g.alchemy.com/v2/L9jbLT6_-U9rEuvLoMXVvUYoZQx04pEI',
+}
 
 export const CG_ETH_PRICE_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
 export const getCoinGeckoApi = (
   tokenAddress: string,
-  networkKey: string = 'ethereum'
+  networkKey: string = COIN_GECKO_CHAIN_KEY[1]
 ) => {
   return `https://api.coingecko.com/api/v3/simple/token_price/${networkKey}?contract_addresses=${tokenAddress}&vs_currencies=usd`
 }
 
 export const UNI_V2_FACTORY = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
 export const SUSHI_FACTORY = '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac'
+export const SUSHI_FACTORY_POLYGON =
+  '0xc35DADB65012eC5796536bD9864eD8773aBc74C4'
 export const KYBER_FACTORY = '0x833e4083B7ae46CeA85695c4f7ed25CDAd8886dE'
+export const KYBER_FACTORY_POLYGON =
+  '0x5F1fe642060B5B9658C15721Ea22E982643c095c'
 export const BALANCER_OCR = '0x7226DaaF09B3972320Db05f5aB81FF38417Dd687'
+export const BALANCER_V2_POLYGON = '0xBA12222222228d8Ba445958a75a0704d566BF2C8'
 
 export const ALL_INDEX_SET_HTML_REFS: any = {
   DPI: 'defipulse-index',
@@ -1486,4 +1501,3 @@ export const BALANCER_OCR_ABI = [
 
 // Choose how many decimals to keep when converting float price to BigNumber
 export const PRICE_DECIMALS = 100
-

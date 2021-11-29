@@ -8,9 +8,6 @@ interface Network {
   label: string
 }
 
-// Default chain is Ethereum Mainnet
-const defaultChainId = 1
-
 const selectableNetworks: Network[] = [
   { chainId: ChainId.ethereum, label: 'Mainnet' },
   // { chainId: ChainId.polygon, label: 'Polygon' },
@@ -21,7 +18,7 @@ interface NetworkSelectorProps {
 }
 
 export default function NetworkSelector(props: NetworkSelectorProps) {
-  const [selectedChainId, setSelectedChainId] = useState(defaultChainId)
+  const [selectedChainId, setSelectedChainId] = useState(ChainId.ethereum)
 
   const selectChain = (chainId: ChainId) => {
     props.didSelectNetwork(chainId)

@@ -10,7 +10,7 @@ import IndexLiquidityTab from 'components/IndexLiquidityTab/IndexLiquidityTab'
 import styled from 'styled-components'
 import { MarketDataProvider } from 'contexts/MarketData'
 
-import { ChainId, COIN_GECKO_CHAIN_KEY } from './utils/constants/constants'
+import { ChainId } from './utils/constants/constants'
 
 const TABS = {
   tokenLiquidity: 'Token Liquidity',
@@ -18,8 +18,8 @@ const TABS = {
 }
 
 const App: React.FC = () => {
+  const [chainId, setChainId] = useState(ChainId.ethereum)
   const [desiredAmount, setDesiredAmount] = useState('')
-  const [networkKey, setNetworkKey] = useState(COIN_GECKO_CHAIN_KEY[1])
   const [activeTab, setActiveTab] = useState(TABS.tokenLiquidity)
   const onActiveTabChange = (e: MouseEvent): void => {
     setActiveTab(e.currentTarget.innerHTML)
@@ -28,8 +28,7 @@ const App: React.FC = () => {
     setDesiredAmount(e.target.value)
   }
   const onSelectedNetwork = (chainId: ChainId) => {
-    const networkKey = COIN_GECKO_CHAIN_KEY[chainId]
-    setNetworkKey(networkKey)
+    setChainId(chainId)
   }
   const renderTokenLiquidityTab = () => {
     return activeTab === TABS.tokenLiquidity ? (
@@ -50,7 +49,7 @@ const App: React.FC = () => {
             }}
           />
         </Container>
-        <LiquidityTable {...props} networkKey={networkKey} />
+        <LiquidityTable {...props} />
       </>
     ) : null
   }
@@ -62,6 +61,7 @@ const App: React.FC = () => {
     ) : null
   }
   const props = {
+    chainId,
     desiredAmount,
     onDesiredAmountChange,
   }

@@ -3,7 +3,7 @@ import useMarketData from 'hooks/useMarketDataComponents'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { PRICE_DECIMALS } from '../utils/constants/constants'
+import { ChainId, PRICE_DECIMALS } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
 import { MarketDataContext } from 'contexts/MarketData'
 import { formatDisplay, formatUSD } from 'utils/formatters'
@@ -13,8 +13,9 @@ const ONE_PERCENT = 1
 
 const ExchangeSummary = (props: {
   tokenPrice: BigNumber
-  exchange: ExchangeName,
+  exchange: ExchangeName
   desiredAmount: string
+  chainId: ChainId
 }) => {
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
@@ -32,7 +33,7 @@ const ExchangeSummary = (props: {
 
   useEffect(() => {
     setLiquidityLoading(true)
-    getLiquidity(selectedToken.address, props.exchange)
+    getLiquidity(selectedToken.address, props.exchange, props.chainId)
       .then((response) => {
         setTokenBalance(response.tokenBalance)
         setWethBalance(response.wethBalance)
@@ -44,11 +45,16 @@ const ExchangeSummary = (props: {
       .finally(() => {
         setLiquidityLoading(false)
       })
-  }, [props.exchange, selectedToken.address])
+  }, [props.chainId, props.exchange, selectedToken.address])
 
   useEffect(() => {
     setHalfTradeLoading(true)
-    getMaxTrade(selectedToken.address, HALF_PERCENT, props.exchange)
+    getMaxTrade(
+      selectedToken.address,
+      HALF_PERCENT,
+      props.exchange,
+      props.chainId
+    )
       .then((response) => {
         setHalfMaxTrade(response.size)
         setHalfTradeError(false)
@@ -57,11 +63,16 @@ const ExchangeSummary = (props: {
         setHalfTradeError(true)
       })
       .finally(() => setHalfTradeLoading(false))
-  }, [props.exchange, selectedToken.address])
+  }, [props.chainId, props.exchange, selectedToken.address])
 
   useEffect(() => {
     setTradeLoading(true)
-    getMaxTrade(selectedToken.address, ONE_PERCENT, props.exchange)
+    getMaxTrade(
+      selectedToken.address,
+      ONE_PERCENT,
+      props.exchange,
+      props.chainId
+    )
       .then((response) => {
         setMaxTrade(response.size)
         setTradeError(false)
@@ -70,12 +81,10 @@ const ExchangeSummary = (props: {
         setTradeError(true)
       })
       .finally(() => setTradeLoading(false))
-  }, [props.exchange, selectedToken.address])
+  }, [props.chainId, props.exchange, selectedToken.address])
 
   const tokenTotal =
-    props.tokenPrice
-      .mul(tokenBalance)
-      .toNumber() / PRICE_DECIMALS
+    props.tokenPrice.mul(tokenBalance).toNumber() / PRICE_DECIMALS
   const wethTotal = ethereumPrice.mul(wethBalance).toNumber() / PRICE_DECIMALS
   const totalLiquidity = tokenTotal + wethTotal
   const maxHalfTradeToken =
@@ -93,17 +102,17 @@ const ExchangeSummary = (props: {
       ? Math.ceil(desiredAmount / maxTrade).toString()
       : '0'
   }
-  const renderCustomTableData = (isLoading: boolean, value: string, isError?: boolean) => {
+  const renderCustomTableData = (
+    isLoading: boolean,
+    value: string,
+    isError?: boolean
+  ) => {
     return (
       <TableDataRightAlign>
         {isLoading ? (
           <CircularProgress />
         ) : (
-          <div>
-            {isError
-              ? 'Error'
-              : value}
-          </div>
+          <div>{isError ? 'Error' : value}</div>
         )}
       </TableDataRightAlign>
     )
@@ -111,12 +120,31 @@ const ExchangeSummary = (props: {
   return (
     <>
       <TableData>{props.exchange}</TableData>
-      {renderCustomTableData(liquidityLoading, formatUSD(totalLiquidity), liquidityError)}
-      {renderCustomTableData(halfTradeLoading, formatDisplay(maxHalfTradeToken), halfTradeError)}
-      {renderCustomTableData(halfTradeLoading, formatUSD(maxHalfTradeUSD), tradeError)}
-      {renderCustomTableData(halfTradeLoading, calculateMaxNumberOfTrades(maxHalfTradeUSD), tradeError)}
+      {renderCustomTableData(
+        liquidityLoading,
+        formatUSD(totalLiquidity),
+        liquidityError
+      )}
+      {renderCustomTableData(
+        halfTradeLoading,
+        formatDisplay(maxHalfTradeToken),
+        halfTradeError
+      )}
+      {renderCustomTableData(
+        halfTradeLoading,
+        formatUSD(maxHalfTradeUSD),
+        tradeError
+      )}
+      {renderCustomTableData(
+        halfTradeLoading,
+        calculateMaxNumberOfTrades(maxHalfTradeUSD),
+        tradeError
+      )}
       {renderCustomTableData(tradeLoading, formatUSD(maxTradeUSD))}
-      {renderCustomTableData(tradeLoading, calculateMaxNumberOfTrades(maxTradeUSD))}
+      {renderCustomTableData(
+        tradeLoading,
+        calculateMaxNumberOfTrades(maxTradeUSD)
+      )}
     </>
   )
 }

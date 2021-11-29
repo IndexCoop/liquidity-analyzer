@@ -5,33 +5,42 @@ import { getCoinGeckoApi } from 'utils/constants/constants'
 import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
 import { MarketDataContext } from 'contexts/MarketData'
-import { PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
+import {
+  ChainId,
+  COIN_GECKO_CHAIN_KEY,
+  PRICE_DECIMALS,
+  EXCHANGES,
+} from 'utils/constants/constants'
 
-const LiquidityTable = (props: {
-  desiredAmount: string
-  networkKey: string
-}) => {
+const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const { selectedToken } = useContext(MarketDataContext)
   const [tokenPriceLoading, setTokenPriceLoading] = useState(true)
-  const [prevTokenAddress, setSelectedTokenAddress] = useState("")
+  const [prevTokenAddress, setSelectedTokenAddress] = useState('')
 
-  const didTokenUpdate = (prevTokenAddresss: string, presTokenAddress: string) => {
+  const didTokenUpdate = (
+    prevTokenAddresss: string,
+    presTokenAddress: string
+  ) => {
     if (prevTokenAddresss !== presTokenAddress) {
       setTokenPriceLoading(true)
       setSelectedTokenAddress(presTokenAddress)
     }
   }
-  didTokenUpdate(prevTokenAddress,selectedToken.address)
+  didTokenUpdate(prevTokenAddress, selectedToken.address)
 
   // get token price in USD
   useEffect(() => {
-    fetch(getCoinGeckoApi(selectedToken.address, props.networkKey))
+    const networkKey = COIN_GECKO_CHAIN_KEY[props.chainId]
+    fetch(getCoinGeckoApi(selectedToken.address, networkKey))
       .then((response) => response.json())
       .then((response) => {
         setTokenPrice(
           BigNumber.from(
-            Math.round(response[selectedToken.address]?.usd * PRICE_DECIMALS)
+            Math.round(
+              response[selectedToken.address.toLowerCase()]?.usd *
+                PRICE_DECIMALS
+            )
           )
         )
       })
@@ -39,20 +48,24 @@ const LiquidityTable = (props: {
       .finally(() => {
         setTokenPriceLoading(false)
       })
-  }, [selectedToken.address, props.networkKey])
+  }, [selectedToken.address, props.chainId])
 
-  const renderExchangeSummary = (isLoading: boolean, tokenPriceLoaded: BigNumber, exchange: ExchangeName) => {
-    return (
-      isLoading ? (
-        <div key={exchange}></div>
-      ) : (
-        <ExchangeSummary
-          tokenPrice={tokenPriceLoaded}
-          exchange={exchange}
-          key={exchange}
-          desiredAmount={props.desiredAmount}
+  const renderExchangeSummary = (
+    isLoading: boolean,
+    tokenPriceLoaded: BigNumber,
+    exchange: ExchangeName,
+    chainId: ChainId
+  ) => {
+    return isLoading ? (
+      <div key={exchange}></div>
+    ) : (
+      <ExchangeSummary
+        tokenPrice={tokenPriceLoaded}
+        exchange={exchange}
+        key={exchange}
+        desiredAmount={props.desiredAmount}
+        chainId={chainId}
       ></ExchangeSummary>
-      )
     )
   }
   return (
@@ -62,35 +75,37 @@ const LiquidityTable = (props: {
         <TableHeaderRightAlign>Pool Size</TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
-          <TableHeaderSubText>{selectedToken.symbol} - (0.5% Slippage)</TableHeaderSubText>
+          <TableHeaderSubText>
+            {selectedToken.symbol} - (0.5% Slippage)
+          </TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (0.5% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
-        <TableHeaderRightAlign>
-          No. of Trades (0.5%){' '}
-        </TableHeaderRightAlign>
+        <TableHeaderRightAlign>No. of Trades (0.5%) </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>USD - (1% Slippage)</TableHeaderSubText>
         </TableHeaderRightAlign>
-        <TableHeaderRightAlign>
-          No. of Trades (1%){' '}
-        </TableHeaderRightAlign>
-        {EXCHANGES.map((exchange) => (
-          renderExchangeSummary(tokenPriceLoading,tokenPrice,exchange)
-        ))}
+        <TableHeaderRightAlign>No. of Trades (1%) </TableHeaderRightAlign>
+        {EXCHANGES.map((exchange) =>
+          renderExchangeSummary(
+            tokenPriceLoading,
+            tokenPrice,
+            exchange,
+            props.chainId
+          )
+        )}
       </DataTable>
     </DataTableContainer>
   )
 }
 
-
 export default LiquidityTable
 
 const DataTableContainer = styled.div`
-  flex: 10
+  flex: 10;
 `
 
 const DataTable = styled.div`
