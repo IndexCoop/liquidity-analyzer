@@ -44,7 +44,6 @@ export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: n
     if (quote == null) {
         throw new Error('No quote retrieved');
     }
-    console.log(quote)
 
     if (BigNumber.from(quote.buyAmount).eq(0)) {
         return {
