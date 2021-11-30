@@ -29,10 +29,13 @@ export async function getZeroExLiquidity(tokenAddress: string): Promise<Liquidit
  * @returns 
  */
 export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: number): Promise<MaxTradeResponse> {
+    if (maxSlippagePercent <= 0) {
+        throw new Error('Invalid max slippage percent')
+    }
     const quote1 = await getQuote(tokenAddress, "WETH", 1, maxSlippagePercent);
-    let inputAmount = 2;
     let quote2;
     let slippagePercent = 0;
+    let inputAmount = 2;
     while (slippagePercent * 100 < maxSlippagePercent) {
         quote2 = await getQuote(tokenAddress, "WETH", inputAmount, maxSlippagePercent);
         slippagePercent = (parseFloat(quote1.price) - parseFloat(quote2.price)) / parseFloat(quote1.price);
