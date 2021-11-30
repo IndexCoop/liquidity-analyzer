@@ -32,18 +32,18 @@ export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: n
     if (maxSlippagePercent <= 0) {
         throw new Error('Invalid max slippage percent')
     }
-    const quote1 = await getQuote(tokenAddress, "WETH", 1, maxSlippagePercent);
-    let quote2;
+    const baseQuote = await getQuote(tokenAddress, "WETH", 1, maxSlippagePercent);
+    let maxTradeQuote;
     let slippagePercent = 0;
-    let inputAmount = 2;
+    let tradeAmount = 2;
     while (slippagePercent * 100 < maxSlippagePercent) {
-        quote2 = await getQuote(tokenAddress, "WETH", inputAmount, maxSlippagePercent);
-        slippagePercent = (parseFloat(quote1.price) - parseFloat(quote2.price)) / parseFloat(quote1.price);
-        inputAmount++;
+        maxTradeQuote = await getQuote(tokenAddress, "WETH", tradeAmount, maxSlippagePercent);
+        slippagePercent = (parseFloat(baseQuote.price) - parseFloat(maxTradeQuote.price)) / parseFloat(baseQuote.price);
+        tradeAmount++;
     }
 
     return {
-        size: BigNumber.from(quote2?.buyAmount),
+        size: BigNumber.from(maxTradeQuote?.buyAmount),
     }
 }
 
