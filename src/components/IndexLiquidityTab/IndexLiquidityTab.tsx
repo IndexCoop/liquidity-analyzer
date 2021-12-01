@@ -9,6 +9,7 @@ import useDataIndexComponents from 'hooks/useDataIndexComponents'
 import IndexComponent from 'components/IndexComponent'
 import { INDEX_TOKENS, INDEX_TOKENS_FOR_SELECT } from 'utils/constants/constants'
 import IndexLiquidityDataTableRow from './IndexLiquidityDataTableRow'
+import IndexLiquiditySimulateDataTableRow from './IndexLiquiditySimulateDataTableRow'
 import { fetchMarketCap, fetchTotalMarketCap } from 'utils/tokensetsApi'
 import { formatUSD } from 'utils/formatters'
 
@@ -29,7 +30,7 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'Weight %',
   'Target %',
   '% Change', 
-  '% Change',
+  '$ Change',
   'Slippage Allowed',
   'Best Exchange', 
   'Max Trade Size (Units)', 
@@ -47,6 +48,12 @@ const IndexLiquidityTab = (props: props) => {
   const dataComponents = useDataIndexComponents().components
   const dpiComponents = useDpiIndexComponents().components
   const mviComponents = useMviIndexComponents().components
+
+  const [gasCost, setGasCost] = useState('')
+  const onGasCostChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setGasCost(e.target.value)
+  }
+
   const setComponents: any = {
     BED: bedComponents,
     DATA: dataComponents,
@@ -71,6 +78,7 @@ const IndexLiquidityTab = (props: props) => {
     }
   }, [selectedIndex])
   
+  
   useEffect(() => {
     const tokenData = setComponents[selectedIndex]
     const netAssetValueReducer = (
@@ -86,7 +94,6 @@ const IndexLiquidityTab = (props: props) => {
     }
     setNetAssetValue(getNetAssetValue())
   }, [selectedIndex])
-
   
   const RebalanceCheckbox = () => {
     return (
@@ -101,6 +108,7 @@ const IndexLiquidityTab = (props: props) => {
       </CheckboxContainer>
     )
   }
+
   const renderDataTableHeaders = () => {
     if (shouldSimulateRebalance) {
       return DATA_TABLE_SIMULATION_HEADERS.map((title, index) => {
@@ -120,11 +128,23 @@ const IndexLiquidityTab = (props: props) => {
     })
   }
   const renderComponentsDataTable = () => {
+
     const formatDataTableRow = (components: IndexComponent[]) => {
+      if (shouldSimulateRebalance) {   
+        return components?.map((component, index) =>
+          <IndexLiquiditySimulateDataTableRow 
+            selectedIndex={selectedIndex}
+            gasCost={gasCost}
+            component={component} 
+            key={index}
+          />
+        )
+      }
+
       return components?.map((component, index) => 
         <IndexLiquidityDataTableRow 
           component={component} 
-          key={index} 
+          key={index}
         />
       )
     }
@@ -178,6 +198,14 @@ const IndexLiquidityTab = (props: props) => {
         {/* TODO: Add functionality */}
         {/* via Simulate Rebalance Epic */}
         <RebalanceCheckbox />
+        <TextField
+          value={gasCost}
+          onChange={onGasCostChange}
+          label='Desired Amount'
+          inputProps={{
+            autoComplete: 'new-password', // disable autocomplete and autofill
+          }}
+        />
         
         <TextContainer>
           <TextLabel>
@@ -204,7 +232,7 @@ const IndexLiquidityTab = (props: props) => {
         </InstructionsText>
       </InstructionContainer>
 
-      <DataTable>
+      <DataTable isSimulated={shouldSimulateRebalance}>
         {
           selectedIndex
             ? <>
@@ -274,16 +302,21 @@ const CheckboxContainer = styled.div`
   padding-right: 40px;
 `
 
-const DataTable = styled.div`
+interface DataTableProps {
+  isSimulated?: boolean,
+}
+
+const DataTable = styled.div<DataTableProps>`
     display: grid;
-    grid-template-columns: 10px repeat(5, 200px);
+    // grid-template-columns: 10px repeat(5, 200px);
     // grid-template-columns: 100px repeat(10, 200px); // use this when simulating rebalance
+    grid-template-columns: ${prop => prop.isSimulated ? '100px repeat(10, 130px)' : '10px repeat(5, 200px)'};
     grid-row-gap: 4px;
     flex: 4;
 `
 
 const TextContainer = styled.div`
-  
+padding-left: 35px;
 `
 
 

@@ -32,6 +32,7 @@ const App: React.FC = () => {
   const onDesiredAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDesiredAmount(e.target.value)
   }
+
   const onSelectedNetwork = (chainId: ChainId) => {
     const networkKey = COIN_GECKO_CHAIN_KEY[chainId]
     setNetworkKey(networkKey)
