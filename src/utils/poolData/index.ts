@@ -17,10 +17,6 @@ import { getSushiswapLiquidity } from './sushiswap'
 import { getBalancerV1Liquidity } from './balancerV1'
 import { getKyberLiquidity } from './kyber'
 import { ChainId } from '../../utils/constants/constants'
-
-interface MaxTradeResponse {
-  size: BigNumber
-}
 import { getZeroExLiquidity, getZeroExQuote } from './zeroEx'
 import { MaxTradeResponse } from './types'
 

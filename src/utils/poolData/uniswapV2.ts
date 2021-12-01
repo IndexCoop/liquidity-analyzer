@@ -1,4 +1,4 @@
-import { BigNumber, Contract } from 'ethers'
+import { Contract } from 'ethers'
 import {
   ChainId,
   TEN_POW_18,
@@ -6,7 +6,6 @@ import {
   UNI_V2_PAIR_ABI,
   V2_FACTORY_ABI,
 } from 'utils/constants/constants'
-
 import { WETH } from 'utils/constants/tokens'
 import { getProvider } from 'utils/provider'
 import { LiquidityBalance } from './types'

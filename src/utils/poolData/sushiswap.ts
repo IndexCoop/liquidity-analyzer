@@ -8,14 +8,8 @@ import {
   UNI_V2_PAIR_ABI,
   V2_FACTORY_ABI,
 } from 'utils/constants/constants'
-
 import { getProvider } from 'utils/provider'
 import { getWETH } from 'utils/weth'
-
-type V2Balances = {
-  tokenBalance: BigNumber
-  wethBalance: BigNumber
-}
 import { LiquidityBalance } from './types'
 
 function getFactoryAddress(chainId: ChainId) {
@@ -31,7 +25,7 @@ export async function getSushiswapLiquidity(
   tokenAddress: string,
   chainId: ChainId
 ): Promise<LiquidityBalance> {
-  let response: V2Balances = {
+  let response = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -67,10 +61,9 @@ export async function getSushiswapLiquidity(
           ? tokenBalance.div(TEN_POW_18)
           : wethBalance.div(TEN_POW_18),
     }
-    return response
   } catch (error) {
     console.log('Error getting liquidity from SushiSwap')
     console.log(error)
-    return response
   }
+  return response
 }

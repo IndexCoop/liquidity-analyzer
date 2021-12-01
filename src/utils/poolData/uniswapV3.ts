@@ -25,7 +25,9 @@ export async function getUniswapV3Liquidity(
     FeeAmount.MEDIUM
   )
 
-  if (poolAddress === ADDRESS_ZERO) console.log('poolAddress === ADDRESS_ZERO')
+  if (poolAddress === ADDRESS_ZERO) {
+    console.log('poolAddress === ADDRESS_ZERO')
+  }
 
   const tokenContract = await new Contract(tokenAddress, ERC20_ABI, provider)
   const wethContract = await new Contract(WETH, ERC20_ABI, provider)

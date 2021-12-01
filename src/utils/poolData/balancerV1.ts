@@ -24,7 +24,7 @@ function getFactoryAddress(chainId: ChainId) {
 // Usage note, targetPriceImpact should be the impact including fees! Balancer pool fees can change and it's not easy to extract from the data
 // we have so put in a number that is net of fees.
 async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
-  let response: BalBalances = {
+  let response = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -57,7 +57,7 @@ async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
 }
 
 async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
-  let response: BalBalances = {
+  let response: LiquidityBalance = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -77,7 +77,7 @@ async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
 export async function getBalancerV1Liquidity(
   tokenAddress: string,
   chainId: ChainId
-): Promise<BalBalances> {
+): Promise<LiquidityBalance> {
   switch (chainId) {
     case ChainId.ethereum:
       return getBalancerV1(tokenAddress, chainId)
