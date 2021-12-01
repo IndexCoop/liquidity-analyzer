@@ -1,5 +1,4 @@
 import { BigNumber, Contract } from 'ethers'
-
 import {
   ChainId,
   KYBER_FACTORY,
@@ -8,14 +7,9 @@ import {
   KYBER_POOL_ABI,
   TEN_POW_18,
 } from 'utils/constants/constants'
-
 import { getProvider } from 'utils/provider'
 import { getWETH } from 'utils/weth'
-
-type KyberBalances = {
-  tokenBalance: BigNumber
-  wethBalance: BigNumber
-}
+import { LiquidityBalance } from './types'
 
 function getFactoryAddress(chainId: ChainId) {
   switch (chainId) {
@@ -29,8 +23,8 @@ function getFactoryAddress(chainId: ChainId) {
 export async function getKyberLiquidity(
   tokenAddress: string,
   chainId: ChainId
-): Promise<KyberBalances> {
-  let response: KyberBalances = {
+): Promise<LiquidityBalance> {
+  let response = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -54,10 +48,9 @@ export async function getKyberLiquidity(
     response.tokenBalance = tokenBalance.div(TEN_POW_18)
     response.wethBalance = tokenBalance.div(wethBalance)
 
-    return response
   } catch (error) {
     console.log('Error getting liquidity from kyber')
     console.log(error)
-    return response
   }
+    return response
 }

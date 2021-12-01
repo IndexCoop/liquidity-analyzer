@@ -10,11 +10,7 @@ import {
 import { getProvider } from 'utils/provider'
 import { ERC20_ABI } from 'utils/constants/tokens'
 import { getWETH } from 'utils/weth'
-
-type BalBalances = {
-  tokenBalance: BigNumber
-  wethBalance: BigNumber
-}
+import { LiquidityBalance } from './types'
 
 function getFactoryAddress(chainId: ChainId) {
   switch (chainId) {
@@ -28,7 +24,7 @@ function getFactoryAddress(chainId: ChainId) {
 // Usage note, targetPriceImpact should be the impact including fees! Balancer pool fees can change and it's not easy to extract from the data
 // we have so put in a number that is net of fees.
 async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
-  let response: BalBalances = {
+  let response = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -54,16 +50,14 @@ async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
 
   const reducer = (previousValue: BigNumber, currentValue: BigNumber) =>
     previousValue.add(currentValue)
-  response = {
+  return {
     tokenBalance: tokenBalances.reduce(reducer).div(TEN_POW_18),
     wethBalance: wethBalances.reduce(reducer).div(TEN_POW_18),
   }
-
-  return response
 }
 
 async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
-  let response: BalBalances = {
+  let response: LiquidityBalance = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -83,7 +77,7 @@ async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
 export async function getBalancerV1Liquidity(
   tokenAddress: string,
   chainId: ChainId
-): Promise<BalBalances> {
+): Promise<LiquidityBalance> {
   switch (chainId) {
     case ChainId.ethereum:
       return getBalancerV1(tokenAddress, chainId)

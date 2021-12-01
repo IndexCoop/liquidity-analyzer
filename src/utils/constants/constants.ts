@@ -87,10 +87,10 @@ export const INDEX_TOKENS = {
 }
 
 export const INDEX_TOKENS_FOR_SELECT = [
-    { name: 'DPI' },
-    { name: 'MVI' },
-    { name: 'BED' },
-    { name: 'DATA' }
+  { name: 'DPI' },
+  { name: 'MVI' },
+  { name: 'BED' },
+  { name: 'DATA' }
 ]
 
 export const EXCHANGES: Array<ExchangeName> = [
@@ -99,6 +99,7 @@ export const EXCHANGES: Array<ExchangeName> = [
   'Sushiswap',
   'Kyber',
   'Balancer',
+  'ZeroEx',
 ]
 
 export const V2_FACTORY_ABI = [

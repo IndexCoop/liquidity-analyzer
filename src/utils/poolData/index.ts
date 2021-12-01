@@ -17,10 +17,8 @@ import { getSushiswapLiquidity } from './sushiswap'
 import { getBalancerV1Liquidity } from './balancerV1'
 import { getKyberLiquidity } from './kyber'
 import { ChainId } from '../../utils/constants/constants'
-
-interface MaxTradeResponse {
-  size: BigNumber
-}
+import { getZeroExLiquidity, getZeroExQuote } from './zeroEx'
+import { MaxTradeResponse } from './types'
 
 export type ExchangeName =
   | 'UniswapV3'
@@ -28,6 +26,7 @@ export type ExchangeName =
   | 'Sushiswap'
   | 'Kyber'
   | 'Balancer'
+  | 'ZeroEx'
 
 const exchangeUtilsMapping = {
   UniswapV3: {
@@ -56,10 +55,13 @@ const wrappedProviderExchanges = ['UniswapV3', 'Sushiswap']
 
 export async function getMaxTrade(
   tokenAddress: string,
-  maxSlipagePercent: number,
+  maxSlippagePercent: number,
   exchange: ExchangeName,
   chainId: ChainId
 ): Promise<MaxTradeResponse> {
+  if (exchange === 'ZeroEx') {
+    return await getZeroExQuote(tokenAddress, maxSlippagePercent)
+  }
   let provider = getProvider()
   if (wrappedProviderExchanges.includes(exchange)) {
     provider = new DeployHelper(provider)
@@ -68,7 +70,7 @@ export async function getMaxTrade(
   const quote = await maxTradeGetter(
     provider,
     tokenAddress,
-    ether(maxSlipagePercent),
+    ether(maxSlippagePercent),
     chainId
   )
   return {
@@ -81,6 +83,9 @@ export async function getLiquidity(
   exchange: ExchangeName,
   chainId: ChainId
 ) {
+  if (exchange === 'ZeroEx') {
+    return getZeroExLiquidity(tokenAddress);
+  }
   return exchangeUtilsMapping[exchange].liquidityGetter(tokenAddress, chainId)
 }
 
