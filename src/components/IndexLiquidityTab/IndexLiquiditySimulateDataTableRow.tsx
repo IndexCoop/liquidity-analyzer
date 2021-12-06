@@ -20,7 +20,7 @@ type props = {
 const IndexLiquiditySimulateDataTableRow = (props: props) => {
   const [maxTrade, setMaxTrade] = useState<void | BigNumber>(BigNumber.from(0))
   const [allowedSlippage, setAllowedSlippage] = useState('0.5')
-  const [target, setTarget] = useState('');
+  const [target, setTarget] = useState(props.component.percentOfSet);
   const [isLoading, setIsLoading] = useState(false)
   const [bestExchange, setBestExchange] = useState('')
   const [tradeError, setTradeError] = useState(false)
