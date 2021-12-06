@@ -194,14 +194,11 @@ const IndexLiquidityTab = (props: props) => {
             />
           )}
         />
-
-        {/* TODO: Add functionality */}
-        {/* via Simulate Rebalance Epic */}
         <RebalanceCheckbox />
         <TextField
           value={gasCost}
           onChange={onGasCostChange}
-          label='Desired Amount'
+          label='Gas Cost in Gwei'
           inputProps={{
             autoComplete: 'new-password', // disable autocomplete and autofill
           }}
@@ -308,9 +305,7 @@ interface DataTableProps {
 
 const DataTable = styled.div<DataTableProps>`
     display: grid;
-    // grid-template-columns: 10px repeat(5, 200px);
-    // grid-template-columns: 100px repeat(10, 200px); // use this when simulating rebalance
-    grid-template-columns: ${prop => prop.isSimulated ? '100px repeat(10, 130px)' : '10px repeat(5, 200px)'};
+    grid-template-columns: ${prop => prop.isSimulated ? '100px repeat(10, 140px)' : '10px repeat(5, 200px)'};
     grid-row-gap: 4px;
     flex: 4;
 `

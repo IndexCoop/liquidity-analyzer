@@ -14,12 +14,13 @@ type props = {
   component: IndexComponent
   selectedIndex: string
   gasCost: string
+
 }
 
 const IndexLiquiditySimulateDataTableRow = (props: props) => {
   const [maxTrade, setMaxTrade] = useState<void | BigNumber>(BigNumber.from(0))
   const [allowedSlippage, setAllowedSlippage] = useState('0.5')
-  const [target, setTarget] = useState('0')
+  const [target, setTarget] = useState('');
   const [isLoading, setIsLoading] = useState(false)
   const [bestExchange, setBestExchange] = useState('')
   const [tradeError, setTradeError] = useState(false)
@@ -115,8 +116,6 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
     const dollarChange = parseFloat(`${parseFloat(percentageChange) * 0.01 * selectedIndexMarketCap}`).toFixed(2);
     const numberOfTrade = Math.abs(Math.round(parseFloat(`${ parseFloat(dollarChange) / maxTradeUSD }`)));
     const estimatedCost = parseFloat(props.gasCost) * numberOfTrade * 1.3
-    console.log('no. of traders',numberOfTrade );
-    
 
     return (
       <>
@@ -134,7 +133,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
             />
         </TableDataRightAlign>
         <TableDataRightAlign>{percentageChange}</TableDataRightAlign>
-        <TableDataRightAlign>{dollarChange}</TableDataRightAlign>
+        <TableDataRightAlign>{formatUSD(parseFloat(dollarChange))}</TableDataRightAlign>
         <TableDataRightAlign>
           <TextField
               value={allowedSlippage}
@@ -151,7 +150,6 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
         <TableDataRightAlign>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatUSD(maxTradeUSD)}</TableDataRightAlign> 
         <TableDataRightAlign>{numberOfTrade}</TableDataRightAlign>
         <TableDataRightAlign>{formatUSD(estimatedCost)}</TableDataRightAlign>
-
       </>
     )
   }
