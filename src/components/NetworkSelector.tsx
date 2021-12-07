@@ -10,7 +10,7 @@ interface Network {
 
 const selectableNetworks: Network[] = [
   { chainId: ChainId.ethereum, label: 'Mainnet' },
-  // { chainId: ChainId.polygon, label: 'Polygon' },
+  { chainId: ChainId.polygon, label: 'Polygon' },
 ]
 
 interface NetworkSelectorProps {
