@@ -21,10 +21,13 @@ function getFactoryAddress(chainId: ChainId) {
   }
 }
 
+const reducer = (previousValue: BigNumber, currentValue: BigNumber) =>
+  previousValue.add(currentValue)
+
 // Usage note, targetPriceImpact should be the impact including fees! Balancer pool fees can change and it's not easy to extract from the data
 // we have so put in a number that is net of fees.
 async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
-  let response = {
+  let response: LiquidityBalance = {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -48,12 +51,12 @@ async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
     })
   )
 
-  const reducer = (previousValue: BigNumber, currentValue: BigNumber) =>
-    previousValue.add(currentValue)
-  return {
+  response = {
     tokenBalance: tokenBalances.reduce(reducer).div(TEN_POW_18),
     wethBalance: wethBalances.reduce(reducer).div(TEN_POW_18),
   }
+
+  return response
 }
 
 async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
@@ -61,17 +64,77 @@ async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
+  const WETH = getWETH(chainId)
+  const tokenList = [tokenAddress, WETH]
+  const query = `
+        query {
+          pools(where: {tokensList_contains: [${tokenList.map(
+            (val) => `"${val}"`
+          )}]}) {
+            address
+            tokensList
+            tokens {
+              address
+              balance
+            }
+          }
+        }`
 
-  // TODO: add balancer v2 factory abi
+  try {
+    const result = await fetch(
+      `https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      }
+    )
 
-  // TODO: fetch pool id for pair (via subgraph)
-  // https://dev.balancer.fi/resources/pool-interfacing#poolids
-  // https://thegraph.com/hosted-service/subgraph/balancer-labs/balancer-v2
+    const json = await result.json()
+    const pools = json.data.pools
 
-  // TODO: use vault.getPoolTokens() to obtain balances
-  // https://dev.balancer.fi/resources/pool-interfacing#pool-balances
+    if (pools === undefined || pools.length < 1) {
+      console.log('Balancer: no pool found for pair')
+      return response
+    }
 
-  return response
+    let tokenBalances: BigNumber[] = []
+    let wethBalances: BigNumber[] = []
+
+    const pairPools = pools.filter((pool: any) => {
+      return pool.tokensList.length === 2
+    })
+
+    pairPools.map((pool: any) => {
+      const token = pool.tokens.filter(
+        (token: any) =>
+          token.address.toLowerCase() === tokenAddress.toLowerCase()
+      )
+      const weth = pool.tokens.filter(
+        (token: any) => token.address.toLowerCase() === WETH.toLowerCase()
+      )
+      if (token.length < 1 || weth.length < 1) {
+        tokenBalances.push(BigNumber.from(0))
+        wethBalances.push(BigNumber.from(0))
+      } else {
+        const tokenBalance = parseInt(token[0].balance)
+        const wethBalance = parseInt(weth[0].balance)
+        tokenBalances.push(BigNumber.from(tokenBalance))
+        wethBalances.push(BigNumber.from(wethBalance))
+      }
+    })
+
+    response = {
+      tokenBalance: tokenBalances.reduce(reducer),
+      wethBalance: wethBalances.reduce(reducer),
+    }
+
+    return response
+  } catch (error) {
+    console.log('Error fetching balancer graph API')
+    console.log(error)
+    return response
+  }
 }
 
 export async function getBalancerV1Liquidity(
@@ -80,8 +143,8 @@ export async function getBalancerV1Liquidity(
 ): Promise<LiquidityBalance> {
   switch (chainId) {
     case ChainId.ethereum:
-      return getBalancerV1(tokenAddress, chainId)
+      return await getBalancerV1(tokenAddress, chainId)
     case ChainId.polygon:
-      return getBalancerV2(tokenAddress, chainId)
+      return await getBalancerV2(tokenAddress, chainId)
   }
 }
