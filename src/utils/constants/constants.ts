@@ -48,10 +48,8 @@ export const TEN_POW_18 = BigNumber.from(10).pow(18)
 export const TEN_POW_16 = BigNumber.from(10).pow(16)
 
 export const ALCHEMY_API = {
-  [ChainId.ethereum]:
-    'https://eth-mainnet.alchemyapi.io/v2/5j2PCDrDSbB5C6n8pnka21H3NSoUje4j', // + process.env.ALCHEMY_TOKEN;
-  [ChainId.polygon]:
-    'https://polygon-mainnet.g.alchemy.com/v2/L9jbLT6_-U9rEuvLoMXVvUYoZQx04pEI',
+  [ChainId.ethereum]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_API_ETHEREUM}`,
+  [ChainId.polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_API_POLYGON}`,
 }
 
 export const CG_ETH_PRICE_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
