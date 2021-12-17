@@ -16,7 +16,9 @@ import { formatUSD } from 'utils/formatters'
 interface props {
   desiredAmount: string,
   onDesiredAmountChange: (arg0: ChangeEvent<HTMLInputElement>) => void  
+  
 }
+
 const DATA_TABLE_HEADERS = [
   'Component',
   'Weight %',
@@ -39,6 +41,7 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'Estimated Cost'
 ]
 const IndexLiquidityTab = (props: props) => {
+  const [totalWeight, setTotalWeight] = useState<number | undefined>(0);
   const [shouldSimulateRebalance, setShouldSimulateRebalance] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState('')
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
@@ -48,7 +51,6 @@ const IndexLiquidityTab = (props: props) => {
   const dataComponents = useDataIndexComponents().components
   const dpiComponents = useDpiIndexComponents().components
   const mviComponents = useMviIndexComponents().components
-
   const [gasCost, setGasCost] = useState('')
   const onGasCostChange = (e: ChangeEvent<HTMLInputElement>) => {
     setGasCost(e.target.value)
@@ -129,13 +131,17 @@ const IndexLiquidityTab = (props: props) => {
   }
   const renderComponentsDataTable = () => {
 
-    const formatDataTableRow = (components: IndexComponent[]) => {
+  const formatDataTableRow = (components: IndexComponent[]) => {
+  const sumOfWeight = components.map((component: any) => parseFloat(component.percentOfSet)).reduce((prev: number, next: number) => prev + next);
+  console.log('totalWeight:', sumOfWeight);
+  setTotalWeight(sumOfWeight);
+  
       if (shouldSimulateRebalance) {   
         return components?.map((component, index) =>
           <IndexLiquiditySimulateDataTableRow 
             selectedIndex={selectedIndex}
             gasCost={gasCost}
-            component={component} 
+            component={component}
             key={index}
           />
         )
@@ -170,6 +176,7 @@ const IndexLiquidityTab = (props: props) => {
       </TitleContainer>
     )
   }
+
   return (
     <TabContainer>
       <HeaderRow>
@@ -234,12 +241,17 @@ const IndexLiquidityTab = (props: props) => {
           selectedIndex
             ? <>
                 {renderDataTableHeaders()}
-                {renderComponentsDataTable()}
+                {renderComponentsDataTable()} 
+              <Tabletotal> 
+                Total
+               <TableTotalWeight>{totalWeight}</TableTotalWeight>
+              </Tabletotal>
               </>
             : <SelectAToken />
         }
       </DataTable>
     </TabContainer>
+    
   )
 }
 
@@ -339,4 +351,27 @@ const TableHeaderRightAlign = styled.div`
   font-weight: 600;
   text-align: right;
   border-bottom: 2px solid black;
+`
+
+const Tabletotal =styled.div`
+display: flex;
+flex-direction: row;
+margin: 0;
+height: 60px;
+font-size: 18px;
+font-weight: 500;
+`
+const TableTotalWeight = styled(Tabletotal)`
+  margin-left: 150px;
+  line-height: 24px;
+  text-align: right;
+`
+const TableTotalTarget = styled(TableTotalWeight)`
+  margin-left: 50px; 
+`
+const TableTotalNumber = styled(TableTotalTarget)`
+margin-left: 1000px;
+`
+const TableTotallEstimatedCost = styled(TableTotalNumber)`
+margin-left: 60px;
 `
