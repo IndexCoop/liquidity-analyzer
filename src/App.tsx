@@ -34,7 +34,7 @@ const App: React.FC = () => {
     return activeTab === TABS.tokenLiquidity ? (
       <>
         <TitleHeader>
-          <TokenTitle />
+          <TokenTitle chainId={props.chainId} />
           <NetworkSelector didSelectNetwork={onSelectedNetwork} />
         </TitleHeader>
         <Container>
@@ -83,11 +83,8 @@ const App: React.FC = () => {
 }
 
 const Providers: React.FC = ({ children }) => {
-  return (
-        <MarketDataProvider>{children}</MarketDataProvider>
-  )
+  return <MarketDataProvider>{children}</MarketDataProvider>
 }
-
 
 export default App
 

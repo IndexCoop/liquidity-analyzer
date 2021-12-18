@@ -52,6 +52,11 @@ export const ALCHEMY_API = {
   [ChainId.polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_API_POLYGON}`,
 }
 
+export const BLOCK_EXPLORER = {
+  [ChainId.ethereum]: 'https://etherscan.io/address/',
+  [ChainId.polygon]: 'https://polygonscan.com/address/',
+}
+
 export const CG_ETH_PRICE_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
 export const getCoinGeckoApi = (
   tokenAddress: string,
@@ -74,21 +79,21 @@ export const ALL_INDEX_SET_HTML_REFS: any = {
   DPI: 'defipulse-index',
   MVI: 'metaverse-index',
   BED: 'bankless-bed-index',
-  DATA: 'data-economy-index'
+  DATA: 'data-economy-index',
 }
 
 export const INDEX_TOKENS = {
   DPI: 'DPI',
   MVI: 'MVI',
   BED: 'BED',
-  DATA: 'DATA'
+  DATA: 'DATA',
 }
 
 export const INDEX_TOKENS_FOR_SELECT = [
   { name: 'DPI' },
   { name: 'MVI' },
   { name: 'BED' },
-  { name: 'DATA' }
+  { name: 'DATA' },
 ]
 
 export const EXCHANGES: Array<ExchangeName> = [
