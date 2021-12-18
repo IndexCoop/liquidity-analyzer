@@ -28,6 +28,7 @@ const reducer = (previousValue: BigNumber, currentValue: BigNumber) =>
 // we have so put in a number that is net of fees.
 async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
   let response: LiquidityBalance = {
+    pairAddress: '',
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -52,6 +53,7 @@ async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
   )
 
   response = {
+    pairAddress: pools[0],
     tokenBalance: tokenBalances.reduce(reducer).div(TEN_POW_18),
     wethBalance: wethBalances.reduce(reducer).div(TEN_POW_18),
   }
@@ -61,6 +63,7 @@ async function getBalancerV1(tokenAddress: string, chainId: ChainId) {
 
 async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
   let response: LiquidityBalance = {
+    pairAddress: '',
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -98,6 +101,7 @@ async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
       return response
     }
 
+    let poolAddresses: string[] = []
     let tokenBalances: BigNumber[] = []
     let wethBalances: BigNumber[] = []
 
@@ -119,12 +123,14 @@ async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
       } else {
         const tokenBalance = parseInt(token[0].balance)
         const wethBalance = parseInt(weth[0].balance)
+        poolAddresses.push(pool.address)
         tokenBalances.push(BigNumber.from(tokenBalance))
         wethBalances.push(BigNumber.from(wethBalance))
       }
     })
 
     response = {
+      pairAddress: poolAddresses[0],
       tokenBalance: tokenBalances.reduce(reducer),
       wethBalance: wethBalances.reduce(reducer),
     }

@@ -29,6 +29,7 @@ export async function getUniswapV2Liquidity(
   const [tokenBalance, wethBalance] = await pairContract.getReserves()
 
   return {
+    pairAddress,
     tokenBalance: tokenBalance.div(TEN_POW_18),
     wethBalance: wethBalance.div(TEN_POW_18),
   }

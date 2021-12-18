@@ -25,6 +25,7 @@ export async function getKyberLiquidity(
   chainId: ChainId
 ): Promise<LiquidityBalance> {
   let response = {
+    pairAddress: '',
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -45,12 +46,12 @@ export async function getKyberLiquidity(
     const pairContract = await new Contract(pools[0], KYBER_POOL_ABI, provider)
     const [tokenBalance, wethBalance] = await pairContract.getReserves()
 
+    response.pairAddress = pairContract.address
     response.tokenBalance = tokenBalance.div(TEN_POW_18)
     response.wethBalance = tokenBalance.div(wethBalance)
-
   } catch (error) {
     console.log('Error getting liquidity from kyber')
     console.log(error)
   }
-    return response
+  return response
 }

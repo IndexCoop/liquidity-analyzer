@@ -7,6 +7,7 @@ import { ChainId, PRICE_DECIMALS } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
 import { MarketDataContext } from 'contexts/MarketData'
 import { formatDisplay, formatUSD } from 'utils/formatters'
+import { getBlockExplorerUrl } from '../utils/block-explorer'
 
 const HALF_PERCENT = 0.5
 const ONE_PERCENT = 1
@@ -17,6 +18,7 @@ const ExchangeSummary = (props: {
   desiredAmount: string
   chainId: ChainId
 }) => {
+  const [pairAddress, setPairAddress] = useState('')
   const [tokenBalance, setTokenBalance] = useState<BigNumber>(BigNumber.from(0))
   const [wethBalance, setWethBalance] = useState<BigNumber>(BigNumber.from(0))
   const [maxTrade, setMaxTrade] = useState<BigNumber>(BigNumber.from(0))
@@ -30,11 +32,17 @@ const ExchangeSummary = (props: {
   const [tradeError, setTradeError] = useState(false)
   const { selectedToken } = useContext(MarketDataContext)
   const tenPowDecimals = BigNumber.from(10).pow(selectedToken.decimals)
+  const explorerUrl =
+    pairAddress.length > 0
+      ? getBlockExplorerUrl(pairAddress, props.chainId)
+      : '#'
+  const explorerTarget = explorerUrl === '#' ? '_self' : '_blank'
 
   useEffect(() => {
     setLiquidityLoading(true)
     getLiquidity(selectedToken.address, props.exchange, props.chainId)
       .then((response) => {
+        setPairAddress(response.pairAddress)
         setTokenBalance(response.tokenBalance)
         setWethBalance(response.wethBalance)
         setLiquidityError(false)
@@ -119,7 +127,16 @@ const ExchangeSummary = (props: {
   }
   return (
     <>
-      <TableData>{props.exchange}</TableData>
+      <TableData>
+        <a
+          href={explorerUrl}
+          style={{ color: 'black' }}
+          target={explorerTarget}
+          rel='noreferrer'
+        >
+          {props.exchange}
+        </a>
+      </TableData>
       {renderCustomTableData(
         liquidityLoading,
         formatUSD(totalLiquidity),
