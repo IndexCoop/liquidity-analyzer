@@ -41,7 +41,7 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'Estimated Cost'
 ]
 const IndexLiquidityTab = (props: props) => {
-  const [totalWeight, setTotalWeight] = useState<number | undefined>(0);
+  const [totalWeight, setTotalWeight] = useState<number | undefined>();
   const [shouldSimulateRebalance, setShouldSimulateRebalance] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState('')
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
@@ -80,7 +80,7 @@ const IndexLiquidityTab = (props: props) => {
     }
   }, [selectedIndex])
   
-  
+  console.log('selectedIndex',selectedIndex);
   useEffect(() => {
     const tokenData = setComponents[selectedIndex]
     const netAssetValueReducer = (
@@ -94,8 +94,11 @@ const IndexLiquidityTab = (props: props) => {
         ? tokenData.reduce(netAssetValueReducer, 0)
         : 0
     }
+    const sumOfWeight = tokenData?.map((token: any) => parseFloat(token.percentOfSet)).reduce((prev: number, next: number) => prev + next);
+    setTotalWeight(sumOfWeight);
     setNetAssetValue(getNetAssetValue())
   }, [selectedIndex])
+
   
   const RebalanceCheckbox = () => {
     return (
@@ -129,13 +132,9 @@ const IndexLiquidityTab = (props: props) => {
       )
     })
   }
-  const renderComponentsDataTable = () => {
 
+  const renderComponentsDataTable = () => {
   const formatDataTableRow = (components: IndexComponent[]) => {
-  const sumOfWeight = components.map((component: any) => parseFloat(component.percentOfSet)).reduce((prev: number, next: number) => prev + next);
-  console.log('totalWeight:', sumOfWeight);
-  setTotalWeight(sumOfWeight);
-  
       if (shouldSimulateRebalance) {   
         return components?.map((component, index) =>
           <IndexLiquiditySimulateDataTableRow 
@@ -156,6 +155,7 @@ const IndexLiquidityTab = (props: props) => {
     }
     switch (selectedIndex) {
         case INDEX_TOKENS.BED:
+           
           return formatDataTableRow(bedComponents!) 
         case INDEX_TOKENS.DATA:
           return formatDataTableRow(dataComponents!) 
@@ -176,7 +176,7 @@ const IndexLiquidityTab = (props: props) => {
       </TitleContainer>
     )
   }
-
+console.log('totalWeight', totalWeight);
   return (
     <TabContainer>
       <HeaderRow>
@@ -242,10 +242,12 @@ const IndexLiquidityTab = (props: props) => {
             ? <>
                 {renderDataTableHeaders()}
                 {renderComponentsDataTable()} 
+              
               <Tabletotal> 
-                Total
-               <TableTotalWeight>{totalWeight}</TableTotalWeight>
-              </Tabletotal>
+                Total 
+                  <TableTotalWeight>{totalWeight}</TableTotalWeight>
+              </Tabletotal> 
+            
               </>
             : <SelectAToken />
         }

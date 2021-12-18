@@ -20,7 +20,6 @@ type props = {
 const IndexLiquiditySimulateDataTableRow = (props: props) => {
   const [maxTrade, setMaxTrade] = useState<void | BigNumber>(BigNumber.from(0))
   const [allowedSlippage, setAllowedSlippage] = useState('0.5')
-  const [target, setTarget] = useState(props.component.percentOfSet);
   const [isLoading, setIsLoading] = useState(false)
   const [bestExchange, setBestExchange] = useState('')
   const [tradeError, setTradeError] = useState(false)
@@ -38,7 +37,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
         setTokenPrice(BigNumber.from(Math.round(usd * PRICE_DECIMALS)))
       })
       .catch((error) => console.log(error))
-  }, [props.component!.address])
+  }, [props.component.address])
 
   useEffect(():void => {findMaxTrade(props.component)},[props.component])
 
@@ -51,6 +50,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
         .catch((error: any) => console.log(error))
     }
   }, [props.selectedIndex])
+  const [target, setTarget] = useState(props.component.percentOfSet);
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
   }
@@ -116,7 +116,6 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
     const dollarChange = parseFloat(`${parseFloat(percentageChange) * 0.01 * selectedIndexMarketCap}`).toFixed(2);
     const numberOfTrade = Math.abs(Math.round(parseFloat(`${ parseFloat(dollarChange) / maxTradeUSD }`)));
     const estimatedCost = parseFloat(props.gasCost) * numberOfTrade * 1.3
-
     return (
       <>
         <TableData>{component.symbol}</TableData>
