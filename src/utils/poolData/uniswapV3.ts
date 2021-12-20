@@ -35,6 +35,7 @@ export async function getUniswapV3Liquidity(
   const tokenBalance: BigNumber = await tokenContract.balanceOf(poolAddress)
   const wethBalance: BigNumber = await wethContract.balanceOf(poolAddress)
   return {
+    pairAddress: poolAddress,
     tokenBalance: tokenBalance.div(TEN_POW_18),
     wethBalance: wethBalance.div(TEN_POW_18),
   }

@@ -1,10 +1,11 @@
-import { BigNumber } from "ethers";
+import { BigNumber } from 'ethers'
 
 export type LiquidityBalance = {
-    tokenBalance: BigNumber,
-    wethBalance: BigNumber,
+  pairAddress: string
+  tokenBalance: BigNumber
+  wethBalance: BigNumber
 }
 
 export type MaxTradeResponse = {
-    size: BigNumber,
+  size: BigNumber
 }
