@@ -3,7 +3,7 @@ import useMarketData from 'hooks/useMarketDataComponents'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { ChainId, PRICE_DECIMALS, EXCHANGES } from '../utils/constants/constants'
+import { ChainId, PRICE_DECIMALS, EXCHANGETOSTRING } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
 import { MarketDataContext } from 'contexts/MarketData'
 import { formatDisplay, formatUSD } from 'utils/formatters'
@@ -30,17 +30,6 @@ const ExchangeSummary = (props: {
   const [tradeError, setTradeError] = useState(false)
   const { selectedToken } = useContext(MarketDataContext)
   const tenPowDecimals = BigNumber.from(10).pow(selectedToken.decimals)
-
-  const exchangeNamesMap =  {
-    UniswapV3fee005: 'Uniswap (0.05% fee tier)',
-    UniswapV3fee03: 'Uniswap (0.30% fee tier)',
-    UniswapV3fee1: 'Uniswap (0.1% fee tier)',
-    UniswapV2: 'UniswapV2',
-    Sushiswap: 'Sushiswap',
-    Kyber: 'Kyber',
-    Balancer:'Balancer',
-    ZeroEx: 'ZeroEx',
-  }
 
   useEffect(() => {
     setLiquidityLoading(true)
@@ -130,7 +119,7 @@ const ExchangeSummary = (props: {
   }
   return (
     <>
-      <TableData>{exchangeNamesMap[props.exchange]}</TableData>
+      <TableData>{EXCHANGETOSTRING[props.exchange]}</TableData>
       {renderCustomTableData(
         liquidityLoading,
         formatUSD(totalLiquidity),

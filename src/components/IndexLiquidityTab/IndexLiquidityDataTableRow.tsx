@@ -2,12 +2,14 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
-import { ChainId, PRICE_DECIMALS, EXCHANGES } from 'utils/constants/constants'
+import { ChainId, PRICE_DECIMALS, EXCHANGES, EXCHANGETOSTRING } from 'utils/constants/constants'
 import { getMaxTrade, ExchangeName } from 'utils/poolData'
 import { BigNumber } from 'ethers'
 import CircularProgress from '@mui/material/CircularProgress'
 import { getCoinGeckoApi } from 'utils/constants/constants'
 import { formatDisplay, formatUSD } from 'utils/formatters'
+
+
 
 type props = {
   component: IndexComponent
@@ -78,10 +80,10 @@ const IndexLiquidityDataTableRow = (props: props) => {
       console.error(error.toString())
     })
     const resultsFromExchanges = await checkExchanges()
-    const exchangeMaxTrades = resultsFromExchanges!.map((exchangeObject) => { 
+    const exchangeMaxTrades = resultsFromExchanges!.map((exchangeObject) => {
       if (exchangeObject && exchangeObject.compressedResponse) {
         return exchangeObject.compressedResponse
-      } 
+      }
     })
     const findBestTrade = () => {
       let sorted = [...exchangeMaxTrades].sort((a,b) => a && b ? b - a : 0)
@@ -90,7 +92,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
       return resultsFromExchanges![indexOfBestTrade]
     }
     const bestTrade = findBestTrade()
-    setBestExchange(bestTrade!.exchange)
+    setBestExchange(EXCHANGETOSTRING[bestTrade!.exchange])
     setMaxTrade(bestTrade!.response)
   }
   const renderDataTableRow = (component: IndexComponent | undefined) => {
@@ -116,7 +118,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
               }}
             />
         </TableDataRightAlign>
-        <TableDataRightAlign>{isLoading ? <CircularProgress /> : bestExchange}</TableDataRightAlign>
+        <TableDataRightAlign>{isLoading ? <CircularProgress /> : bestExchange }</TableDataRightAlign>
         <TableDataRightAlign>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatDisplay(maxTradeToken)}</TableDataRightAlign>
         <TableDataRightAlign>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatUSD(maxTradeUSD)}</TableDataRightAlign>
       </>

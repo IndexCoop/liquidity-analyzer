@@ -102,6 +102,17 @@ export const EXCHANGES: Array<ExchangeName> = [
   'ZeroEx',
 ]
 
+export const EXCHANGETOSTRING =  {
+  UniswapV3fee005: 'Uniswap (0.05% fee tier)',
+  UniswapV3fee03: 'Uniswap (0.30% fee tier)',
+  UniswapV3fee1: 'Uniswap (0.1% fee tier)',
+  UniswapV2: 'UniswapV2',
+  Sushiswap: 'Sushiswap',
+  Kyber: 'Kyber',
+  Balancer:'Balancer',
+  ZeroEx: 'ZeroEx',
+}
+
 export const V2_FACTORY_ABI = [
   {
     inputs: [

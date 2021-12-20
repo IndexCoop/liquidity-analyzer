@@ -20,6 +20,7 @@ export async function getUniswapV3Liquidityfee03( tokenAddress: string, chainId:
 export async function getUniswapV3Liquidityfee1( tokenAddress: string, chainId: ChainId) {
   return getUniswapV3Liquidity(tokenAddress,chainId,FeeAmount.HIGH)
 }
+
 async function getUniswapV3Liquidity(
   tokenAddress: string,
   chainId: ChainId,
