@@ -47,6 +47,9 @@ export const DPI_SINGLE_INDEX_MODULE =
 export const TEN_POW_18 = BigNumber.from(10).pow(18)
 export const TEN_POW_16 = BigNumber.from(10).pow(16)
 
+// Choose how many decimals to keep when converting float price to BigNumber
+export const PRICE_DECIMALS = 100
+
 export const ALCHEMY_API = {
   [ChainId.ethereum]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_API_ETHEREUM}`,
   [ChainId.polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_API_POLYGON}`,
@@ -104,6 +107,9 @@ export const EXCHANGES: Array<ExchangeName> = [
   'Balancer',
   'ZeroEx',
 ]
+
+// Exchanges used for rebalances
+export const REBALANCE_EXCHANGES: Array<ExchangeName> = EXCHANGES.filter(ex => ex !== 'ZeroEx')
 
 export const V2_FACTORY_ABI = [
   {
@@ -1502,6 +1508,3 @@ export const BALANCER_OCR_ABI = [
     type: 'function',
   },
 ]
-
-// Choose how many decimals to keep when converting float price to BigNumber
-export const PRICE_DECIMALS = 100
