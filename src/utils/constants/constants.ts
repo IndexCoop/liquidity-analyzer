@@ -103,9 +103,9 @@ export const EXCHANGES: Array<ExchangeName> = [
 ]
 
 export const EXCHANGETOSTRING =  {
-  UniswapV3fee005: 'Uniswap (0.05% fee tier)',
-  UniswapV3fee03: 'Uniswap (0.30% fee tier)',
-  UniswapV3fee1: 'Uniswap (0.1% fee tier)',
+  UniswapV3fee005: 'UniswapV3 (0.05% fee tier)',
+  UniswapV3fee03: 'UniswapV3 (0.30% fee tier)',
+  UniswapV3fee1: 'UniswapV3 (0.1% fee tier)',
   UniswapV2: 'UniswapV2',
   Sushiswap: 'Sushiswap',
   Kyber: 'Kyber',
