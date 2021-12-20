@@ -1,9 +1,8 @@
 import { BigNumber, constants } from "ethers";
-import { ZERO } from "utils/constants/constants";
 import { LiquidityBalance, MaxTradeResponse } from "./types";
 
 const mainNet = "https://api.0x.org";
-const pricePath = "swap/v1/price";
+// const pricePath = "swap/v1/price";
 const swapPath = "swap/v1/quote";
 
 type ZeroExQuote = {

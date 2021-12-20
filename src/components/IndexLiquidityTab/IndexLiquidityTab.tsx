@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ChangeEvent, useState, useEffect } from 'react'
+import { ChangeEvent, useState, useEffect, useMemo } from 'react'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import useMarketDataComponents from 'hooks/useMarketDataComponents'
@@ -44,12 +44,15 @@ const IndexLiquidityTab = (props: props) => {
   const dataComponents = useMarketDataComponents().dataComponent
   const dpiComponents = useMarketDataComponents().dpiComponent
   const mviComponents = useMarketDataComponents().mviComponent
-  const setComponents: any = {
-    BED: bedComponents,
-    DATA: dataComponents,
-    DPI: dpiComponents,
-    MVI: mviComponents
-  }
+  const setComponents: any = useMemo(() => (
+    {
+      BED: bedComponents,
+      DATA: dataComponents,
+      DPI: dpiComponents,
+      MVI: mviComponents
+    }
+  ), [bedComponents, dataComponents, dpiComponents, mviComponents])
+
   useEffect(() => {
     fetchTotalMarketCap()
       .then((response: any) => {
@@ -82,7 +85,7 @@ const IndexLiquidityTab = (props: props) => {
         : 0
     }
     setNetAssetValue(getNetAssetValue())
-  }, [selectedIndex])
+  }, [selectedIndex, setComponents])
 
   
   const RebalanceCheckbox = () => {

@@ -31,7 +31,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
         setTokenPrice(BigNumber.from(Math.round(usd * PRICE_DECIMALS)))
       })
       .catch((error) => console.log(error))
-  }, [props.component!.address])
+  }, [props.component.address])
   useEffect((): void => {
     findMaxTrade(props.component)
   }, [props.component])
