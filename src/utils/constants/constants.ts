@@ -92,7 +92,9 @@ export const INDEX_TOKENS_FOR_SELECT = [
 ]
 
 export const EXCHANGES: Array<ExchangeName> = [
-  'UniswapV3',
+  'UniswapV3fee005',
+  'UniswapV3fee03',
+  'UniswapV3fee1',
   'UniswapV2',
   'Sushiswap',
   'Kyber',

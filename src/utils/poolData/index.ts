@@ -11,7 +11,7 @@ import {
 import { ether } from '@setprotocol/index-coop-contracts/dist/utils/common'
 import { getProvider } from '../provider'
 import { BigNumber } from 'ethers'
-import { getUniswapV3Liquidity } from './uniswapV3'
+import { getUniswapV3Liquidityfee03,getUniswapV3Liquidityfee005,getUniswapV3Liquidityfee1 } from './uniswapV3'
 import { getUniswapV2Liquidity } from './uniswapV2'
 import { getSushiswapLiquidity } from './sushiswap'
 import { getBalancerV1Liquidity } from './balancerV1'
@@ -21,7 +21,9 @@ import { getZeroExLiquidity, getZeroExQuote } from './zeroEx'
 import { MaxTradeResponse } from './types'
 
 export type ExchangeName =
-  | 'UniswapV3'
+  | 'UniswapV3fee005'
+  | 'UniswapV3fee03'
+  | 'UniswapV3fee1'
   | 'UniswapV2'
   | 'Sushiswap'
   | 'Kyber'
@@ -29,10 +31,19 @@ export type ExchangeName =
   | 'ZeroEx'
 
 const exchangeUtilsMapping = {
-  UniswapV3: {
+  UniswapV3fee005: {
     maxTradeGetter: getUniswapV3Quote,
-    liquidityGetter: getUniswapV3Liquidity,
+    liquidityGetter: getUniswapV3Liquidityfee005,
   },
+  UniswapV3fee03: {
+    maxTradeGetter: getUniswapV3Quote,
+    liquidityGetter: getUniswapV3Liquidityfee03,
+  },
+  UniswapV3fee1: {
+    maxTradeGetter: getUniswapV3Quote,
+    liquidityGetter: getUniswapV3Liquidityfee1,
+  },
+
   UniswapV2: {
     maxTradeGetter: getUniswapV2Quote,
     liquidityGetter: getUniswapV2Liquidity,
@@ -51,7 +62,7 @@ const exchangeUtilsMapping = {
   },
 }
 
-const wrappedProviderExchanges = ['UniswapV3', 'Sushiswap']
+const wrappedProviderExchanges = ['UniswapV3fee005','UniswapV3fee03','UniswapV3fee1', 'Sushiswap']
 
 export async function getMaxTrade(
   tokenAddress: string,

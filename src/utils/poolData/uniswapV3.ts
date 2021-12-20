@@ -9,9 +9,21 @@ import { LiquidityBalance } from './types'
 
 const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 
-export async function getUniswapV3Liquidity(
+export async function getUniswapV3Liquidityfee005( tokenAddress: string, chainId: ChainId) {
+  return getUniswapV3Liquidity(tokenAddress,chainId,FeeAmount.LOW)
+}
+
+export async function getUniswapV3Liquidityfee03( tokenAddress: string, chainId: ChainId) {
+  return getUniswapV3Liquidity(tokenAddress,chainId,FeeAmount.MEDIUM)
+}
+
+export async function getUniswapV3Liquidityfee1( tokenAddress: string, chainId: ChainId) {
+  return getUniswapV3Liquidity(tokenAddress,chainId,FeeAmount.HIGH)
+}
+async function getUniswapV3Liquidity(
   tokenAddress: string,
-  chainId: ChainId
+  chainId: ChainId,
+  feeAmount: number
 ): Promise<LiquidityBalance> {
   const provider = getProvider()
   const factoryInstance = await new Contract(
