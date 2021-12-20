@@ -26,6 +26,7 @@ export async function getSushiswapLiquidity(
   chainId: ChainId
 ): Promise<LiquidityBalance> {
   let response = {
+    pairAddress: '',
     tokenBalance: BigNumber.from(0),
     wethBalance: BigNumber.from(0),
   }
@@ -52,6 +53,7 @@ export async function getSushiswapLiquidity(
 
     // For some reason for polygon the tokens returned seem to be switched up
     response = {
+      pairAddress,
       tokenBalance:
         chainId === ChainId.polygon
           ? wethBalance.div(TEN_POW_18)

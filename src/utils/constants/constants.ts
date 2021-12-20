@@ -47,9 +47,17 @@ export const DPI_SINGLE_INDEX_MODULE =
 export const TEN_POW_18 = BigNumber.from(10).pow(18)
 export const TEN_POW_16 = BigNumber.from(10).pow(16)
 
+// Choose how many decimals to keep when converting float price to BigNumber
+export const PRICE_DECIMALS = 100
+
 export const ALCHEMY_API = {
   [ChainId.ethereum]: `https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_API_ETHEREUM}`,
   [ChainId.polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_API_POLYGON}`,
+}
+
+export const BLOCK_EXPLORER = {
+  [ChainId.ethereum]: 'https://etherscan.io/address/',
+  [ChainId.polygon]: 'https://polygonscan.com/address/',
 }
 
 export const CG_ETH_PRICE_URL = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd`
@@ -74,21 +82,21 @@ export const ALL_INDEX_SET_HTML_REFS: any = {
   DPI: 'defipulse-index',
   MVI: 'metaverse-index',
   BED: 'bankless-bed-index',
-  DATA: 'data-economy-index'
+  DATA: 'data-economy-index',
 }
 
 export const INDEX_TOKENS = {
   DPI: 'DPI',
   MVI: 'MVI',
   BED: 'BED',
-  DATA: 'DATA'
+  DATA: 'DATA',
 }
 
 export const INDEX_TOKENS_FOR_SELECT = [
   { name: 'DPI' },
   { name: 'MVI' },
   { name: 'BED' },
-  { name: 'DATA' }
+  { name: 'DATA' },
 ]
 
 export const EXCHANGES: Array<ExchangeName> = [
@@ -112,6 +120,8 @@ export const EXCHANGETOSTRING =  {
   Balancer:'Balancer',
   ZeroEx: 'ZeroEx',
 }
+// Exchanges used for rebalances
+export const REBALANCE_EXCHANGES: Array<ExchangeName> = EXCHANGES.filter(ex => ex !== 'ZeroEx')
 
 export const V2_FACTORY_ABI = [
   {
@@ -1510,6 +1520,3 @@ export const BALANCER_OCR_ABI = [
     type: 'function',
   },
 ]
-
-// Choose how many decimals to keep when converting float price to BigNumber
-export const PRICE_DECIMALS = 100

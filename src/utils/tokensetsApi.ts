@@ -1,6 +1,5 @@
 import { camelCase } from 'lodash'
 import { ALL_INDEX_SET_HTML_REFS } from 'utils/constants/constants'
-import IndexComponent from 'components/IndexComponent'
 
 const tokensetsUrl = process.env.REACT_APP_TOKENSETS_URL
 

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
-import { ChainId, PRICE_DECIMALS, EXCHANGES, EXCHANGETOSTRING } from 'utils/constants/constants'
+import { ChainId, PRICE_DECIMALS, REBALANCE_EXCHANGES, EXCHANGETOSTRING } from 'utils/constants/constants'
 import { getMaxTrade, ExchangeName } from 'utils/poolData'
 import { BigNumber } from 'ethers'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -33,7 +33,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
         setTokenPrice(BigNumber.from(Math.round(usd * PRICE_DECIMALS)))
       })
       .catch((error) => console.log(error))
-  }, [props.component!.address])
+  }, [props.component.address])
   useEffect((): void => {
     findMaxTrade(props.component)
   }, [props.component])
@@ -62,7 +62,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
   }
   const findMaxTrade = async (component: IndexComponent) => {
     const checkExchanges = async () => Promise.all(
-      EXCHANGES.map((exchange) => checkMaxTrade(exchange, component)
+      REBALANCE_EXCHANGES.map((exchange) => checkMaxTrade(exchange, component)
         .then((response) => {
           return {
             exchange,
