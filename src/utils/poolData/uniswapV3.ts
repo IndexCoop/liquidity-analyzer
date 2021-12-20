@@ -34,7 +34,7 @@ async function getUniswapV3Liquidity(
   const poolAddress = await factoryInstance.getPool(
     tokenAddress,
     WETH,
-    FeeAmount.MEDIUM
+    feeAmount
   )
 
   if (poolAddress === ADDRESS_ZERO) {
