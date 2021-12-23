@@ -13,8 +13,8 @@ import { fetchMarketCap } from 'utils/tokensetsApi'
 type props = {
   component: IndexComponent
   selectedIndex: string
-  gasCost: string
-
+  gasCost: string,
+  updateTargetPercent: (value: string) => void
 }
 
 const IndexLiquiditySimulateDataTableRow = (props: props) => {
@@ -56,6 +56,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
   }
   const onTarget = (e: ChangeEvent<HTMLInputElement>) => {
     setTarget(e.target.value)
+    props.updateTargetPercent(e.target.value)
   }
   const checkMaxTrade = async (exchange: ExchangeName, component: IndexComponent) => {
     setIsLoading(true)
