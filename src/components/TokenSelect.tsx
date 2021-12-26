@@ -2,10 +2,10 @@ import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import { createFilterOptions } from '@mui/material/Autocomplete'
-import axios from 'axios'
+import { MainnetTokens, MaticTokens } from '@indexcoop/tokenlists'
 import { useEffect, useState, useContext, ChangeEvent } from 'react'
 import { MarketDataContext } from 'contexts/MarketData'
-import { ChainId, TOKEN_LIST } from '../utils/constants/constants'
+import { ChainId } from '../utils/constants/constants'
 
 export default function TokenSelect(props: {
   chainId: ChainId
@@ -16,13 +16,9 @@ export default function TokenSelect(props: {
   const { setSelectedToken } = useContext(MarketDataContext)
 
   useEffect(() => {
-    axios.get(TOKEN_LIST[props.chainId]).then((response) => {
-      const tokens =
-        props.chainId === ChainId.ethereum
-          ? response.data.tokens
-          : response.data
-      setTokens(tokens)
-    })
+    const tokens =
+      props.chainId === ChainId.ethereum ? MainnetTokens : MaticTokens
+    setTokens(tokens)
   }, [props.chainId])
 
   return (
