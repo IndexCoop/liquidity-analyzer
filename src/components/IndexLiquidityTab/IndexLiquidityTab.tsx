@@ -41,7 +41,8 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'Estimated Cost'
 ]
 const IndexLiquidityTab = (props: props) => {
-  const [totalWeight, setTotalWeight] = useState<number | undefined>();
+  const [totalWeight, setTotalWeight] = useState<number>();
+  const [targetWeight, setTargetWeight] = useState<number>();
   const [shouldSimulateRebalance, setShouldSimulateRebalance] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState('')
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
@@ -80,7 +81,6 @@ const IndexLiquidityTab = (props: props) => {
     }
   }, [selectedIndex])
   
-  console.log('selectedIndex',selectedIndex);
   useEffect(() => {
     const tokenData = setComponents[selectedIndex]
     const netAssetValueReducer = (
@@ -99,7 +99,6 @@ const IndexLiquidityTab = (props: props) => {
     setNetAssetValue(getNetAssetValue())
   }, [selectedIndex])
 
-  
   const RebalanceCheckbox = () => {
     return (
       <CheckboxContainer>
@@ -133,8 +132,12 @@ const IndexLiquidityTab = (props: props) => {
     })
   }
 
+  const setTargetPercent = (targetPercent: string, component: IndexComponent) => {
+    setTargetWeight(totalWeight! - parseInt(component.percentOfSet) + parseInt(targetPercent))
+  }
+
   const renderComponentsDataTable = () => {
-  const formatDataTableRow = (components: IndexComponent[]) => {
+    const formatDataTableRow = (components: IndexComponent[]) => {
       if (shouldSimulateRebalance) {   
         return components?.map((component, index) =>
           <IndexLiquiditySimulateDataTableRow 
@@ -142,6 +145,7 @@ const IndexLiquidityTab = (props: props) => {
             gasCost={gasCost}
             component={component}
             key={index}
+            updateTargetPercent={(value: string) => setTargetPercent(value, component)}
           />
         )
       }
@@ -243,12 +247,20 @@ console.log('totalWeight', totalWeight);
                 {renderDataTableHeaders()}
                 {renderComponentsDataTable()} 
               
-              <Tabletotal> 
-                Total 
-                  <TableTotalWeight>{totalWeight}</TableTotalWeight>
-              </Tabletotal> 
-            
+              <>
+                <Tabletotal> 
+                  Total 
+                </Tabletotal>
+                
+                <TableTotalWeight>
+                  {totalWeight}
+                </TableTotalWeight> 
+                
+                <TableTotalWeight>
+                  {targetWeight}
+                </TableTotalWeight> 
               </>
+            </>
             : <SelectAToken />
         }
       </DataTable>
@@ -356,17 +368,17 @@ const TableHeaderRightAlign = styled.div`
 `
 
 const Tabletotal =styled.div`
-display: flex;
-flex-direction: row;
-margin: 0;
-height: 60px;
-font-size: 18px;
-font-weight: 500;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  height: 60px;
+  font-size: 18px;
+  font-weight: 500;
 `
 const TableTotalWeight = styled(Tabletotal)`
-  margin-left: 150px;
   line-height: 24px;
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
 `
 const TableTotalTarget = styled(TableTotalWeight)`
   margin-left: 50px; 
