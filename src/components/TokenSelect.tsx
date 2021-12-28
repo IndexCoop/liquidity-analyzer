@@ -7,19 +7,43 @@ import { useEffect, useState, useContext, ChangeEvent } from 'react'
 import { MarketDataContext } from 'contexts/MarketData'
 import { ChainId } from '../utils/constants/constants'
 
+function getTokenDataForSymbol(tokenSymbol: string, chainId: ChainId) {
+  const tokens = chainId === ChainId.ethereum ? MainnetTokens : MaticTokens
+  const filteredTokens = tokens.filter(
+    (tokenData) => tokenData.symbol === tokenSymbol
+  )
+  return filteredTokens.length > 0 ? filteredTokens[0] : null
+}
+
 export default function TokenSelect(props: {
   chainId: ChainId
   desiredAmount: string
   onDesiredAmountChange: (arg0: ChangeEvent<HTMLInputElement>) => void
 }) {
   const [tokens, setTokens] = useState<TokenData[]>([])
-  const { setSelectedToken } = useContext(MarketDataContext)
+  const { selectedToken, setSelectedToken } = useContext(MarketDataContext)
 
   useEffect(() => {
     const tokens =
       props.chainId === ChainId.ethereum ? MainnetTokens : MaticTokens
+    const tokenData = getTokenDataForSymbol(selectedToken.symbol, props.chainId)
     setTokens(tokens)
-  }, [props.chainId])
+
+    if (tokenData === null) {
+      return
+    }
+
+    if (tokenData.address === selectedToken.address) {
+      return
+    }
+
+    setSelectedToken(tokenData)
+  }, [
+    props.chainId,
+    selectedToken.symbol,
+    selectedToken.address,
+    setSelectedToken,
+  ])
 
   return (
     <Autocomplete
