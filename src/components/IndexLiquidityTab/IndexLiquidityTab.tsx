@@ -12,6 +12,7 @@ import IndexLiquidityDataTableRow from './IndexLiquidityDataTableRow'
 import IndexLiquiditySimulateDataTableRow from './IndexLiquiditySimulateDataTableRow'
 import { fetchMarketCap, fetchTotalMarketCap } from 'utils/tokensetsApi'
 import { formatUSD } from 'utils/formatters'
+import { parseInt } from 'lodash'
 
 interface props {
   desiredAmount: string,
@@ -81,6 +82,7 @@ const IndexLiquidityTab = (props: props) => {
     }
   }, [selectedIndex])
   
+  console.log('selectedIndex',selectedIndex);
   useEffect(() => {
     const tokenData = setComponents[selectedIndex]
     const netAssetValueReducer = (
@@ -97,8 +99,10 @@ const IndexLiquidityTab = (props: props) => {
     const sumOfWeight = tokenData?.map((token: any) => parseFloat(token.percentOfSet)).reduce((prev: number, next: number) => prev + next);
     setTotalWeight(sumOfWeight);
     setNetAssetValue(getNetAssetValue())
+    
   }, [selectedIndex])
 
+  
   const RebalanceCheckbox = () => {
     return (
       <CheckboxContainer>
@@ -131,13 +135,12 @@ const IndexLiquidityTab = (props: props) => {
       )
     })
   }
-
-  const setTargetPercent = (targetPercent: string, component: IndexComponent) => {
-    setTargetWeight(totalWeight! - parseInt(component.percentOfSet) + parseInt(targetPercent))
+  const setTargetPercent =(taergetPercent: string, component: IndexComponent) => {
+        setTargetWeight(totalWeight! - parseInt(component.percentOfSet) + parseInt(targetPercent) )
   }
 
   const renderComponentsDataTable = () => {
-    const formatDataTableRow = (components: IndexComponent[]) => {
+  const formatDataTableRow = (components: IndexComponent[]) => {
       if (shouldSimulateRebalance) {   
         return components?.map((component, index) =>
           <IndexLiquiditySimulateDataTableRow 
@@ -180,7 +183,6 @@ const IndexLiquidityTab = (props: props) => {
       </TitleContainer>
     )
   }
-console.log('totalWeight', totalWeight);
   return (
     <TabContainer>
       <HeaderRow>
@@ -233,7 +235,6 @@ console.log('totalWeight', totalWeight);
         </TextContainer>
 
       </HeaderRow>
-      
       <InstructionContainer>
         <InstructionsText>
             Each component's data loads when you remove focus from its Slippage Allowed input. 
@@ -246,21 +247,20 @@ console.log('totalWeight', totalWeight);
             ? <>
                 {renderDataTableHeaders()}
                 {renderComponentsDataTable()} 
-              
-              <>
+                <>
                 <Tabletotal> 
                   Total 
                 </Tabletotal>
-                
+
                 <TableTotalWeight>
                   {totalWeight}
                 </TableTotalWeight> 
-                
+
                 <TableTotalWeight>
                   {targetWeight}
                 </TableTotalWeight> 
               </>
-            </>
+              </>
             : <SelectAToken />
         }
       </DataTable>
@@ -368,24 +368,15 @@ const TableHeaderRightAlign = styled.div`
 `
 
 const Tabletotal =styled.div`
-  display: flex;
-  flex-direction: row;
-  margin: 0;
-  height: 60px;
-  font-size: 18px;
-  font-weight: 500;
+display: flex;
+flex-direction: row;
+margin: 0;
+height: 60px;
+font-size: 18px;
+font-weight: 500;
 `
 const TableTotalWeight = styled(Tabletotal)`
-  line-height: 24px;
-  display: flex;
-  justify-content: flex-end;
-`
-const TableTotalTarget = styled(TableTotalWeight)`
-  margin-left: 50px; 
-`
-const TableTotalNumber = styled(TableTotalTarget)`
-margin-left: 1000px;
-`
-const TableTotallEstimatedCost = styled(TableTotalNumber)`
-margin-left: 60px;
+line-height: 24px;
+display: flex;
+justify-content: flex-end; 
 `
