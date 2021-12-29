@@ -180,7 +180,6 @@ const IndexLiquidityTab = (props: props) => {
       </TitleContainer>
     )
   }
-console.log('totalWeight', totalWeight);
   return (
     <TabContainer>
       <HeaderRow>
@@ -233,7 +232,6 @@ console.log('totalWeight', totalWeight);
         </TextContainer>
 
       </HeaderRow>
-      
       <InstructionContainer>
         <InstructionsText>
             Each component's data loads when you remove focus from its Slippage Allowed input. 
