@@ -2,57 +2,74 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect, useMemo } from 'react'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
+import { parseInt } from 'lodash'
+
 import useMarketDataComponents from 'hooks/useMarketDataComponents'
 import IndexComponent from 'components/IndexComponent'
-import { INDEX_TOKENS, INDEX_TOKENS_FOR_SELECT } from 'utils/constants/constants'
+import {
+  INDEX_TOKENS,
+  INDEX_TOKENS_FOR_SELECT,
+} from 'utils/constants/constants'
 import IndexLiquidityDataTableRow from './IndexLiquidityDataTableRow'
+import IndexLiquiditySimulateDataTableRow from './IndexLiquiditySimulateDataTableRow'
 import { fetchMarketCap, fetchTotalMarketCap } from 'utils/tokensetsApi'
 import { formatUSD } from 'utils/formatters'
 
 interface props {
-  desiredAmount: string,
-  onDesiredAmountChange: (arg0: ChangeEvent<HTMLInputElement>) => void  
+  desiredAmount: string
+  onDesiredAmountChange: (arg0: ChangeEvent<HTMLInputElement>) => void
 }
+
+interface DataTableProps {
+  isSimulated?: boolean
+}
+
 const DATA_TABLE_HEADERS = [
   'Component',
   'Weight %',
   'Slippage Allowed',
   'Best Exchange',
-  'Max Trade Size (Units)', 
-  'Max Trade Size ($)'
-] 
+  'Max Trade Size (Units)',
+  'Max Trade Size ($)',
+]
 const DATA_TABLE_SIMULATION_HEADERS = [
   'Component',
   'Weight %',
   'Target %',
-  '% Change', 
   '% Change',
+  '$ Change',
   'Slippage Allowed',
-  'Best Exchange', 
-  'Max Trade Size (Units)', 
-  'Max Trade Size ($)', 
-  'No. of Trades', 
-  'Estimated Cost'
+  'Best Exchange',
+  'Max Trade Size (Units)',
+  'Max Trade Size ($)',
+  'No. of Trades',
+  'Estimated Cost',
 ]
 const IndexLiquidityTab = (props: props) => {
+  const [totalWeight, setTotalWeight] = useState<number>()
+  const [targetWeight, setTargetWeight] = useState<number>()
   const [shouldSimulateRebalance, setShouldSimulateRebalance] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState('')
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
   const [totalMarketCap, setTotalMarketCap] = useState(0)
   const [netAssetValue, setNetAssetValue] = useState(0)
-  const bedComponents = useMarketDataComponents().bedComponent
-  const dataComponents = useMarketDataComponents().dataComponent
-  const dpiComponents = useMarketDataComponents().dpiComponent
-  const mviComponents = useMarketDataComponents().mviComponent
-  const setComponents: any = useMemo(() => (
-    {
+  const { bedComponents, dataComponents, dpiComponents, mviComponents } =
+    useMarketDataComponents()
+  const [gasCost, setGasCost] = useState('')
+
+  const onGasCostChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setGasCost(e.target.value)
+  }
+
+  const setComponents: any = useMemo(
+    () => ({
       BED: bedComponents,
       DATA: dataComponents,
       DPI: dpiComponents,
-      MVI: mviComponents
-    }
-  ), [bedComponents, dataComponents, dpiComponents, mviComponents])
-
+      MVI: mviComponents,
+    }),
+    [bedComponents, dataComponents, dpiComponents, mviComponents]
+  )
   useEffect(() => {
     fetchTotalMarketCap()
       .then((response: any) => {
@@ -60,9 +77,9 @@ const IndexLiquidityTab = (props: props) => {
       })
       .catch((error: any) => console.log(error))
   }, [])
-  
+
   useEffect(() => {
-    if (selectedIndex) { 
+    if (selectedIndex) {
       fetchMarketCap(selectedIndex)
         .then((response: any) => {
           setSelectedIndexMarketCap(response)
@@ -70,7 +87,7 @@ const IndexLiquidityTab = (props: props) => {
         .catch((error: any) => console.log(error))
     }
   }, [selectedIndex])
-  
+
   useEffect(() => {
     const tokenData = setComponents[selectedIndex]
     const netAssetValueReducer = (
@@ -80,14 +97,15 @@ const IndexLiquidityTab = (props: props) => {
       return netAssetValue + (parseFloat(component.totalPriceUsd) || 0)
     }
     const getNetAssetValue = () => {
-      return tokenData
-        ? tokenData.reduce(netAssetValueReducer, 0)
-        : 0
+      return tokenData ? tokenData.reduce(netAssetValueReducer, 0) : 0
     }
+    const sumOfWeight = tokenData
+      ?.map((token: any) => parseFloat(token.percentOfSet))
+      .reduce((prev: number, next: number) => prev + next)
+    setTotalWeight(sumOfWeight)
     setNetAssetValue(getNetAssetValue())
-  }, [selectedIndex, setComponents])
+  }, [selectedIndex])
 
-  
   const RebalanceCheckbox = () => {
     return (
       <CheckboxContainer>
@@ -95,58 +113,73 @@ const IndexLiquidityTab = (props: props) => {
           checked={shouldSimulateRebalance}
           onChange={() => setShouldSimulateRebalance(!shouldSimulateRebalance)}
         />
-        <Text onClick={() => setShouldSimulateRebalance(!shouldSimulateRebalance)}>
+        <Text
+          onClick={() => setShouldSimulateRebalance(!shouldSimulateRebalance)}
+        >
           Simulate Rebalance
         </Text>
       </CheckboxContainer>
     )
   }
+
   const renderDataTableHeaders = () => {
     if (shouldSimulateRebalance) {
       return DATA_TABLE_SIMULATION_HEADERS.map((title, index) => {
         return (
-          <TableHeaderRightAlign key={index}>
-            {title}
-          </TableHeaderRightAlign>
+          <TableHeaderRightAlign key={index}>{title}</TableHeaderRightAlign>
         )
       })
     }
     return DATA_TABLE_HEADERS.map((title, index) => {
-      return (
-        <TableHeaderRightAlign key={index}>
-          {title}
-        </TableHeaderRightAlign>
-      )
+      return <TableHeaderRightAlign key={index}>{title}</TableHeaderRightAlign>
     })
   }
+  const setTargetPercent = (
+    targetPercent: string,
+    component: IndexComponent
+  ) => {
+    setTargetWeight(
+      totalWeight! - parseInt(component.percentOfSet) + parseInt(targetPercent)
+    )
+  }
+
   const renderComponentsDataTable = () => {
     const formatDataTableRow = (components: IndexComponent[]) => {
-      return components?.map((component, index) => 
-        <IndexLiquidityDataTableRow 
-          component={component} 
-          key={index} 
-        />
-      )
+      if (shouldSimulateRebalance) {
+        return components?.map((component, index) => (
+          <IndexLiquiditySimulateDataTableRow
+            selectedIndex={selectedIndex}
+            gasCost={gasCost}
+            component={component}
+            key={index}
+            updateTargetPercent={(value: string) =>
+              setTargetPercent(value, component)
+            }
+          />
+        ))
+      }
+
+      return components?.map((component, index) => (
+        <IndexLiquidityDataTableRow component={component} key={index} />
+      ))
     }
     switch (selectedIndex) {
-        case INDEX_TOKENS.BED:
-          return formatDataTableRow(bedComponents!) 
-        case INDEX_TOKENS.DATA:
-          return formatDataTableRow(dataComponents!) 
-        case INDEX_TOKENS.DPI:
-          return formatDataTableRow(dpiComponents!) 
-        case INDEX_TOKENS.MVI:
-          return formatDataTableRow(mviComponents!) 
-        default:
-          return null
-      }
+      case INDEX_TOKENS.BED:
+        return formatDataTableRow(bedComponents!)
+      case INDEX_TOKENS.DATA:
+        return formatDataTableRow(dataComponents!)
+      case INDEX_TOKENS.DPI:
+        return formatDataTableRow(dpiComponents!)
+      case INDEX_TOKENS.MVI:
+        return formatDataTableRow(mviComponents!)
+      default:
+        return null
+    }
   }
   const SelectAToken = () => {
     return (
       <TitleContainer>
-        <Title>
-          Select a token from the dropdown
-        </Title>
+        <Title>Select a token from the dropdown</Title>
       </TitleContainer>
     )
   }
@@ -174,45 +207,56 @@ const IndexLiquidityTab = (props: props) => {
             />
           )}
         />
-
-        {/* TODO: Add functionality */}
-        {/* via Simulate Rebalance Epic */}
         <RebalanceCheckbox />
-        
+        <TextField
+          value={gasCost}
+          onChange={onGasCostChange}
+          label='Gas Cost in Gwei'
+          inputProps={{
+            autoComplete: 'new-password', // disable autocomplete and autofill
+          }}
+        />
+
         <TextContainer>
           <TextLabel>
             Total Market Cap:
-            <Text>{formatUSD(totalMarketCap)}</Text>  
+            <Text>{formatUSD(totalMarketCap)}</Text>
           </TextLabel>
-            <hr />
+          <hr />
           <TextLabel>
             Market Cap:
-            <Text>{formatUSD(selectedIndexMarketCap)}</Text>  
+            <Text>{formatUSD(selectedIndexMarketCap)}</Text>
           </TextLabel>
-          
+
           <TextLabel>
             Net Asset Value:
-            <Text>{formatUSD(netAssetValue)}</Text>  
+            <Text>{formatUSD(netAssetValue)}</Text>
           </TextLabel>
         </TextContainer>
-
       </HeaderRow>
-      
       <InstructionContainer>
         <InstructionsText>
-            Each component's data loads when you remove focus from its Slippage Allowed input. 
+          Each component's data loads when you remove focus from its Slippage
+          Allowed input.
         </InstructionsText>
       </InstructionContainer>
 
-      <DataTable>
-        {
-          selectedIndex
-            ? <>
-                {renderDataTableHeaders()}
-                {renderComponentsDataTable()}
-              </>
-            : <SelectAToken />
-        }
+      <DataTable isSimulated={shouldSimulateRebalance}>
+        {selectedIndex ? (
+          <>
+            {renderDataTableHeaders()}
+            {renderComponentsDataTable()}
+            <>
+              <Tabletotal>Total</Tabletotal>
+
+              <TableTotalWeight>{totalWeight}</TableTotalWeight>
+
+              <TableTotalWeight>{targetWeight}</TableTotalWeight>
+            </>
+          </>
+        ) : (
+          <SelectAToken />
+        )}
       </DataTable>
     </TabContainer>
   )
@@ -227,7 +271,7 @@ const TabContainer = styled.div`
   align-items: flex-start;
   flex-direction: column;
   justify-content: space-around;
-` 
+`
 
 const TitleContainer = styled.div`
   display: flex;
@@ -248,17 +292,17 @@ const HeaderRow = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  flex: .2;
+  flex: 0.2;
 `
 
 const InstructionContainer = styled.div`
   display: flex;
   margin-top: 10px;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
   align-items: center;
 `
 
-const Checkbox = styled.input.attrs({type: 'checkbox'})`
+const Checkbox = styled.input.attrs({ type: 'checkbox' })`
   width: 30px;
   height: 30px;
   cursor: pointer;
@@ -274,18 +318,17 @@ const CheckboxContainer = styled.div`
   padding-right: 40px;
 `
 
-const DataTable = styled.div`
-    display: grid;
-    grid-template-columns: 10px repeat(5, 200px);
-    // grid-template-columns: 100px repeat(10, 200px); // use this when simulating rebalance
-    grid-row-gap: 4px;
-    flex: 4;
+const DataTable = styled.div<DataTableProps>`
+  display: grid;
+  grid-template-columns: ${(prop) =>
+    prop.isSimulated ? '100px repeat(10, 140px)' : '10px repeat(5, 200px)'};
+  grid-row-gap: 4px;
+  flex: 4;
 `
 
 const TextContainer = styled.div`
-  
+  padding-left: 35px;
 `
-
 
 const Text = styled.div`
   font-size: 18px;
@@ -311,4 +354,18 @@ const TableHeaderRightAlign = styled.div`
   font-weight: 600;
   text-align: right;
   border-bottom: 2px solid black;
+`
+
+const Tabletotal = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  height: 60px;
+  font-size: 18px;
+  font-weight: 500;
+`
+const TableTotalWeight = styled(Tabletotal)`
+  line-height: 24px;
+  display: flex;
+  justify-content: flex-end;
 `

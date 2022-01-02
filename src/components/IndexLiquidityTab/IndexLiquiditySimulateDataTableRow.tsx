@@ -1,6 +1,9 @@
+import { BigNumber } from 'ethers'
 import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect } from 'react'
+import CircularProgress from '@mui/material/CircularProgress'
 import TextField from '@mui/material/TextField'
+
 import IndexComponent from 'components/IndexComponent'
 import {
   ChainId,
@@ -8,15 +11,18 @@ import {
   REBALANCE_EXCHANGES,
 } from 'utils/constants/constants'
 import { getMaxTrade, ExchangeName } from 'utils/poolData'
-import { BigNumber } from 'ethers'
-import CircularProgress from '@mui/material/CircularProgress'
 import { getCoinGeckoApi } from 'utils/constants/constants'
 import { formatDisplay, formatUSD } from 'utils/formatters'
+import { fetchMarketCap } from 'utils/tokensetsApi'
 
 type props = {
   component: IndexComponent
+  selectedIndex: string
+  gasCost: string
+  updateTargetPercent: (value: string) => void
 }
-const IndexLiquidityDataTableRow = (props: props) => {
+
+const IndexLiquiditySimulateDataTableRow = (props: props) => {
   const [maxTrade, setMaxTrade] = useState<void | BigNumber>(BigNumber.from(0))
   const [allowedSlippage, setAllowedSlippage] = useState('0.5')
   const [isLoading, setIsLoading] = useState(false)
@@ -24,6 +30,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
   const [tradeError, setTradeError] = useState(false)
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const tenPowDecimals = BigNumber.from(10).pow(18)
+  const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
 
   // get token price in USD
   useEffect(() => {
@@ -36,11 +43,27 @@ const IndexLiquidityDataTableRow = (props: props) => {
       })
       .catch((error) => console.log(error))
   }, [props.component.address])
+
   useEffect((): void => {
     findMaxTrade(props.component)
   }, [props.component])
+
+  useEffect(() => {
+    if (props.selectedIndex) {
+      fetchMarketCap(props.selectedIndex)
+        .then((response: any) => {
+          setSelectedIndexMarketCap(response)
+        })
+        .catch((error: any) => console.log(error))
+    }
+  }, [props.selectedIndex])
+  const [target, setTarget] = useState(props.component.percentOfSet)
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
+  }
+  const onTarget = (e: ChangeEvent<HTMLInputElement>) => {
+    setTarget(e.target.value)
+    props.updateTargetPercent(e.target.value)
   }
   const checkMaxTrade = async (
     exchange: ExchangeName,
@@ -106,10 +129,35 @@ const IndexLiquidityDataTableRow = (props: props) => {
       PRICE_DECIMALS
     const maxTradeUSD =
       tokenPrice.mul(maxTrade!).div(tenPowDecimals).toNumber() / PRICE_DECIMALS
+    const percentageChange = parseFloat(
+      `${parseFloat(target) - parseFloat(component.percentOfSet)}`
+    ).toFixed(2)
+    const dollarChange = parseFloat(
+      `${parseFloat(percentageChange) * 0.01 * selectedIndexMarketCap}`
+    ).toFixed(2)
+    const numberOfTrade = Math.abs(
+      Math.round(parseFloat(`${parseFloat(dollarChange) / maxTradeUSD}`))
+    )
+    const estimatedCost = parseFloat(props.gasCost) * numberOfTrade * 1.3
     return (
       <>
         <TableData>{component.symbol}</TableData>
         <TableDataRightAlign>{component.percentOfSet}</TableDataRightAlign>
+        <TableDataRightAlign>
+          <TextField
+            value={target}
+            onChange={onTarget}
+            onBlur={(e) => findMaxTrade(component)}
+            style={textFieldStyles}
+            inputProps={{
+              autoComplete: 'new-password', // disable autocomplete and autofill
+            }}
+          />
+        </TableDataRightAlign>
+        <TableDataRightAlign>{percentageChange}</TableDataRightAlign>
+        <TableDataRightAlign>
+          {formatUSD(parseFloat(dollarChange))}
+        </TableDataRightAlign>
         <TableDataRightAlign>
           <TextField
             value={allowedSlippage}
@@ -142,6 +190,8 @@ const IndexLiquidityDataTableRow = (props: props) => {
             formatUSD(maxTradeUSD)
           )}
         </TableDataRightAlign>
+        <TableDataRightAlign>{numberOfTrade}</TableDataRightAlign>
+        <TableDataRightAlign>{formatUSD(estimatedCost)}</TableDataRightAlign>
       </>
     )
   }
@@ -151,7 +201,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
   return null
 }
 
-export default IndexLiquidityDataTableRow
+export default IndexLiquiditySimulateDataTableRow
 
 const TableHeader = styled.div`
   margin: 0;
