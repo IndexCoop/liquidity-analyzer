@@ -136,7 +136,11 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
       `${parseFloat(percentageChange) * 0.01 * selectedIndexMarketCap}`
     ).toFixed(2)
     const numberOfTrade = Math.abs(
-      Math.round(parseFloat(`${parseFloat(dollarChange) / maxTradeUSD}`))
+      Math.round(
+        parseFloat(
+          `${maxTradeUSD ? parseFloat(dollarChange) / maxTradeUSD : 0}`
+        )
+      )
     )
     const estimatedCost = parseFloat(props.gasCost) * numberOfTrade * 1.3
     return (
