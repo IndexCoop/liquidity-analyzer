@@ -54,14 +54,8 @@ export async function getSushiswapLiquidity(
     // For some reason for polygon the tokens returned seem to be switched up
     response = {
       pairAddress,
-      tokenBalance:
-        chainId === ChainId.polygon
-          ? wethBalance.div(TEN_POW_18)
-          : tokenBalance.div(TEN_POW_18),
-      wethBalance:
-        chainId === ChainId.polygon
-          ? tokenBalance.div(TEN_POW_18)
-          : wethBalance.div(TEN_POW_18),
+      tokenBalance: tokenBalance.div(TEN_POW_18),
+      wethBalance: wethBalance.div(TEN_POW_18),
     }
   } catch (error) {
     console.log('Error getting liquidity from SushiSwap')
