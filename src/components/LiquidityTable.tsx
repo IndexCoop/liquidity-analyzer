@@ -110,7 +110,7 @@ const DataTableContainer = styled.div`
 
 const DataTable = styled.div`
   display: grid;
-  grid-template-columns: 100px repeat(6, 185px);
+  grid-template-columns: 200px repeat(6, 185px);
   grid-row-gap: 4px;
 `
 

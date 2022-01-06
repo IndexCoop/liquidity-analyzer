@@ -94,7 +94,9 @@ export const INDEX_TOKENS_FOR_SELECT = [
 ]
 
 export const EXCHANGES: Array<ExchangeName> = [
-  'UniswapV3',
+  'UniswapV3FeeLow',
+  'UniswapV3FeeMedium',
+  'UniswapV3FeeHigh',
   'UniswapV2',
   'Sushiswap',
   'Kyber',
@@ -102,6 +104,16 @@ export const EXCHANGES: Array<ExchangeName> = [
   'ZeroEx',
 ]
 
+export const EXCHANGETOSTRING =  {
+  UniswapV3FeeLow: 'UniswapV3 (0.05% fee tier)',
+  UniswapV3FeeMedium: 'UniswapV3 (0.30% fee tier)',
+  UniswapV3FeeHigh: 'UniswapV3 (1% fee tier)',
+  UniswapV2: 'UniswapV2',
+  Sushiswap: 'Sushiswap',
+  Kyber: 'Kyber',
+  Balancer:'Balancer',
+  ZeroEx: 'ZeroEx'
+}
 // Exchanges used for rebalances
 export const REBALANCE_EXCHANGES: Array<ExchangeName> = EXCHANGES.filter(ex => ex !== 'ZeroEx')
 

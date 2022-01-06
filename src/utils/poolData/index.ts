@@ -8,10 +8,11 @@ import {
   getBalancerV1Quote,
   // @ts-ignore
 } from '@setprotocol/index-rebalance-utils/dist/index-rebalances/utils/paramDetermination'
+import { FeeAmount } from '@uniswap/v3-sdk'
 import { ether } from '@setprotocol/index-coop-contracts/dist/utils/common'
 import { getProvider } from '../provider'
 import { BigNumber } from 'ethers'
-import { getUniswapV3Liquidity } from './uniswapV3'
+import { getUniswapV3LiquidityFeeLow,getUniswapV3LiquidityFeeMedium,getUniswapV3LiquidityFeeHigh } from './uniswapV3'
 import { getUniswapV2Liquidity } from './uniswapV2'
 import { getSushiswapLiquidity } from './sushiswap'
 import { getBalancerV1Liquidity } from './balancerV1'
@@ -19,9 +20,13 @@ import { getKyberLiquidity } from './kyber'
 import { ChainId } from '../../utils/constants/constants'
 import { getZeroExLiquidity, getZeroExQuote } from './zeroEx'
 import { MaxTradeResponse } from './types'
+import { chain } from 'lodash'
+
 
 export type ExchangeName =
-  | 'UniswapV3'
+  | 'UniswapV3FeeLow'
+  | 'UniswapV3FeeMedium'
+  | 'UniswapV3FeeHigh'
   | 'UniswapV2'
   | 'Sushiswap'
   | 'Kyber'
@@ -29,9 +34,17 @@ export type ExchangeName =
   | 'ZeroEx'
 
 const exchangeUtilsMapping = {
-  UniswapV3: {
-    maxTradeGetter: getUniswapV3Quote,
-    liquidityGetter: getUniswapV3Liquidity,
+  UniswapV3FeeLow: {
+    maxTradeGetter: getUniswapV3FeeLowQuote,
+    liquidityGetter: getUniswapV3LiquidityFeeLow,
+  },
+  UniswapV3FeeMedium:{
+    maxTradeGetter: getUniswapV3FeeMediumQuote,
+    liquidityGetter: getUniswapV3LiquidityFeeMedium,
+  },
+  UniswapV3FeeHigh: {
+    maxTradeGetter: getUniswapV3FeeHighQuote,
+    liquidityGetter: getUniswapV3LiquidityFeeHigh,
   },
   UniswapV2: {
     maxTradeGetter: getUniswapV2Quote,
@@ -51,7 +64,7 @@ const exchangeUtilsMapping = {
   },
 }
 
-const wrappedProviderExchanges = ['UniswapV3', 'Sushiswap']
+const wrappedProviderExchanges = ['UniswapV3FeeLow','UniswapV3FeeMedium','UniswapV3FeeHigh', 'Sushiswap']
 
 export async function getMaxTrade(
   tokenAddress: string,
@@ -67,13 +80,15 @@ export async function getMaxTrade(
     provider = new DeployHelper(provider)
   }
   const { maxTradeGetter } = exchangeUtilsMapping[exchange]
-  const quote = await maxTradeGetter(
-    provider,
-    tokenAddress,
-    ether(maxSlippagePercent),
-    chainId
-  )
-  return {
+
+  const  quote = await maxTradeGetter(
+      provider,
+      tokenAddress,
+      ether(maxSlippagePercent),
+      chainId
+    )
+  
+    return {
     size: BigNumber.from(quote.size),
   }
 }
@@ -90,3 +105,16 @@ export async function getLiquidity(
 }
 
 export { getUniswapV2Liquidity }
+
+
+function getUniswapV3FeeLowQuote( deployHelper: DeployHelper, token: String, targetPriceImpact: BigNumber, chainId: ChainId) {
+  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,chainId,FeeAmount.LOW)
+}
+
+function getUniswapV3FeeMediumQuote( deployHelper: DeployHelper, token: String, targetPriceImpact: BigNumber, chainId: ChainId) {
+  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,chainId,FeeAmount.MEDIUM)
+}
+
+function getUniswapV3FeeHighQuote( deployHelper: DeployHelper, token: String, targetPriceImpact: BigNumber, chainId: ChainId) {
+  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,chainId,FeeAmount.HIGH)
+}
