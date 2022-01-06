@@ -35,15 +35,15 @@ export type ExchangeName =
 
 const exchangeUtilsMapping = {
   UniswapV3FeeLow: {
-    maxTradeGetter: getUniswapV3Quote,
+    maxTradeGetter: getUniswapV3FeeLowQuote,
     liquidityGetter: getUniswapV3LiquidityFeeLow,
   },
   UniswapV3FeeMedium:{
-    maxTradeGetter: getUniswapV3Quote,
+    maxTradeGetter: getUniswapV3FeeMediumQuote,
     liquidityGetter: getUniswapV3LiquidityFeeMedium,
   },
   UniswapV3FeeHigh: {
-    maxTradeGetter: getUniswapV3Quote,
+    maxTradeGetter: getUniswapV3FeeHighQuote,
     liquidityGetter: getUniswapV3LiquidityFeeHigh,
   },
   UniswapV2: {
@@ -108,13 +108,13 @@ export { getUniswapV2Liquidity }
 
 
 function getUniswapV3FeeLowQuote( deployHelper: DeployHelper, token: String, targetPriceImpact: BigNumber, chainId: ChainId) {
-  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,chainId,FeeAmount.LOW)
+  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,FeeAmount.LOW)
 }
 
 function getUniswapV3FeeMediumQuote( deployHelper: DeployHelper, token: String, targetPriceImpact: BigNumber, chainId: ChainId) {
-  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,chainId,FeeAmount.MEDIUM)
+  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,FeeAmount.MEDIUM)
 }
 
 function getUniswapV3FeeHighQuote( deployHelper: DeployHelper, token: String, targetPriceImpact: BigNumber, chainId: ChainId) {
-  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,chainId,FeeAmount.HIGH)
+  return getUniswapV3Quote(deployHelper,token,targetPriceImpact,FeeAmount.HIGH)
 }
