@@ -35,15 +35,15 @@ export type ExchangeName =
 
 const exchangeUtilsMapping = {
   UniswapV3FeeLow: {
-    maxTradeGetter: getUniswapV3FeeLowQuote,
+    maxTradeGetter: getUniswapV3Quote,
     liquidityGetter: getUniswapV3LiquidityFeeLow,
   },
   UniswapV3FeeMedium:{
-    maxTradeGetter: getUniswapV3FeeMediumQuote,
+    maxTradeGetter: getUniswapV3Quote,
     liquidityGetter: getUniswapV3LiquidityFeeMedium,
   },
   UniswapV3FeeHigh: {
-    maxTradeGetter: getUniswapV3FeeHighQuote,
+    maxTradeGetter: getUniswapV3Quote,
     liquidityGetter: getUniswapV3LiquidityFeeHigh,
   },
   UniswapV2: {
