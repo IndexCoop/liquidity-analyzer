@@ -55,6 +55,9 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
 
   useEffect(() => {
     if (props.selectedIndex) {
+      setTarget(props.component.percentOfSet)
+      setAllowedSlippage('0.5')
+
       fetchMarketCap(props.selectedIndex)
         .then((response: any) => {
           setSelectedIndexMarketCap(response)
