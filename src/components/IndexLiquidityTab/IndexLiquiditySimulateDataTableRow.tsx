@@ -23,15 +23,17 @@ type props = {
   updateNumberOfTrade: (value: number) => void
 }
 
+const tenPowDecimals = BigNumber.from(10).pow(18)
+
 const IndexLiquiditySimulateDataTableRow = (props: props) => {
-  const [maxTrade, setMaxTrade] = useState<void | BigNumber>(BigNumber.from(0))
-  const [allowedSlippage, setAllowedSlippage] = useState('0.5')
   const [isLoading, setIsLoading] = useState(false)
-  const [bestExchange, setBestExchange] = useState('')
   const [tradeError, setTradeError] = useState(false)
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
-  const tenPowDecimals = BigNumber.from(10).pow(18)
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
+  const [maxTrade, setMaxTrade] = useState<void | BigNumber>(BigNumber.from(0))
+  const [target, setTarget] = useState(props.component.percentOfSet)
+  const [allowedSlippage, setAllowedSlippage] = useState('0.5')
+  const [bestExchange, setBestExchange] = useState('')
 
   const numberOfTradeRef = useRef<HTMLDivElement>(null)
 
@@ -63,9 +65,8 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
 
   useEffect(() => {
     props.updateNumberOfTrade(Number(numberOfTradeRef.current?.innerText))
-  }, [numberOfTradeRef.current?.innerText])
+  }, [numberOfTradeRef.current?.innerText, maxTrade])
 
-  const [target, setTarget] = useState(props.component.percentOfSet)
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
   }
@@ -143,8 +144,8 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
     const dollarChange = parseFloat(
       `${parseFloat(percentageChange) * 0.01 * selectedIndexMarketCap}`
     ).toFixed(2)
-    const numberOfTrade = Math.abs(
-      Math.round(
+    const numberOfTrade = Math.ceil(
+      Math.abs(
         parseFloat(
           `${maxTradeUSD ? parseFloat(dollarChange) / maxTradeUSD : 0}`
         )
@@ -159,7 +160,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
           <TextField
             value={target}
             onChange={onTarget}
-            onBlur={(e) => findMaxTrade(component)}
+            onBlur={() => findMaxTrade(component)}
             style={textFieldStyles}
             inputProps={{
               autoComplete: 'new-password', // disable autocomplete and autofill
