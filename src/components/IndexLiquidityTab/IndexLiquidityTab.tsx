@@ -23,7 +23,7 @@ interface DataTableProps {
   isSimulated?: boolean
 }
 interface TableTotalProps {
-  align?: 'left' | 'right'
+  alignRight?: boolean
 }
 
 interface TableTotalWeightProps {
@@ -53,9 +53,11 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'No. of Trades',
   'Estimated Cost',
 ]
-const IndexLiquidityTab = (props: props) => {
+const IndexLiquidityTab = (_props: props) => {
   const [totalWeight, setTotalWeight] = useState<string>()
-  const [targetWeight, setTargetWeight] = useState<string>()
+  const [componentTargetWeight, setComponentTargetWeight] = useState<{
+    [k: string]: string
+  }>({})
   const [componentNumberOfTrade, setComponentNumberOfTrade] = useState<{
     [k: string]: number
   }>({})
@@ -115,6 +117,7 @@ const IndexLiquidityTab = (props: props) => {
       .reduce((prev: number, next: number) => prev + next)
     setTotalWeight(sumOfWeight?.toFixed(2))
     setNetAssetValue(getNetAssetValue())
+    setComponentTargetWeight({})
     setComponentNumberOfTrade({})
   }, [selectedIndex])
 
@@ -150,14 +153,17 @@ const IndexLiquidityTab = (props: props) => {
     targetPercent: string,
     component: IndexComponent
   ) => {
-    setTargetWeight(
-      (
-        parseFloat(totalWeight!) -
-        parseFloat(component.percentOfSet) +
-        parseFloat(targetPercent)
-      ).toFixed(2)
-    )
+    setComponentTargetWeight((prevState) => ({
+      ...prevState,
+      [component.address]: targetPercent,
+    }))
   }
+
+  const totalTargetWeight = Object.entries(componentTargetWeight).reduce(
+    (prev, [_address, targetWeight]) =>
+      String((parseFloat(prev) + parseFloat(targetWeight)).toFixed(2)),
+    '0'
+  )
 
   const updateComponentNumberOfTrade = (
     numberOfTrade: number,
@@ -287,23 +293,27 @@ const IndexLiquidityTab = (props: props) => {
             <>
               <Tabletotal>Total</Tabletotal>
 
-              <TableTotalWeight weight={totalWeight}>
+              <TableTotalWeight alignRight weight={totalWeight}>
                 {totalWeight}
               </TableTotalWeight>
 
-              <TableTotalWeight weight={targetWeight}>
-                {targetWeight}
-              </TableTotalWeight>
-              <Tabletotal />
-              <Tabletotal />
-              <Tabletotal />
-              <Tabletotal />
-              <Tabletotal />
-              <Tabletotal />
-              <Tabletotal align='right'>{totalNumberOfTrade}</Tabletotal>
-              <Tabletotal align='right'>
-                {formatUSD(totalNumberOfTrade * tradeCost)}
-              </Tabletotal>
+              {shouldSimulateRebalance && (
+                <>
+                  <TableTotalWeight alignRight weight={totalTargetWeight}>
+                    {totalTargetWeight}
+                  </TableTotalWeight>
+                  <Tabletotal />
+                  <Tabletotal />
+                  <Tabletotal />
+                  <Tabletotal />
+                  <Tabletotal />
+                  <Tabletotal />
+                  <Tabletotal alignRight>{totalNumberOfTrade}</Tabletotal>
+                  <Tabletotal alignRight>
+                    {formatUSD(totalNumberOfTrade * tradeCost)}
+                  </Tabletotal>
+                </>
+              )}
             </>
           </>
         ) : (
@@ -411,8 +421,8 @@ const TableHeaderRightAlign = styled.div`
 const Tabletotal = styled.div<TableTotalProps>`
   display: flex;
   flex-direction: row;
-  justify-content: ${({ align }) =>
-    align && align === 'left' ? 'flex-start' : 'flex-end'};
+  justify-content: ${({ alignRight }) =>
+    alignRight ? 'flex-end' : 'flex-start'};
   margin: 0;
   height: 60px;
   font-size: 18px;

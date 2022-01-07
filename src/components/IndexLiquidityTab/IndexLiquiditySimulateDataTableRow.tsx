@@ -36,6 +36,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
   const [bestExchange, setBestExchange] = useState('')
 
   const numberOfTradeRef = useRef<HTMLDivElement>(null)
+  const targetRef = useRef<HTMLDivElement>(null)
 
   // get token price in USD
   useEffect(() => {
@@ -69,6 +70,12 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
   useEffect(() => {
     props.updateNumberOfTrade(Number(numberOfTradeRef.current?.innerText))
   }, [numberOfTradeRef.current?.innerText, maxTrade])
+
+  const inputNode = targetRef.current?.childNodes[0]
+    ?.childNodes[0] as HTMLInputElement | null
+  useEffect(() => {
+    props.updateTargetPercent(inputNode?.value ?? props.component.percentOfSet)
+  }, [inputNode?.value])
 
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
@@ -168,6 +175,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
             inputProps={{
               autoComplete: 'new-password', // disable autocomplete and autofill
             }}
+            ref={targetRef}
           />
         </TableDataRightAlign>
         <TableDataRightAlign>{percentageChange}</TableDataRightAlign>
