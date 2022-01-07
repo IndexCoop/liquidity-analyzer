@@ -121,8 +121,8 @@ async function getBalancerV2(tokenAddress: string, chainId: ChainId) {
         tokenBalances.push(BigNumber.from(0))
         wethBalances.push(BigNumber.from(0))
       } else {
-        const tokenBalance = parseInt(token[0].balance)
-        const wethBalance = parseInt(weth[0].balance)
+        const tokenBalance = parseInt(token[0].balance, 10)
+        const wethBalance = parseInt(weth[0].balance, 10)
         poolAddresses.push(pool.address)
         tokenBalances.push(BigNumber.from(tokenBalance))
         wethBalances.push(BigNumber.from(wethBalance))

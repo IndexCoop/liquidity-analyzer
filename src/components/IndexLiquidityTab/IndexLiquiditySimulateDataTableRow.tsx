@@ -18,7 +18,7 @@ import { fetchMarketCap } from 'utils/tokensetsApi'
 type props = {
   component: IndexComponent
   selectedIndex: string
-  gasCost: string
+  tradeCost: number
   updateTargetPercent: (value: string) => void
 }
 
@@ -142,7 +142,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
         )
       )
     )
-    const estimatedCost = parseFloat(props.gasCost) * numberOfTrade * 1.3
+    const estimatedCost = props.tradeCost * numberOfTrade
     return (
       <>
         <TableData>{component.symbol}</TableData>

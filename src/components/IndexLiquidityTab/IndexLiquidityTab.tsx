@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect, useMemo } from 'react'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import { parseInt } from 'lodash'
 
 import useMarketDataComponents from 'hooks/useMarketDataComponents'
 import IndexComponent from 'components/IndexComponent'
@@ -23,6 +22,15 @@ interface props {
 interface DataTableProps {
   isSimulated?: boolean
 }
+interface TableTotalProps {
+  align?: 'left' | 'right'
+}
+
+interface TableTotalWeightProps {
+  weight?: string
+}
+
+const DOLLAR_PER_GAS = 1.3
 
 const DATA_TABLE_HEADERS = [
   'Component',
@@ -46,8 +54,8 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'Estimated Cost',
 ]
 const IndexLiquidityTab = (props: props) => {
-  const [totalWeight, setTotalWeight] = useState<number>()
-  const [targetWeight, setTargetWeight] = useState<number>()
+  const [totalWeight, setTotalWeight] = useState<string>()
+  const [targetWeight, setTargetWeight] = useState<string>()
   const [shouldSimulateRebalance, setShouldSimulateRebalance] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState('')
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
@@ -102,7 +110,7 @@ const IndexLiquidityTab = (props: props) => {
     const sumOfWeight = tokenData
       ?.map((token: any) => parseFloat(token.percentOfSet))
       .reduce((prev: number, next: number) => prev + next)
-    setTotalWeight(sumOfWeight)
+    setTotalWeight(sumOfWeight?.toFixed(2))
     setNetAssetValue(getNetAssetValue())
   }, [selectedIndex])
 
@@ -139,7 +147,11 @@ const IndexLiquidityTab = (props: props) => {
     component: IndexComponent
   ) => {
     setTargetWeight(
-      totalWeight! - parseInt(component.percentOfSet) + parseInt(targetPercent)
+      (
+        parseFloat(totalWeight!) -
+        parseFloat(component.percentOfSet) +
+        parseFloat(targetPercent)
+      ).toFixed(2)
     )
   }
 
@@ -149,7 +161,7 @@ const IndexLiquidityTab = (props: props) => {
         return components?.map((component, index) => (
           <IndexLiquiditySimulateDataTableRow
             selectedIndex={selectedIndex}
-            gasCost={gasCost}
+            tradeCost={parseFloat(gasCost) * DOLLAR_PER_GAS}
             component={component}
             key={index}
             updateTargetPercent={(value: string) =>
@@ -183,6 +195,7 @@ const IndexLiquidityTab = (props: props) => {
       </TitleContainer>
     )
   }
+
   return (
     <TabContainer>
       <HeaderRow>
@@ -249,9 +262,13 @@ const IndexLiquidityTab = (props: props) => {
             <>
               <Tabletotal>Total</Tabletotal>
 
-              <TableTotalWeight>{totalWeight}</TableTotalWeight>
+              <TableTotalWeight weight={totalWeight}>
+                {totalWeight}
+              </TableTotalWeight>
 
-              <TableTotalWeight>{targetWeight}</TableTotalWeight>
+              <TableTotalWeight weight={targetWeight}>
+                {targetWeight}
+              </TableTotalWeight>
             </>
           </>
         ) : (
@@ -356,16 +373,20 @@ const TableHeaderRightAlign = styled.div`
   border-bottom: 2px solid black;
 `
 
-const Tabletotal = styled.div`
+const Tabletotal = styled.div<TableTotalProps>`
   display: flex;
   flex-direction: row;
+  justify-content: ${({ align }) =>
+    align && align === 'left' ? 'flex-start' : 'flex-end'};
   margin: 0;
   height: 60px;
   font-size: 18px;
   font-weight: 500;
 `
-const TableTotalWeight = styled(Tabletotal)`
+
+const TableTotalWeight = styled(Tabletotal)<TableTotalWeightProps>`
   line-height: 24px;
   display: flex;
   justify-content: flex-end;
+  color: ${({ weight }) => (weight && weight !== '100.00' ? 'red' : 'inherit')};
 `
