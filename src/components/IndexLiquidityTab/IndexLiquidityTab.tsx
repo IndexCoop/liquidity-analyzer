@@ -56,6 +56,9 @@ const DATA_TABLE_SIMULATION_HEADERS = [
 const IndexLiquidityTab = (props: props) => {
   const [totalWeight, setTotalWeight] = useState<string>()
   const [targetWeight, setTargetWeight] = useState<string>()
+  const [componentNumberOfTrade, setComponentNumberOfTrade] = useState<{
+    [k: string]: number
+  }>({})
   const [shouldSimulateRebalance, setShouldSimulateRebalance] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState('')
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
@@ -112,6 +115,7 @@ const IndexLiquidityTab = (props: props) => {
       .reduce((prev: number, next: number) => prev + next)
     setTotalWeight(sumOfWeight?.toFixed(2))
     setNetAssetValue(getNetAssetValue())
+    setComponentNumberOfTrade({})
   }, [selectedIndex])
 
   const RebalanceCheckbox = () => {
@@ -155,17 +159,38 @@ const IndexLiquidityTab = (props: props) => {
     )
   }
 
+  const updateComponentNumberOfTrade = (
+    numberOfTrade: number,
+    component: IndexComponent
+  ) => {
+    setComponentNumberOfTrade((prevState) => ({
+      ...prevState,
+      [component.address]: numberOfTrade,
+    }))
+  }
+
+  const tradeCost =
+    (isNaN(parseFloat(gasCost)) ? 0 : parseFloat(gasCost)) * DOLLAR_PER_GAS
+
+  const totalNumberOfTrade = Object.entries(componentNumberOfTrade).reduce(
+    (prev, [_address, numOfTrade]) => prev + numOfTrade,
+    0
+  )
+
   const renderComponentsDataTable = () => {
     const formatDataTableRow = (components: IndexComponent[]) => {
       if (shouldSimulateRebalance) {
         return components?.map((component, index) => (
           <IndexLiquiditySimulateDataTableRow
             selectedIndex={selectedIndex}
-            tradeCost={parseFloat(gasCost) * DOLLAR_PER_GAS}
+            tradeCost={tradeCost}
             component={component}
             key={index}
             updateTargetPercent={(value: string) =>
               setTargetPercent(value, component)
+            }
+            updateNumberOfTrade={(value: number) =>
+              updateComponentNumberOfTrade(value, component)
             }
           />
         ))
@@ -269,6 +294,16 @@ const IndexLiquidityTab = (props: props) => {
               <TableTotalWeight weight={targetWeight}>
                 {targetWeight}
               </TableTotalWeight>
+              <Tabletotal />
+              <Tabletotal />
+              <Tabletotal />
+              <Tabletotal />
+              <Tabletotal />
+              <Tabletotal />
+              <Tabletotal align='right'>{totalNumberOfTrade}</Tabletotal>
+              <Tabletotal align='right'>
+                {formatUSD(totalNumberOfTrade * tradeCost)}
+              </Tabletotal>
             </>
           </>
         ) : (

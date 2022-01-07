@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import styled from 'styled-components'
-import { ChangeEvent, useState, useEffect } from 'react'
+import { ChangeEvent, useState, useEffect, useRef } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import TextField from '@mui/material/TextField'
 
@@ -20,6 +20,7 @@ type props = {
   selectedIndex: string
   tradeCost: number
   updateTargetPercent: (value: string) => void
+  updateNumberOfTrade: (value: number) => void
 }
 
 const IndexLiquiditySimulateDataTableRow = (props: props) => {
@@ -31,6 +32,8 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const tenPowDecimals = BigNumber.from(10).pow(18)
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
+
+  const numberOfTradeRef = useRef<HTMLDivElement>(null)
 
   // get token price in USD
   useEffect(() => {
@@ -57,6 +60,11 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
         .catch((error: any) => console.log(error))
     }
   }, [props.selectedIndex])
+
+  useEffect(() => {
+    props.updateNumberOfTrade(Number(numberOfTradeRef.current?.innerText))
+  }, [numberOfTradeRef.current?.innerText])
+
   const [target, setTarget] = useState(props.component.percentOfSet)
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
@@ -166,7 +174,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
           <TextField
             value={allowedSlippage}
             onChange={onSlippageChange}
-            onBlur={(e) => findMaxTrade(component)}
+            onBlur={() => findMaxTrade(component)}
             style={textFieldStyles}
             inputProps={{
               autoComplete: 'new-password', // disable autocomplete and autofill
@@ -194,7 +202,9 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
             formatUSD(maxTradeUSD)
           )}
         </TableDataRightAlign>
-        <TableDataRightAlign>{numberOfTrade}</TableDataRightAlign>
+        <TableDataRightAlign ref={numberOfTradeRef}>
+          {numberOfTrade}
+        </TableDataRightAlign>
         <TableDataRightAlign>{formatUSD(estimatedCost)}</TableDataRightAlign>
       </>
     )
