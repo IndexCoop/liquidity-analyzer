@@ -5,12 +5,14 @@ import { getCoinGeckoApi } from 'utils/constants/constants'
 import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
 import { MarketDataContext } from 'contexts/MarketData'
+import { Popover, OverlayTrigger, Button } from 'react-bootstrap';
 import {
   ChainId,
   COIN_GECKO_CHAIN_KEY,
   PRICE_DECIMALS,
   EXCHANGES,
 } from 'utils/constants/constants'
+import { lte } from 'lodash'
 
 const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
@@ -68,7 +70,28 @@ const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
       ></ExchangeSummary>
     )
   }
+
+  const popover = (
+    <Popover id="popover-contained">
+      <Popover.Body>
+      Please note that slippage does not include fees paid to DEX liquidity providers. 
+      DEX user interfaces typically show total price impact, which is Slippage + LP fees
+       (ex 0.5% slippage + 0.3% Uniswap LP Fee = 0.8% price impact)
+      </Popover.Body>
+    </Popover>
+  );
+  
+  const SlippageNote = () => (
+    <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+      <Button variant="light">Slippage Info</Button>
+    </OverlayTrigger>
+  );
+
   return (
+    <>
+      <SlippageWrapper>
+      {SlippageNote()}
+      </SlippageWrapper>
     <DataTableContainer>
       <DataTable>
         <TableHeader>Exchange</TableHeader>
@@ -99,6 +122,7 @@ const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
         )}
       </DataTable>
     </DataTableContainer>
+    </>
   )
 }
 
@@ -133,4 +157,8 @@ const TableHeaderSubText = styled.div`
   margin: 0;
   font-size: 12px;
   font-weight: 300;
+`
+const SlippageWrapper = styled.div`
+  width: 200px;
+  margin-bottom: 10px;
 `
