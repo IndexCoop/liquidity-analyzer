@@ -5,7 +5,7 @@ import { getCoinGeckoApi } from 'utils/constants/constants'
 import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
 import { MarketDataContext } from 'contexts/MarketData'
-import { Popover, OverlayTrigger, Button } from 'react-bootstrap';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {
   ChainId,
   COIN_GECKO_CHAIN_KEY,
@@ -81,16 +81,16 @@ const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
     </Popover>
   );
   
-  const SlippageNote = () => (
-    <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-      <Button variant="light">Slippage Info</Button>
+  const slippageNote = (slippage: String) => (
+    <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
+      <a href='#slippage'>{slippage}</a>
     </OverlayTrigger>
   );
 
   return (
     <>
       <SlippageWrapper>
-      {SlippageNote()}
+      {slippageNote('')}
       </SlippageWrapper>
     <DataTableContainer>
       <DataTable>
@@ -99,17 +99,17 @@ const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>
-            {selectedToken.symbol} - (0.5% Slippage)
+            {selectedToken.symbol} - {slippageNote('0.5% Slippage')}
           </TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
-          <TableHeaderSubText>USD - (0.5% Slippage)</TableHeaderSubText>
+          <TableHeaderSubText>USD - {slippageNote('0.5% Slippage')}</TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>No. of Trades (0.5%) </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
-          <TableHeaderSubText>USD - (1% Slippage)</TableHeaderSubText>
+          <TableHeaderSubText>USD - {slippageNote('1% Slippage')}</TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>No. of Trades (1%) </TableHeaderRightAlign>
         {EXCHANGES.map((exchange) =>
