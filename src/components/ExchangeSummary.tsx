@@ -3,7 +3,7 @@ import useMarketData from 'hooks/useMarketDataComponents'
 import { useEffect, useState, useContext } from 'react'
 import styled from 'styled-components'
 import { getMaxTrade, getLiquidity, ExchangeName } from 'utils/poolData'
-import { ChainId, PRICE_DECIMALS } from '../utils/constants/constants'
+import { ChainId, PRICE_DECIMALS, EXCHANGETOSTRING } from '../utils/constants/constants'
 import CircularProgress from '@mui/material/CircularProgress'
 import { MarketDataContext } from 'contexts/MarketData'
 import { formatDisplay, formatUSD } from 'utils/formatters'
@@ -134,7 +134,7 @@ const ExchangeSummary = (props: {
           target={explorerTarget}
           rel='noreferrer'
         >
-          {props.exchange}
+          {EXCHANGETOSTRING[props.exchange]}
         </a>
       </TableData>
       {renderCustomTableData(

@@ -2324,10 +2324,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@indexcoop/tokenlists@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.2.0.tgz#10634dcf9583f29489d71b16904061eaad9b2686"
-  integrity sha512-RcCa6pAmpo1SEkeeaWqZwtwPZ46Sjvz8b39K0Ijh7siRXUFqEvag+4qQowKdMgwumpZNcdEwTuefySmwa5kL9g==
+"@indexcoop/tokenlists@^1.6.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.7.0.tgz#421ce4ccc3e46130dd5f3b424e9ce1eda159cff7"
+  integrity sha512-7mXUGuIs4wMSzKGvbQA5mfy38tm24U8DLGFzmPfxMIKTXiRafbH0VeQBR+wDNDGjPJbbHTYe9Bd3frr8d037zA==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -2820,10 +2820,10 @@
     replace-in-file "^6.1.0"
     typechain "^4.0.1"
 
-"@setprotocol/index-rebalance-utils@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@setprotocol/index-rebalance-utils/-/index-rebalance-utils-0.0.5.tgz#ab32a19930c63e82e7f94081302f283b2dfda908"
-  integrity sha512-a/Dp50BfL4FfLX0c105o2LNH5bopYSIJztwUCQowTSrrBQK3uxTaiRyN9UTce73q/Z7UoF871tobTzhxycr4tw==
+"@setprotocol/index-rebalance-utils@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@setprotocol/index-rebalance-utils/-/index-rebalance-utils-0.0.7.tgz#41097afee0c727a0e9d9bfb124777ee8849a2ec1"
+  integrity sha512-wVTHXbhgUNZqptQN6LNVnGzUB5mmEIrbm+i8NYQmC8ybByF+PTWgRt+SkcIct2JHJ1JjhXpgMAolVjk2HUYC6Q==
   dependencies:
     "@balancer-labs/sor" "^1.0.0"
     "@dynamic-amm/sdk" "^3.0.9"

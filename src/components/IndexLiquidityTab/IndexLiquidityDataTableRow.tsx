@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
-import { ChainId, PRICE_DECIMALS, REBALANCE_EXCHANGES, TEN_POW_18 } from 'utils/constants/constants'
+import { ChainId, PRICE_DECIMALS, REBALANCE_EXCHANGES, EXCHANGETOSTRING, TEN_POW_18 } from 'utils/constants/constants'
 import { getMaxTrade, ExchangeName } from 'utils/poolData'
 import { BigNumber } from 'ethers'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -89,7 +89,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
       return resultsFromExchanges![indexOfBestTrade]
     }
     const bestTrade = findBestTrade()
-    setBestExchange(bestTrade!.exchange)
+    setBestExchange(EXCHANGETOSTRING[bestTrade!.exchange])
     setMaxTrade(bestTrade!.response)
   }
   const renderDataTableRow = (component: IndexComponent | undefined) => {
