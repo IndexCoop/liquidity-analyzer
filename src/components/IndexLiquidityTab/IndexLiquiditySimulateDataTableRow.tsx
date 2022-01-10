@@ -9,6 +9,7 @@ import {
   ChainId,
   PRICE_DECIMALS,
   REBALANCE_EXCHANGES,
+  TEN_POW_18,
 } from 'utils/constants/constants'
 import { getMaxTrade, ExchangeName } from 'utils/poolData'
 import { getCoinGeckoApi } from 'utils/constants/constants'
@@ -23,15 +24,19 @@ type props = {
   updateNumberOfTrade: (value: number) => void
 }
 
-const tenPowDecimals = BigNumber.from(10).pow(18)
-
-const IndexLiquiditySimulateDataTableRow = (props: props) => {
+const IndexLiquiditySimulateDataTableRow = ({
+  component,
+  selectedIndex,
+  tradeCost,
+  updateNumberOfTrade,
+  updateTargetPercent,
+}: props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [tradeError, setTradeError] = useState(false)
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
   const [maxTrade, setMaxTrade] = useState<void | BigNumber>(BigNumber.from(0))
-  const [target, setTarget] = useState(props.component.percentOfSet)
+  const [target, setTarget] = useState(component.percentOfSet)
   const [allowedSlippage, setAllowedSlippage] = useState('0.5')
   const [bestExchange, setBestExchange] = useState('')
 
@@ -40,7 +45,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
 
   // get token price in USD
   useEffect(() => {
-    const tokenAddress = props.component.address.toLowerCase()
+    const tokenAddress = component.address.toLowerCase()
     fetch(getCoinGeckoApi(tokenAddress))
       .then((response) => response.json())
       .then((response) => {
@@ -48,41 +53,41 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
         setTokenPrice(BigNumber.from(Math.round(usd * PRICE_DECIMALS)))
       })
       .catch((error) => console.log(error))
-  }, [props.component.address])
+  }, [component.address])
 
   useEffect((): void => {
-    findMaxTrade(props.component)
-  }, [props.component])
+    findMaxTrade(component)
+  }, [component])
 
   useEffect(() => {
-    if (props.selectedIndex) {
-      setTarget(props.component.percentOfSet)
+    if (selectedIndex) {
+      setTarget(component.percentOfSet)
       setAllowedSlippage('0.5')
 
-      fetchMarketCap(props.selectedIndex)
+      fetchMarketCap(selectedIndex)
         .then((response: any) => {
           setSelectedIndexMarketCap(response)
         })
         .catch((error: any) => console.log(error))
     }
-  }, [props.selectedIndex])
+  }, [selectedIndex, component.percentOfSet])
 
   useEffect(() => {
-    props.updateNumberOfTrade(Number(numberOfTradeRef.current?.innerText))
+    updateNumberOfTrade(Number(numberOfTradeRef.current?.innerText))
   }, [numberOfTradeRef.current?.innerText, maxTrade])
 
   const inputNode = targetRef.current?.childNodes[0]
     ?.childNodes[0] as HTMLInputElement | null
   useEffect(() => {
-    props.updateTargetPercent(inputNode?.value ?? props.component.percentOfSet)
-  }, [inputNode?.value])
+    updateTargetPercent(inputNode?.value ?? component.percentOfSet)
+  }, [inputNode?.value, component.percentOfSet])
 
   const onSlippageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAllowedSlippage(e.target.value)
   }
   const onTarget = (e: ChangeEvent<HTMLInputElement>) => {
     setTarget(e.target.value)
-    props.updateTargetPercent(e.target.value)
+    updateTargetPercent(e.target.value)
   }
   const checkMaxTrade = async (
     exchange: ExchangeName,
@@ -113,7 +118,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
               return {
                 exchange,
                 response,
-                compressedResponse: response?.div(tenPowDecimals).toNumber(),
+                compressedResponse: response?.div(TEN_POW_18).toNumber(),
               }
             })
             .catch((error) => {
@@ -144,10 +149,9 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
   const renderDataTableRow = (component: IndexComponent | undefined) => {
     if (!component) return null
     const maxTradeToken =
-      maxTrade!.mul(PRICE_DECIMALS).div(tenPowDecimals).toNumber() /
-      PRICE_DECIMALS
+      maxTrade!.mul(PRICE_DECIMALS).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
     const maxTradeUSD =
-      tokenPrice.mul(maxTrade!).div(tenPowDecimals).toNumber() / PRICE_DECIMALS
+      tokenPrice.mul(maxTrade!).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
     const percentageChange = parseFloat(
       `${parseFloat(target) - parseFloat(component.percentOfSet)}`
     ).toFixed(2)
@@ -161,7 +165,7 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
         )
       )
     )
-    const estimatedCost = props.tradeCost * numberOfTrade
+    const estimatedCost = tradeCost * numberOfTrade
     return (
       <>
         <TableData>{component.symbol}</TableData>
@@ -221,8 +225,8 @@ const IndexLiquiditySimulateDataTableRow = (props: props) => {
       </>
     )
   }
-  if (props.component) {
-    return renderDataTableRow(props.component)
+  if (component) {
+    return renderDataTableRow(component)
   }
   return null
 }

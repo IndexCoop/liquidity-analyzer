@@ -119,7 +119,7 @@ const IndexLiquidityTab = (_props: props) => {
     setNetAssetValue(getNetAssetValue())
     setComponentTargetWeight({})
     setComponentNumberOfTrade({})
-  }, [selectedIndex])
+  }, [setComponents, selectedIndex])
 
   const RebalanceCheckbox = () => {
     return (
