@@ -186,12 +186,12 @@ const IndexLiquidityTab = (_props: props) => {
   const renderComponentsDataTable = () => {
     const formatDataTableRow = (components: IndexComponent[]) => {
       if (shouldSimulateRebalance) {
-        return components?.map((component, index) => (
+        return components?.map((component) => (
           <IndexLiquiditySimulateDataTableRow
             selectedIndex={selectedIndex}
             tradeCost={tradeCost}
             component={component}
-            key={index}
+            key={component.id}
             updateTargetPercent={(value: string) =>
               setTargetPercent(value, component)
             }
@@ -202,8 +202,8 @@ const IndexLiquidityTab = (_props: props) => {
         ))
       }
 
-      return components?.map((component, index) => (
-        <IndexLiquidityDataTableRow component={component} key={index} />
+      return components?.map((component) => (
+        <IndexLiquidityDataTableRow component={component} key={component.id} />
       ))
     }
     switch (selectedIndex) {
@@ -292,7 +292,6 @@ const IndexLiquidityTab = (_props: props) => {
             {renderComponentsDataTable()}
             <>
               <Tabletotal>Total</Tabletotal>
-
               <TableTotalWeight alignRight weight={totalWeight}>
                 {totalWeight}
               </TableTotalWeight>
@@ -302,12 +301,9 @@ const IndexLiquidityTab = (_props: props) => {
                   <TableTotalWeight alignRight weight={totalTargetWeight}>
                     {totalTargetWeight}
                   </TableTotalWeight>
-                  <Tabletotal />
-                  <Tabletotal />
-                  <Tabletotal />
-                  <Tabletotal />
-                  <Tabletotal />
-                  <Tabletotal />
+                  {[...Array(6)].map((_e, i) => (
+                    <Tabletotal key={i} />
+                  ))}
                   <Tabletotal alignRight>{totalNumberOfTrade}</Tabletotal>
                   <Tabletotal alignRight>
                     {formatUSD(totalNumberOfTrade * tradeCost)}
