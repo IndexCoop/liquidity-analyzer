@@ -5,12 +5,14 @@ import { getCoinGeckoApi } from 'utils/constants/constants'
 import { ExchangeName } from 'utils/poolData'
 import ExchangeSummary from './ExchangeSummary'
 import { MarketDataContext } from 'contexts/MarketData'
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 import {
   ChainId,
   COIN_GECKO_CHAIN_KEY,
   PRICE_DECIMALS,
   EXCHANGES,
 } from 'utils/constants/constants'
+import { lte } from 'lodash'
 
 const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
@@ -68,7 +70,28 @@ const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
       ></ExchangeSummary>
     )
   }
+
+  const popover = (
+    <Popover id="popover-contained">
+      <Popover.Body>
+      Please note that slippage does not include fees paid to DEX liquidity providers. 
+      DEX user interfaces typically show total price impact, which is Slippage + LP fees
+       (ex 0.5% slippage + 0.3% Uniswap LP Fee = 0.8% price impact)
+      </Popover.Body>
+    </Popover>
+  );
+  
+  const slippageNote = (slippage: String) => (
+    <OverlayTrigger trigger="click" placement="bottom" overlay={popover}>
+      <a href='#slippage'>{slippage}</a>
+    </OverlayTrigger>
+  );
+
   return (
+    <>
+      <SlippageWrapper>
+      {slippageNote('')}
+      </SlippageWrapper>
     <DataTableContainer>
       <DataTable>
         <TableHeader>Exchange</TableHeader>
@@ -76,17 +99,17 @@ const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
         <TableHeaderRightAlign>
           Max Trade Size{' '}
           <TableHeaderSubText>
-            {selectedToken.symbol} - (0.5% Slippage)
+            {selectedToken.symbol} - {slippageNote('0.5% Slippage')}
           </TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
-          <TableHeaderSubText>USD - (0.5% Slippage)</TableHeaderSubText>
+          <TableHeaderSubText>USD - {slippageNote('0.5% Slippage')}</TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>No. of Trades (0.5%) </TableHeaderRightAlign>
         <TableHeaderRightAlign>
           Max Trade Size{' '}
-          <TableHeaderSubText>USD - (1% Slippage)</TableHeaderSubText>
+          <TableHeaderSubText>USD - {slippageNote('1% Slippage')}</TableHeaderSubText>
         </TableHeaderRightAlign>
         <TableHeaderRightAlign>No. of Trades (1%) </TableHeaderRightAlign>
         {EXCHANGES.map((exchange) =>
@@ -99,6 +122,7 @@ const LiquidityTable = (props: { chainId: ChainId; desiredAmount: string }) => {
         )}
       </DataTable>
     </DataTableContainer>
+    </>
   )
 }
 
@@ -133,4 +157,8 @@ const TableHeaderSubText = styled.div`
   margin: 0;
   font-size: 12px;
   font-weight: 300;
+`
+const SlippageWrapper = styled.div`
+  width: 200px;
+  margin-bottom: 10px;
 `
