@@ -105,7 +105,7 @@ const ExchangeSummary = (props: {
     props.tokenPrice.mul(maxTrade).div(tenPowDecimals).toNumber() /
     PRICE_DECIMALS
   const calculateMaxNumberOfTrades = (maxTrade: number) => {
-    const desiredAmount = parseInt(props.desiredAmount)
+    const desiredAmount = parseInt(props.desiredAmount, 10)
     return desiredAmount > 0 && maxTrade > 0
       ? Math.ceil(desiredAmount / maxTrade).toString()
       : '0'

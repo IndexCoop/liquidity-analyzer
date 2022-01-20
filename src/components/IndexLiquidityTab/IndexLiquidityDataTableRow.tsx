@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
-import { ChainId, PRICE_DECIMALS, REBALANCE_EXCHANGES, EXCHANGETOSTRING } from 'utils/constants/constants'
+import { ChainId, PRICE_DECIMALS, REBALANCE_EXCHANGES, EXCHANGETOSTRING, TEN_POW_18 } from 'utils/constants/constants'
 import { getMaxTrade, ExchangeName } from 'utils/poolData'
 import { BigNumber } from 'ethers'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -19,7 +19,6 @@ const IndexLiquidityDataTableRow = (props: props) => {
   const [bestExchange, setBestExchange] = useState('')
   const [tradeError, setTradeError] = useState(false)
   const [tokenPrice, setTokenPrice] = useState<BigNumber>(BigNumber.from(0))
-  const tenPowDecimals = BigNumber.from(10).pow(18)
 
   // get token price in USD
   useEffect(() => {
@@ -65,7 +64,7 @@ const IndexLiquidityDataTableRow = (props: props) => {
           return {
             exchange,
             response,
-            compressedResponse: response?.div(tenPowDecimals).toNumber()
+            compressedResponse: response?.div(TEN_POW_18).toNumber()
           }
         })
         .catch((error) => {
@@ -96,10 +95,10 @@ const IndexLiquidityDataTableRow = (props: props) => {
   const renderDataTableRow = (component: IndexComponent | undefined) => {
     if (!component) return null
     const maxTradeToken =
-      maxTrade!.mul(PRICE_DECIMALS).div(tenPowDecimals).toNumber() /
+      maxTrade!.mul(PRICE_DECIMALS).div(TEN_POW_18).toNumber() /
       PRICE_DECIMALS
     const maxTradeUSD =
-      tokenPrice.mul(maxTrade!).div(tenPowDecimals).toNumber() /
+      tokenPrice.mul(maxTrade!).div(TEN_POW_18).toNumber() /
       PRICE_DECIMALS
     return (
       <>
