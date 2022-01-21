@@ -5,7 +5,6 @@ import MarketDataContext, { defaultToken } from './MarketDataContext'
 import { fetchSetComponents } from 'utils/tokensetsApi'
 import { TokenData } from './types'
 
-
 const MarketDataProvider: React.FC = ({ children }) => {
   const [bedIndexComponents, setBedIndexComponents] = useState<any>([])
   const [dataIndexComponents, setDataIndexComponents] = useState<any>([])
@@ -16,7 +15,6 @@ const MarketDataProvider: React.FC = ({ children }) => {
     BigNumber.from(0)
   )
   const [selectedToken, setSelectedToken] = useState<TokenData>(defaultToken)
-
 
   useEffect(() => {
     fetchSetComponents('bed')
@@ -33,7 +31,7 @@ const MarketDataProvider: React.FC = ({ children }) => {
       })
       .catch((error: any) => console.log(error))
   }, [])
-  
+
   useEffect(() => {
     fetchSetComponents('dpi')
       .then((response: any) => {
@@ -41,7 +39,6 @@ const MarketDataProvider: React.FC = ({ children }) => {
       })
       .catch((error: any) => console.log(error))
   }, [])
-
 
   useEffect(() => {
     fetchSetComponents('mvi')
@@ -64,18 +61,21 @@ const MarketDataProvider: React.FC = ({ children }) => {
     fetch(CG_ETH_PRICE_URL)
       .then((response) => response.json())
       .then((response) => {
-        setEthereumPrice(BigNumber.from(response?.ethereum?.usd * PRICE_DECIMALS))
+        setEthereumPrice(
+          BigNumber.from(response?.ethereum?.usd * PRICE_DECIMALS)
+        )
       })
       .catch((error) => console.log(error))
   }, [])
-  
+
   return (
     <MarketDataContext.Provider
-      value={{ bedComponent: bedIndexComponents, 
-        dpiComponent: dpiIndexComponents, 
-        dataComponent: dataIndexComponents, 
-        mviComponent: mviIndexComponents,
-        gmiComponent: gmiIndexComponents,
+      value={{
+        bedComponents: bedIndexComponents,
+        dpiComponents: dpiIndexComponents,
+        dataComponents: dataIndexComponents,
+        mviComponents: mviIndexComponents,
+        gmiComponents: gmiIndexComponents,
         ethereumPrice,
         selectedToken,
         setSelectedToken,

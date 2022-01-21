@@ -4,11 +4,11 @@ import IndexComponent from 'components/IndexComponent'
 import { TokenData } from './types'
 
 interface MarketDataProps {
-  bedComponent?: IndexComponent[]
-  dataComponent?: IndexComponent[]
-  dpiComponent?: IndexComponent[]
-  mviComponent?: IndexComponent[]
-  gmiComponent?: IndexComponent[]
+  bedComponents?: IndexComponent[]
+  dataComponents?: IndexComponent[]
+  dpiComponents?: IndexComponent[]
+  mviComponents?: IndexComponent[]
+  gmiComponents?: IndexComponent[]
   ethereumPrice: BigNumber
   selectedToken: TokenData
   setSelectedToken: React.Dispatch<React.SetStateAction<TokenData>>

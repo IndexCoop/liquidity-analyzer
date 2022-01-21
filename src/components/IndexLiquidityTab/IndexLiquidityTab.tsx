@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect, useMemo } from 'react'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
+
 import useMarketDataComponents from 'hooks/useMarketDataComponents'
 import IndexComponent from 'components/IndexComponent'
 import {
@@ -9,6 +10,7 @@ import {
   INDEX_TOKENS_FOR_SELECT,
 } from 'utils/constants/constants'
 import IndexLiquidityDataTableRow from './IndexLiquidityDataTableRow'
+import IndexLiquiditySimulateDataTableRow from './IndexLiquiditySimulateDataTableRow'
 import { fetchMarketCap, fetchTotalMarketCap } from 'utils/tokensetsApi'
 import { formatUSD } from 'utils/formatters'
 
@@ -16,6 +18,20 @@ interface props {
   desiredAmount: string
   onDesiredAmountChange: (arg0: ChangeEvent<HTMLInputElement>) => void
 }
+
+interface DataTableProps {
+  isSimulated?: boolean
+}
+interface TableTotalProps {
+  alignRight?: boolean
+}
+
+interface TableTotalWeightProps {
+  weight?: string
+}
+
+const DOLLAR_PER_GAS = 1.3
+
 const DATA_TABLE_HEADERS = [
   'Component',
   'Weight %',
@@ -29,7 +45,7 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'Weight %',
   'Target %',
   '% Change',
-  '% Change',
+  '$ Change',
   'Slippage Allowed',
   'Best Exchange',
   'Max Trade Size (Units)',
@@ -37,17 +53,32 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'No. of Trades',
   'Estimated Cost',
 ]
-const IndexLiquidityTab = (props: props) => {
+const IndexLiquidityTab = (_props: props) => {
+  const [totalWeight, setTotalWeight] = useState<string>()
+  const [componentTargetWeight, setComponentTargetWeight] = useState<{
+    [k: string]: string
+  }>({})
+  const [componentNumberOfTrade, setComponentNumberOfTrade] = useState<{
+    [k: string]: number
+  }>({})
   const [shouldSimulateRebalance, setShouldSimulateRebalance] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState('')
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
   const [totalMarketCap, setTotalMarketCap] = useState(0)
   const [netAssetValue, setNetAssetValue] = useState(0)
-  const bedComponents = useMarketDataComponents().bedComponent
-  const dataComponents = useMarketDataComponents().dataComponent
-  const dpiComponents = useMarketDataComponents().dpiComponent
-  const mviComponents = useMarketDataComponents().mviComponent
-  const gmiComponents = useMarketDataComponents().gmiComponent
+  const {
+    bedComponents,
+    dataComponents,
+    dpiComponents,
+    mviComponents,
+    gmiComponents,
+  } = useMarketDataComponents()
+  const [gasCost, setGasCost] = useState('')
+
+  const onGasCostChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setGasCost(e.target.value)
+  }
+
   const setComponents: any = useMemo(
     () => ({
       BED: bedComponents,
@@ -88,8 +119,14 @@ const IndexLiquidityTab = (props: props) => {
     const getNetAssetValue = () => {
       return tokenData ? tokenData.reduce(netAssetValueReducer, 0) : 0
     }
+    const sumOfWeight = tokenData
+      ?.map((token: any) => parseFloat(token.percentOfSet))
+      .reduce((prev: number, next: number) => prev + next)
+    setTotalWeight(sumOfWeight?.toFixed(2))
     setNetAssetValue(getNetAssetValue())
-  }, [selectedIndex, setComponents])
+    setComponentTargetWeight({})
+    setComponentNumberOfTrade({})
+  }, [setComponents, selectedIndex])
 
   const RebalanceCheckbox = () => {
     return (
@@ -106,6 +143,7 @@ const IndexLiquidityTab = (props: props) => {
       </CheckboxContainer>
     )
   }
+
   const renderDataTableHeaders = () => {
     if (shouldSimulateRebalance) {
       return DATA_TABLE_SIMULATION_HEADERS.map((title, index) => {
@@ -118,10 +156,61 @@ const IndexLiquidityTab = (props: props) => {
       return <TableHeaderRightAlign key={index}>{title}</TableHeaderRightAlign>
     })
   }
+  const setTargetPercent = (
+    targetPercent: string,
+    component: IndexComponent
+  ) => {
+    setComponentTargetWeight((prevState) => ({
+      ...prevState,
+      [component.address]: targetPercent,
+    }))
+  }
+
+  const totalTargetWeight = Object.entries(componentTargetWeight).reduce(
+    (prev, [_address, targetWeight]) =>
+      String((parseFloat(prev) + parseFloat(targetWeight)).toFixed(2)),
+    '0'
+  )
+
+  const updateComponentNumberOfTrade = (
+    numberOfTrade: number,
+    component: IndexComponent
+  ) => {
+    setComponentNumberOfTrade((prevState) => ({
+      ...prevState,
+      [component.address]: numberOfTrade,
+    }))
+  }
+
+  const tradeCost =
+    (isNaN(parseFloat(gasCost)) ? 0 : parseFloat(gasCost)) * DOLLAR_PER_GAS
+
+  const totalNumberOfTrade = Object.entries(componentNumberOfTrade).reduce(
+    (prev, [_address, numOfTrade]) => prev + numOfTrade,
+    0
+  )
+
   const renderComponentsDataTable = () => {
     const formatDataTableRow = (components: IndexComponent[]) => {
-      return components?.map((component, index) => (
-        <IndexLiquidityDataTableRow component={component} key={index} />
+      if (shouldSimulateRebalance) {
+        return components?.map((component) => (
+          <IndexLiquiditySimulateDataTableRow
+            selectedIndex={selectedIndex}
+            tradeCost={tradeCost}
+            component={component}
+            key={component.id}
+            updateTargetPercent={(value: string) =>
+              setTargetPercent(value, component)
+            }
+            updateNumberOfTrade={(value: number) =>
+              updateComponentNumberOfTrade(value, component)
+            }
+          />
+        ))
+      }
+
+      return components?.map((component) => (
+        <IndexLiquidityDataTableRow component={component} key={component.id} />
       ))
     }
     switch (selectedIndex) {
@@ -146,6 +235,7 @@ const IndexLiquidityTab = (props: props) => {
       </TitleContainer>
     )
   }
+
   return (
     <TabContainer>
       <HeaderRow>
@@ -170,10 +260,15 @@ const IndexLiquidityTab = (props: props) => {
             />
           )}
         />
-
-        {/* TODO: Add functionality */}
-        {/* via Simulate Rebalance Epic */}
         <RebalanceCheckbox />
+        <TextField
+          value={gasCost}
+          onChange={onGasCostChange}
+          label='Gas Cost in Gwei'
+          inputProps={{
+            autoComplete: 'new-password', // disable autocomplete and autofill
+          }}
+        />
 
         <TextContainer>
           <TextLabel>
@@ -192,7 +287,6 @@ const IndexLiquidityTab = (props: props) => {
           </TextLabel>
         </TextContainer>
       </HeaderRow>
-
       <InstructionContainer>
         <InstructionsText>
           Each component's data loads when you remove focus from its Slippage
@@ -200,11 +294,32 @@ const IndexLiquidityTab = (props: props) => {
         </InstructionsText>
       </InstructionContainer>
 
-      <DataTable>
+      <DataTable isSimulated={shouldSimulateRebalance}>
         {selectedIndex ? (
           <>
             {renderDataTableHeaders()}
             {renderComponentsDataTable()}
+            <>
+              <Tabletotal>Total</Tabletotal>
+              <TableTotalWeight alignRight weight={totalWeight}>
+                {totalWeight}
+              </TableTotalWeight>
+
+              {shouldSimulateRebalance && (
+                <>
+                  <TableTotalWeight alignRight weight={totalTargetWeight}>
+                    {totalTargetWeight}
+                  </TableTotalWeight>
+                  {[...Array(6)].map((_e, i) => (
+                    <Tabletotal key={i} />
+                  ))}
+                  <Tabletotal alignRight>{totalNumberOfTrade}</Tabletotal>
+                  <Tabletotal alignRight>
+                    {formatUSD(totalNumberOfTrade * tradeCost)}
+                  </Tabletotal>
+                </>
+              )}
+            </>
           </>
         ) : (
           <SelectAToken />
@@ -270,15 +385,17 @@ const CheckboxContainer = styled.div`
   padding-right: 40px;
 `
 
-const DataTable = styled.div`
+const DataTable = styled.div<DataTableProps>`
   display: grid;
-  grid-template-columns: 10px repeat(5, 200px);
-  // grid-template-columns: 100px repeat(10, 200px); // use this when simulating rebalance
+  grid-template-columns: ${(prop) =>
+    prop.isSimulated ? '100px repeat(10, 140px)' : '10px repeat(5, 200px)'};
   grid-row-gap: 4px;
   flex: 4;
 `
 
-const TextContainer = styled.div``
+const TextContainer = styled.div`
+  padding-left: 35px;
+`
 
 const Text = styled.div`
   font-size: 18px;
@@ -304,4 +421,22 @@ const TableHeaderRightAlign = styled.div`
   font-weight: 600;
   text-align: right;
   border-bottom: 2px solid black;
+`
+
+const Tabletotal = styled.div<TableTotalProps>`
+  display: flex;
+  flex-direction: row;
+  justify-content: ${({ alignRight }) =>
+    alignRight ? 'flex-end' : 'flex-start'};
+  margin: 0;
+  height: 60px;
+  font-size: 18px;
+  font-weight: 500;
+`
+
+const TableTotalWeight = styled(Tabletotal)<TableTotalWeightProps>`
+  line-height: 24px;
+  display: flex;
+  justify-content: flex-end;
+  color: ${({ weight }) => (weight && weight !== '100.00' ? 'red' : 'inherit')};
 `
