@@ -77,6 +77,7 @@ export const ALL_INDEX_SET_HTML_REFS: any = {
   MVI: 'metaverse-index',
   BED: 'bankless-bed-index',
   DATA: 'data-economy-index',
+  GMI: 'bankless-defi-innovation-index',
 }
 
 export const INDEX_TOKENS = {
@@ -84,6 +85,7 @@ export const INDEX_TOKENS = {
   MVI: 'MVI',
   BED: 'BED',
   DATA: 'DATA',
+  GMI: 'GMI',
 }
 
 export const INDEX_TOKENS_FOR_SELECT = [
@@ -91,6 +93,7 @@ export const INDEX_TOKENS_FOR_SELECT = [
   { name: 'MVI' },
   { name: 'BED' },
   { name: 'DATA' },
+  { name: 'GMI' },
 ]
 
 export const EXCHANGES: Array<ExchangeName> = [
@@ -104,18 +107,20 @@ export const EXCHANGES: Array<ExchangeName> = [
   'ZeroEx',
 ]
 
-export const EXCHANGETOSTRING =  {
+export const EXCHANGETOSTRING = {
   UniswapV3FeeLow: 'UniswapV3 (0.05% fee tier)',
   UniswapV3FeeMedium: 'UniswapV3 (0.30% fee tier)',
   UniswapV3FeeHigh: 'UniswapV3 (1% fee tier)',
   UniswapV2: 'UniswapV2',
   Sushiswap: 'Sushiswap',
   Kyber: 'Kyber',
-  Balancer:'Balancer',
-  ZeroEx: 'ZeroEx'
+  Balancer: 'Balancer',
+  ZeroEx: 'ZeroEx',
 }
 // Exchanges used for rebalances
-export const REBALANCE_EXCHANGES: Array<ExchangeName> = EXCHANGES.filter(ex => ex !== 'ZeroEx')
+export const REBALANCE_EXCHANGES: Array<ExchangeName> = EXCHANGES.filter(
+  (ex) => ex !== 'ZeroEx'
+)
 
 export const V2_FACTORY_ABI = [
   {

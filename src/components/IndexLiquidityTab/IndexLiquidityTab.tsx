@@ -66,8 +66,13 @@ const IndexLiquidityTab = (_props: props) => {
   const [selectedIndexMarketCap, setSelectedIndexMarketCap] = useState(0)
   const [totalMarketCap, setTotalMarketCap] = useState(0)
   const [netAssetValue, setNetAssetValue] = useState(0)
-  const { bedComponents, dataComponents, dpiComponents, mviComponents } =
-    useMarketDataComponents()
+  const {
+    bedComponents,
+    dataComponents,
+    dpiComponents,
+    mviComponents,
+    gmiComponents,
+  } = useMarketDataComponents()
   const [gasCost, setGasCost] = useState('')
 
   const onGasCostChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -80,9 +85,11 @@ const IndexLiquidityTab = (_props: props) => {
       DATA: dataComponents,
       DPI: dpiComponents,
       MVI: mviComponents,
+      GMI: gmiComponents,
     }),
-    [bedComponents, dataComponents, dpiComponents, mviComponents]
+    [bedComponents, dataComponents, dpiComponents, mviComponents, gmiComponents]
   )
+
   useEffect(() => {
     fetchTotalMarketCap()
       .then((response: any) => {
@@ -215,6 +222,8 @@ const IndexLiquidityTab = (_props: props) => {
         return formatDataTableRow(dpiComponents!)
       case INDEX_TOKENS.MVI:
         return formatDataTableRow(mviComponents!)
+      case INDEX_TOKENS.GMI:
+        return formatDataTableRow(gmiComponents!)
       default:
         return null
     }

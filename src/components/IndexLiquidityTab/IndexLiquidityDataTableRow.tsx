@@ -2,7 +2,13 @@ import styled from 'styled-components'
 import { ChangeEvent, useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
-import { ChainId, PRICE_DECIMALS, REBALANCE_EXCHANGES, EXCHANGETOSTRING, TEN_POW_18 } from 'utils/constants/constants'
+import {
+  ChainId,
+  PRICE_DECIMALS,
+  REBALANCE_EXCHANGES,
+  EXCHANGETOSTRING,
+  TEN_POW_18,
+} from 'utils/constants/constants'
 import { getMaxTrade, ExchangeName } from 'utils/poolData'
 import { BigNumber } from 'ethers'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -58,32 +64,34 @@ const IndexLiquidityDataTableRow = (props: props) => {
       })
   }
   const findMaxTrade = async (component: IndexComponent) => {
-    const checkExchanges = async () => Promise.all(
-      REBALANCE_EXCHANGES.map((exchange) => checkMaxTrade(exchange, component)
-        .then((response) => {
-          return {
-            exchange,
-            response,
-            compressedResponse: response?.div(TEN_POW_18).toNumber()
-          }
-        })
-        .catch((error) => {
-          setTradeError(true)
-          console.error(error.toString())
-        })
-      )
-    ).catch((error) => {
-      setTradeError(true)
-      console.error(error.toString())
-    })
+    const checkExchanges = async () =>
+      Promise.all(
+        REBALANCE_EXCHANGES.map((exchange) =>
+          checkMaxTrade(exchange, component)
+            .then((response) => {
+              return {
+                exchange,
+                response,
+                compressedResponse: response?.div(TEN_POW_18).toNumber(),
+              }
+            })
+            .catch((error) => {
+              setTradeError(true)
+              console.error(error.toString())
+            })
+        )
+      ).catch((error) => {
+        setTradeError(true)
+        console.error(error.toString())
+      })
     const resultsFromExchanges = await checkExchanges()
-    const exchangeMaxTrades = resultsFromExchanges!.map((exchangeObject) => { 
+    const exchangeMaxTrades = resultsFromExchanges!.map((exchangeObject) => {
       if (exchangeObject && exchangeObject.compressedResponse) {
         return exchangeObject.compressedResponse
-      } 
+      }
     })
     const findBestTrade = () => {
-      let sorted = [...exchangeMaxTrades].sort((a,b) => a && b ? b - a : 0)
+      let sorted = [...exchangeMaxTrades].sort((a, b) => (a && b ? b - a : 0))
       const indexOfBestTrade = exchangeMaxTrades.indexOf(sorted[0])
       setIsLoading(false)
       return resultsFromExchanges![indexOfBestTrade]
@@ -95,29 +103,45 @@ const IndexLiquidityDataTableRow = (props: props) => {
   const renderDataTableRow = (component: IndexComponent | undefined) => {
     if (!component) return null
     const maxTradeToken =
-      maxTrade!.mul(PRICE_DECIMALS).div(TEN_POW_18).toNumber() /
-      PRICE_DECIMALS
+      maxTrade!.mul(PRICE_DECIMALS).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
     const maxTradeUSD =
-      tokenPrice.mul(maxTrade!).div(TEN_POW_18).toNumber() /
-      PRICE_DECIMALS
+      tokenPrice.mul(maxTrade!).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
     return (
       <>
         <TableData>{component.symbol}</TableData>
         <TableDataRightAlign>{component.percentOfSet}</TableDataRightAlign>
         <TableDataRightAlign>
           <TextField
-              value={allowedSlippage}
-              onChange={onSlippageChange}
-              onBlur={(e) => findMaxTrade(component)}
-              style={textFieldStyles}
-              inputProps={{
-                autoComplete: 'new-password', // disable autocomplete and autofill
-              }}
-            />
+            value={allowedSlippage}
+            onChange={onSlippageChange}
+            onBlur={(e) => findMaxTrade(component)}
+            style={textFieldStyles}
+            inputProps={{
+              autoComplete: 'new-password', // disable autocomplete and autofill
+            }}
+          />
         </TableDataRightAlign>
-        <TableDataRightAlign>{isLoading ? <CircularProgress /> : bestExchange}</TableDataRightAlign>
-        <TableDataRightAlign>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatDisplay(maxTradeToken)}</TableDataRightAlign>
-        <TableDataRightAlign>{isLoading ? <CircularProgress /> : tradeError ? 'error' : formatUSD(maxTradeUSD)}</TableDataRightAlign>
+        <TableDataRightAlign>
+          {isLoading ? <CircularProgress /> : bestExchange}
+        </TableDataRightAlign>
+        <TableDataRightAlign>
+          {isLoading ? (
+            <CircularProgress />
+          ) : tradeError ? (
+            'error'
+          ) : (
+            formatDisplay(maxTradeToken)
+          )}
+        </TableDataRightAlign>
+        <TableDataRightAlign>
+          {isLoading ? (
+            <CircularProgress />
+          ) : tradeError ? (
+            'error'
+          ) : (
+            formatUSD(maxTradeUSD)
+          )}
+        </TableDataRightAlign>
       </>
     )
   }

@@ -10,6 +10,7 @@ const MarketDataProvider: React.FC = ({ children }) => {
   const [dataIndexComponents, setDataIndexComponents] = useState<any>([])
   const [dpiIndexComponents, setDpiIndexComponents] = useState<any>([])
   const [mviIndexComponents, setMviIndexComponents] = useState<any>([])
+  const [gmiIndexComponents, setGmiiIndexComponents] = useState<any>([])
   const [ethereumPrice, setEthereumPrice] = useState<BigNumber>(
     BigNumber.from(0)
   )
@@ -47,6 +48,14 @@ const MarketDataProvider: React.FC = ({ children }) => {
       .catch((error: any) => console.log(error))
   }, [])
 
+  useEffect(() => {
+    fetchSetComponents('gmi')
+      .then((res) => {
+        setGmiiIndexComponents(res)
+      })
+      .catch((error: any) => console.log(error))
+  }, [])
+
   // get ETH price in USD
   useEffect(() => {
     fetch(CG_ETH_PRICE_URL)
@@ -66,6 +75,7 @@ const MarketDataProvider: React.FC = ({ children }) => {
         dpiComponents: dpiIndexComponents,
         dataComponents: dataIndexComponents,
         mviComponents: mviIndexComponents,
+        gmiComponents: gmiIndexComponents,
         ethereumPrice,
         selectedToken,
         setSelectedToken,

@@ -8,6 +8,7 @@ interface MarketDataProps {
   dataComponents?: IndexComponent[]
   dpiComponents?: IndexComponent[]
   mviComponents?: IndexComponent[]
+  gmiComponents?: IndexComponent[]
   ethereumPrice: BigNumber
   selectedToken: TokenData
   setSelectedToken: React.Dispatch<React.SetStateAction<TokenData>>
