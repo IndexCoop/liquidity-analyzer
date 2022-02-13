@@ -2331,6 +2331,52 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@indexcoop/index-coop-smart-contracts@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@indexcoop/index-coop-smart-contracts/-/index-coop-smart-contracts-0.1.1.tgz#43497eb6d39c175b97f6e8c755fe10ee1da487d5"
+  integrity sha512-UEhYCVsRT2uiVRPuC5C+yjfuV1HCGvyqpMnvXBPItqV5GMea1bi1VmXrAMM6QlL196ZCqNQHBh+Q67Ju7MA9GA==
+  dependencies:
+    "@ethersproject/abstract-signer" "5.0.9"
+    "@ethersproject/bignumber" "5.0.12"
+    "@ethersproject/providers" "5.0.17"
+    "@uniswap/v2-core" "^1.0.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
+    ethereumjs-util "^7.0.5"
+    ethers "5.0.24"
+    fs-extra "^5.0.0"
+    module-alias "^2.2.2"
+    replace-in-file "^6.1.0"
+    typechain "^4.0.1"
+
+"@indexcoop/index-rebalance-utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/index-rebalance-utils/-/index-rebalance-utils-1.0.0.tgz#2ac2ce4b571017aa6c253f300c6bd14aa3b213da"
+  integrity sha512-jMvFYKappfCh2YNGjUT9r4erKc9JtaoRECiSLr304SnFXD3vwG6bHWINxtftstOkPtUjOMwosJg9rI2QF0VGag==
+  dependencies:
+    "@balancer-labs/sor" "^1.0.0"
+    "@dynamic-amm/sdk" "^3.0.9"
+    "@ethersproject/abstract-signer" "5.0.9"
+    "@ethersproject/bignumber" "5.0.12"
+    "@ethersproject/providers" "5.0.17"
+    "@setprotocol/index-coop-contracts" "0.0.25"
+    "@setprotocol/set-protocol-v2" "0.0.46"
+    "@sushiswap/sdk" "^5.0.0-canary.23"
+    "@uniswap/sdk" "^3.0.3"
+    "@uniswap/sdk-core" "^3.0.0"
+    "@uniswap/v2-core" "^1.0.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
+    "@uniswap/v3-core" "^1.0.0"
+    "@uniswap/v3-periphery" "^1.1.1"
+    "@uniswap/v3-sdk" "^3.2.1"
+    bignumber.js "^9.0.1"
+    ethereumjs-util "^7.0.5"
+    ethers "5.0.24"
+    fs-extra "^5.0.0"
+    handlebars "^4.7.7"
+    module-alias "^2.2.2"
+    replace-in-file "^6.1.0"
+    typechain "^4.0.1"
+
 "@indexcoop/tokenlists@^1.15.0":
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.15.0.tgz#4a524f5225140b9a2e252c5f02715d4a9f5868d9"
@@ -2858,35 +2904,6 @@
     ethereumjs-util "^7.0.5"
     ethers "5.0.24"
     fs-extra "^5.0.0"
-    module-alias "^2.2.2"
-    replace-in-file "^6.1.0"
-    typechain "^4.0.1"
-
-"@setprotocol/index-rebalance-utils@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@setprotocol/index-rebalance-utils/-/index-rebalance-utils-0.0.7.tgz#41097afee0c727a0e9d9bfb124777ee8849a2ec1"
-  integrity sha512-wVTHXbhgUNZqptQN6LNVnGzUB5mmEIrbm+i8NYQmC8ybByF+PTWgRt+SkcIct2JHJ1JjhXpgMAolVjk2HUYC6Q==
-  dependencies:
-    "@balancer-labs/sor" "^1.0.0"
-    "@dynamic-amm/sdk" "^3.0.9"
-    "@ethersproject/abstract-signer" "5.0.9"
-    "@ethersproject/bignumber" "5.0.12"
-    "@ethersproject/providers" "5.0.17"
-    "@setprotocol/index-coop-contracts" "0.0.25"
-    "@setprotocol/set-protocol-v2" "0.0.46"
-    "@sushiswap/sdk" "^5.0.0-canary.23"
-    "@uniswap/sdk" "^3.0.3"
-    "@uniswap/sdk-core" "^3.0.0"
-    "@uniswap/v2-core" "^1.0.1"
-    "@uniswap/v2-periphery" "^1.1.0-beta.0"
-    "@uniswap/v3-core" "^1.0.0"
-    "@uniswap/v3-periphery" "^1.1.1"
-    "@uniswap/v3-sdk" "^3.2.1"
-    bignumber.js "^9.0.1"
-    ethereumjs-util "^7.0.5"
-    ethers "5.0.24"
-    fs-extra "^5.0.0"
-    handlebars "^4.7.7"
     module-alias "^2.2.2"
     replace-in-file "^6.1.0"
     typechain "^4.0.1"
@@ -16938,9 +16955,9 @@ typical@^2.6.0, typical@^2.6.1:
   integrity sha1-XAgOXWYcu+OCWdLnCjxyU+hziB0=
 
 uglify-js@^3.1.4:
-  version "3.14.2"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.14.2.tgz#d7dd6a46ca57214f54a2d0a43cad0f35db82ac99"
-  integrity sha512-rtPMlmcO4agTUfz10CbgJ1k6UAoXM2gWb3GoMPPZB/+/Ackf8lNWk11K4rYi2D0apgoFRLtQOZhb+/iGNJq26A==
+  version "3.15.1"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.15.1.tgz#9403dc6fa5695a6172a91bc983ea39f0f7c9086d"
+  integrity sha512-FAGKF12fWdkpvNJZENacOH0e/83eG6JyVQyanIJaBXCN1J11TUQv1T1/z8S+Z0CG0ZPk1nPcreF/c7lrTd0TEQ==
 
 ultron@~1.1.0:
   version "1.1.1"
