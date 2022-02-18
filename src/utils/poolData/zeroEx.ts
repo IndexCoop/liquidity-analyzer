@@ -40,8 +40,14 @@ export async function getZeroExQuote(tokenAddress: string, maxSlippagePercent: n
     let tradeAmount = 2;
     while (slippagePercent * 100 < maxSlippagePercent) {
         maxTradeQuote = await getQuote(tokenAddress, "WETH", tradeAmount, maxSlippagePercent);
+        slippagePercent = Math.abs((parseFloat(baseQuote.price) - parseFloat(maxTradeQuote.price)) / parseFloat(baseQuote.price));
+        tradeAmount+=10;
+    }
+    slippagePercent = maxSlippagePercent / 100
+    while (slippagePercent * 100 >= maxSlippagePercent) {
+        maxTradeQuote = await getQuote(tokenAddress, "WETH", tradeAmount, maxSlippagePercent);
         slippagePercent = (parseFloat(baseQuote.price) - parseFloat(maxTradeQuote.price)) / parseFloat(baseQuote.price);
-        tradeAmount++;
+        tradeAmount-=1;
     }
 
     return {
