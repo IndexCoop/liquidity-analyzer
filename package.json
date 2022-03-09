@@ -39,7 +39,7 @@
     "@ethersproject/providers": "5.0.17",
     "@indexcoop/index-coop-smart-contracts": "^0.1.1",
     "@indexcoop/index-rebalance-utils": "^1.0.0",
-    "@indexcoop/tokenlists": "^1.17.0",
+    "@indexcoop/tokenlists": "^1.18.0",
     "@mui/material": "^5.0.4",
     "@setprotocol/set-protocol-v2": "0.0.46",
     "@sushiswap/sdk": "^5.0.0-canary.23",
