@@ -2377,10 +2377,10 @@
     replace-in-file "^6.1.0"
     typechain "^4.0.1"
 
-"@indexcoop/tokenlists@^1.21.1":
-  version "1.21.1"
-  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.21.1.tgz#de0785478cf76eae2c893fa728dde82d575e0b7d"
-  integrity sha512-3qy7i6JmTyjbXE5wOOZBc3YdBs9bdlSVHokZfiZSJtkSwUDACbQz9vwuaXBtovSdxvs9GrOWQdT3Gxsj1DXo/A==
+"@indexcoop/tokenlists@^1.23.0":
+  version "1.23.0"
+  resolved "https://registry.yarnpkg.com/@indexcoop/tokenlists/-/tokenlists-1.23.0.tgz#b087304e2f3c209bd7fc667e2287c53579de699e"
+  integrity sha512-eHWHRABIjGp2GhNrhqKhZNSAlg22GIxRBmp0BKOIVhzcudjVsCJmAEOIMPwuIMUEn/saS9W2/trEurG1HBFgRw==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
