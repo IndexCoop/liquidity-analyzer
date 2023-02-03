@@ -154,9 +154,16 @@ const IndexLiquiditySimulateDataTableRow = ({
       tokenPrice.mul(maxTrade!).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
     const percentageChange = parseFloat(
       `${parseFloat(target) - parseFloat(component.percentOfSet)}`
+    )
+    const percentageChangeFormatted = percentageChange.toFixed(2)
+    const dollarChange = (
+      percentageChange *
+      0.01 *
+      selectedIndexMarketCap
     ).toFixed(2)
-    const dollarChange = parseFloat(
-      `${parseFloat(percentageChange) * 0.01 * selectedIndexMarketCap}`
+    const unitChange = (
+      (percentageChange / 100) *
+      parseFloat(component.quantity)
     ).toFixed(2)
     const numberOfTrade = Math.ceil(
       Math.abs(
@@ -182,7 +189,8 @@ const IndexLiquiditySimulateDataTableRow = ({
             ref={targetRef}
           />
         </TableDataRightAlign>
-        <TableDataRightAlign>{percentageChange}</TableDataRightAlign>
+        <TableDataRightAlign>{unitChange}</TableDataRightAlign>
+        <TableDataRightAlign>{percentageChangeFormatted}</TableDataRightAlign>
         <TableDataRightAlign>
           {formatUSD(parseFloat(dollarChange))}
         </TableDataRightAlign>
@@ -225,10 +233,7 @@ const IndexLiquiditySimulateDataTableRow = ({
       </>
     )
   }
-  if (component) {
-    return renderDataTableRow(component)
-  }
-  return null
+  return renderDataTableRow(component)
 }
 
 export default IndexLiquiditySimulateDataTableRow
