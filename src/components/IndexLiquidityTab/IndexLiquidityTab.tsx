@@ -389,7 +389,7 @@ const CheckboxContainer = styled.div`
 const DataTable = styled.div<DataTableProps>`
   display: grid;
   grid-template-columns: ${(prop) =>
-    prop.isSimulated ? '80px repeat(10, 150px)' : '10px repeat(5, 200px)'};
+    prop.isSimulated ? '80px repeat(11, 150px)' : '10px repeat(5, 200px)'};
   grid-row-gap: 4px;
   flex: 4;
 `
