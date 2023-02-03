@@ -9,18 +9,33 @@ import { LiquidityBalance } from './types'
 
 const UNI_V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984'
 
-export async function getUniswapV3LiquidityFeeLow( tokenAddress: string, chainId: ChainId) {
-  return getUniswapV3Liquidity(tokenAddress,chainId,FeeAmount.LOW)
+export async function getUniswapV3LiquidityFeeLowest(
+  tokenAddress: string,
+  chainId: ChainId
+) {
+  return getUniswapV3Liquidity(tokenAddress, chainId, FeeAmount.LOWEST)
 }
 
-export async function getUniswapV3LiquidityFeeMedium( tokenAddress: string, chainId: ChainId) {
-  return getUniswapV3Liquidity(tokenAddress,chainId,FeeAmount.MEDIUM)
+export async function getUniswapV3LiquidityFeeLow(
+  tokenAddress: string,
+  chainId: ChainId
+) {
+  return getUniswapV3Liquidity(tokenAddress, chainId, FeeAmount.LOW)
 }
 
-export async function getUniswapV3LiquidityFeeHigh( tokenAddress: string, chainId: ChainId) {
-  return getUniswapV3Liquidity(tokenAddress,chainId,FeeAmount.HIGH)
+export async function getUniswapV3LiquidityFeeMedium(
+  tokenAddress: string,
+  chainId: ChainId
+) {
+  return getUniswapV3Liquidity(tokenAddress, chainId, FeeAmount.MEDIUM)
 }
 
+export async function getUniswapV3LiquidityFeeHigh(
+  tokenAddress: string,
+  chainId: ChainId
+) {
+  return getUniswapV3Liquidity(tokenAddress, chainId, FeeAmount.HIGH)
+}
 
 export async function getUniswapV3Liquidity(
   tokenAddress: string,

@@ -13,6 +13,7 @@ import { ether } from '@indexcoop/index-coop-smart-contracts/dist/utils/common'
 import { getProvider } from '../provider'
 import { BigNumber } from 'ethers'
 import {
+  getUniswapV3LiquidityFeeLowest,
   getUniswapV3LiquidityFeeLow,
   getUniswapV3LiquidityFeeMedium,
   getUniswapV3LiquidityFeeHigh,
@@ -27,6 +28,7 @@ import { MaxTradeResponse } from './types'
 import { chain } from 'lodash'
 
 export type ExchangeName =
+  | 'UniswapV3FeeLowest'
   | 'UniswapV3FeeLow'
   | 'UniswapV3FeeMedium'
   | 'UniswapV3FeeHigh'
@@ -37,6 +39,10 @@ export type ExchangeName =
   | 'ZeroEx'
 
 const exchangeUtilsMapping = {
+  UniswapV3FeeLowest: {
+    maxTradeGetter: getUniswapV3FeeLowestQuote,
+    liquidityGetter: getUniswapV3LiquidityFeeLowest,
+  },
   UniswapV3FeeLow: {
     maxTradeGetter: getUniswapV3FeeLowQuote,
     liquidityGetter: getUniswapV3LiquidityFeeLow,
@@ -68,6 +74,7 @@ const exchangeUtilsMapping = {
 }
 
 const wrappedProviderExchanges = [
+  'UniswapV3FeeLowest',
   'UniswapV3FeeLow',
   'UniswapV3FeeMedium',
   'UniswapV3FeeHigh',
@@ -113,6 +120,20 @@ export async function getLiquidity(
 }
 
 export { getUniswapV2Liquidity }
+
+function getUniswapV3FeeLowestQuote(
+  deployHelper: DeployHelper,
+  token: String,
+  targetPriceImpact: BigNumber,
+  chainId: ChainId
+) {
+  return getUniswapV3Quote(
+    deployHelper,
+    token,
+    targetPriceImpact,
+    FeeAmount.LOWEST
+  )
+}
 
 function getUniswapV3FeeLowQuote(
   deployHelper: DeployHelper,
