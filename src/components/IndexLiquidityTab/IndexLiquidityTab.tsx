@@ -35,7 +35,7 @@ const DOLLAR_PER_GAS = 1.3
 const DATA_TABLE_HEADERS = [
   'Component',
   'Weight %',
-  'Slippage Allowed',
+  'Price Impact Allowed',
   'Best Exchange',
   'Max Trade Size (Units)',
   'Max Trade Size ($)',
@@ -46,7 +46,7 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'Target %',
   '% Change',
   '$ Change',
-  'Slippage Allowed',
+  'Price Impact Allowed',
   'Best Exchange',
   'Max Trade Size (Units)',
   'Max Trade Size ($)',
