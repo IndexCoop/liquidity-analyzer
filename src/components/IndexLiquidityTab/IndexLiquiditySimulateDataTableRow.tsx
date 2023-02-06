@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
 import {
   ChainId,
+  EXCHANGETOSTRING,
   PRICE_DECIMALS,
   REBALANCE_EXCHANGES,
   TEN_POW_18,
@@ -116,7 +117,7 @@ const IndexLiquiditySimulateDataTableRow = ({
           checkMaxTrade(exchange, component)
             .then((response) => {
               return {
-                exchange,
+                exchange: EXCHANGETOSTRING[exchange],
                 response,
                 compressedResponse: response?.div(TEN_POW_18).toNumber(),
               }
