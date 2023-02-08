@@ -311,7 +311,7 @@ const IndexLiquidityTab = (_props: props) => {
                   <TableTotalWeight alignRight weight={totalTargetWeight}>
                     {totalTargetWeight}
                   </TableTotalWeight>
-                  {[...Array(6)].map((_e, i) => (
+                  {[...Array(7)].map((_e, i) => (
                     <Tabletotal key={i} />
                   ))}
                   <Tabletotal alignRight>{totalNumberOfTrade}</Tabletotal>
