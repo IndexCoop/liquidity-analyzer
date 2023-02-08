@@ -35,7 +35,7 @@ const DOLLAR_PER_GAS = 1.3
 const DATA_TABLE_HEADERS = [
   'Component',
   'Weight %',
-  'Slippage Allowed',
+  'Price Impact Allowed',
   'Best Exchange',
   'Max Trade Size (Units)',
   'Max Trade Size ($)',
@@ -44,9 +44,10 @@ const DATA_TABLE_SIMULATION_HEADERS = [
   'Component',
   'Weight %',
   'Target %',
+  'Unit Change',
   '% Change',
   '$ Change',
-  'Slippage Allowed',
+  'Price Impact Allowed',
   'Best Exchange',
   'Max Trade Size (Units)',
   'Max Trade Size ($)',
@@ -388,8 +389,8 @@ const CheckboxContainer = styled.div`
 const DataTable = styled.div<DataTableProps>`
   display: grid;
   grid-template-columns: ${(prop) =>
-    prop.isSimulated ? '100px repeat(10, 140px)' : '10px repeat(5, 200px)'};
-  grid-row-gap: 4px;
+    prop.isSimulated ? '80px repeat(11, 160px)' : '10px repeat(5, 200px)'};
+  grid-row-gap: 20px;
   flex: 4;
 `
 

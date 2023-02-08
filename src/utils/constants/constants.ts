@@ -97,6 +97,7 @@ export const INDEX_TOKENS_FOR_SELECT = [
 ]
 
 export const EXCHANGES: Array<ExchangeName> = [
+  'UniswapV3FeeLowest',
   'UniswapV3FeeLow',
   'UniswapV3FeeMedium',
   'UniswapV3FeeHigh',
@@ -108,9 +109,10 @@ export const EXCHANGES: Array<ExchangeName> = [
 ]
 
 export const EXCHANGETOSTRING = {
-  UniswapV3FeeLow: 'UniswapV3 (0.05% fee tier)',
-  UniswapV3FeeMedium: 'UniswapV3 (0.30% fee tier)',
-  UniswapV3FeeHigh: 'UniswapV3 (1% fee tier)',
+  UniswapV3FeeLowest: 'UniswapV3 1bps - 0x000064',
+  UniswapV3FeeLow: 'UniswapV3 5bps - 0x0001f4',
+  UniswapV3FeeMedium: 'UniswapV3 30bps - 0x000bb8',
+  UniswapV3FeeHigh: 'UniswapV3 100bps - 0x002710',
   UniswapV2: 'UniswapV2',
   Sushiswap: 'Sushiswap',
   Kyber: 'Kyber',

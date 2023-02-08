@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField'
 import IndexComponent from 'components/IndexComponent'
 import {
   ChainId,
+  EXCHANGETOSTRING,
   PRICE_DECIMALS,
   REBALANCE_EXCHANGES,
   TEN_POW_18,
@@ -116,7 +117,7 @@ const IndexLiquiditySimulateDataTableRow = ({
           checkMaxTrade(exchange, component)
             .then((response) => {
               return {
-                exchange,
+                exchange: EXCHANGETOSTRING[exchange],
                 response,
                 compressedResponse: response?.div(TEN_POW_18).toNumber(),
               }
@@ -148,16 +149,26 @@ const IndexLiquiditySimulateDataTableRow = ({
   }
   const renderDataTableRow = (component: IndexComponent | undefined) => {
     if (!component) return null
+    const percentOfSet = parseFloat(component.percentOfSet)
+    const targetNumber = parseFloat(target)
     const maxTradeToken =
       maxTrade!.mul(PRICE_DECIMALS).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
     const maxTradeUSD =
       tokenPrice.mul(maxTrade!).div(TEN_POW_18).toNumber() / PRICE_DECIMALS
-    const percentageChange = parseFloat(
-      `${parseFloat(target) - parseFloat(component.percentOfSet)}`
+    const percentageChange = targetNumber - percentOfSet
+    const percentageChangeFormatted = percentageChange.toFixed(2)
+    const dollarChange = (
+      percentageChange *
+      0.01 *
+      selectedIndexMarketCap
     ).toFixed(2)
-    const dollarChange = parseFloat(
-      `${parseFloat(percentageChange) * 0.01 * selectedIndexMarketCap}`
-    ).toFixed(2)
+    const unitChange =
+      percentageChange == 0
+        ? '0'
+        : (
+            ((percentOfSet - targetNumber) / percentOfSet) *
+            parseFloat(component.quantity)
+          ).toFixed(2)
     const numberOfTrade = Math.ceil(
       Math.abs(
         parseFloat(
@@ -182,7 +193,8 @@ const IndexLiquiditySimulateDataTableRow = ({
             ref={targetRef}
           />
         </TableDataRightAlign>
-        <TableDataRightAlign>{percentageChange}</TableDataRightAlign>
+        <TableDataRightAlign>{unitChange}</TableDataRightAlign>
+        <TableDataRightAlign>{percentageChangeFormatted}</TableDataRightAlign>
         <TableDataRightAlign>
           {formatUSD(parseFloat(dollarChange))}
         </TableDataRightAlign>
@@ -225,10 +237,7 @@ const IndexLiquiditySimulateDataTableRow = ({
       </>
     )
   }
-  if (component) {
-    return renderDataTableRow(component)
-  }
-  return null
+  return renderDataTableRow(component)
 }
 
 export default IndexLiquiditySimulateDataTableRow
